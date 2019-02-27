@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //Swat_comment4 - branch
     //Swat_comment5 - branch
     
+    //Swat_comment6 - branch
+    
     var window: UIWindow?
     
     // This is my tester comment!
