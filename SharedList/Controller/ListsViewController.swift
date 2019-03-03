@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ListsViewController: UIViewController {
 
@@ -23,15 +24,7 @@ class ListsViewController: UIViewController {
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "listCell")
         
-        // Template code for testing tableView code
-//        lists = [List]()
-//        let list = List()
-//        list.name = "one"
-//        lists?.append(list)
-//        list.name = "two"
-//        lists?.append(list)
-//        list.name = "three"
-//        lists?.append(list)
+        AddListObserver()
     }
 
     @IBAction func AddListPressed(_ sender: Any) {
@@ -43,12 +36,46 @@ class ListsViewController: UIViewController {
             let newList = List()
             newList.name = listNameTextField.text!
             
-            lists.append(newList)
+            let userID = Auth.auth().currentUser!.uid
+            let dbRef = Database.database().reference().root
+            
+            // Saving list with new auto Id
+            let listRef = dbRef.child("lists").childByAutoId()
+            listRef.setValue(["name": newList.name])
+            
+            // Saving userId for list
+            listRef.child("users").setValue([userID : 1])
+            
+            // Saving list for user
+            dbRef.child("users").child(userID).child("lists").child(listRef.key!).setValue(1)
             
             tableView.reloadData()
         }
     }
+    
+    func AddListObserver() {
+        
+        let listsDdRef = Database.database().reference().child("lists")
+        
+        listsDdRef.observe(.childAdded)
+        { (snapshot) in
+            
+            let listKey = snapshot.key
+            
+            listsDdRef.child("\(listKey)/name").observeSingleEvent(of: .value, with:
+                { (snapshot2) in
+                    let list = List()
+                    list.name = snapshot2.value as! String
+                    
+                    self.lists.append(list)
+                    
+                    self.tableView.reloadData()
+            })
+        }
+    }
 }
+
+
 
 extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     
@@ -75,7 +102,4 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
-    
-    
-    
 }
