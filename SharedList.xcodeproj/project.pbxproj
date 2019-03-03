@@ -17,6 +17,7 @@
 		B2C3D610222BD34D005321BB /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D60F222BD34D005321BB /* LogInViewController.swift */; };
 		B2C3D612222BD358005321BB /* ListsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D611222BD358005321BB /* ListsViewController.swift */; };
 		B2C3D614222BD59E005321BB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D613222BD59E005321BB /* GoogleService-Info.plist */; };
+		B2C3D616222BE395005321BB /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D615222BE395005321BB /* List.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		B2C3D60F222BD34D005321BB /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		B2C3D611222BD358005321BB /* ListsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsViewController.swift; sourceTree = "<group>"; };
 		B2C3D613222BD59E005321BB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B2C3D615222BE395005321BB /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 				B2A29AFD222491FA00698D05 /* Assets.xcassets */,
 				B2A29B02222491FA00698D05 /* Info.plist */,
 				B2C3D613222BD59E005321BB /* GoogleService-Info.plist */,
+				B2C3D617222BE3E7005321BB /* Model */,
 			);
 			path = SharedList;
 			sourceTree = "<group>";
@@ -114,6 +117,14 @@
 				B2A29AFF222491FA00698D05 /* LaunchScreen.storyboard */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		B2C3D617222BE3E7005321BB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B2C3D615222BE395005321BB /* List.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -252,6 +263,7 @@
 				B2A29AF9222491F800698D05 /* ViewController.swift in Sources */,
 				B2A29AF7222491F800698D05 /* AppDelegate.swift in Sources */,
 				B2C3D612222BD358005321BB /* ListsViewController.swift in Sources */,
+				B2C3D616222BE395005321BB /* List.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
