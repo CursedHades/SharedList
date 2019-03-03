@@ -6,6 +6,9 @@
 //  Copyright © 2019 Lukasz. All rights reserved.
 //
 
+import Firebase
+
 class List {
     var name : String = ""
+    var dbReference : DatabaseReference?
 }

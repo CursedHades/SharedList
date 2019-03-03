@@ -16,6 +16,8 @@ class ListsViewController: UIViewController {
     
     var lists = [List]()
     
+    var selectedListIndex : Int?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -24,7 +26,7 @@ class ListsViewController: UIViewController {
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "listCell")
         
-        AddListObserver()
+        AddListsObserver()
     }
 
     @IBAction func AddListPressed(_ sender: Any) {
@@ -53,24 +55,38 @@ class ListsViewController: UIViewController {
         }
     }
     
-    func AddListObserver() {
+    func AddListsObserver() {
         
-        let listsDdRef = Database.database().reference().child("lists")
+        let listsDbRef = Database.database().reference().child("lists")
         
-        listsDdRef.observe(.childAdded)
+        listsDbRef.observe(.childAdded)
         { (snapshot) in
             
             let listKey = snapshot.key
             
-            listsDdRef.child("\(listKey)/name").observeSingleEvent(of: .value, with:
+            listsDbRef.child("\(listKey)/name").observeSingleEvent(of: .value, with:
                 { (snapshot2) in
                     let list = List()
                     list.name = snapshot2.value as! String
+                    list.dbReference = listsDbRef.child("\(listKey)")
                     
                     self.lists.append(list)
                     
                     self.tableView.reloadData()
             })
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        guard let listIndex = selectedListIndex else { fatalError("No list was selected") }
+        
+        selectedListIndex = nil
+        
+        if (segue.identifier == "goToSingleList")
+        {
+            let singleListVC = segue.destination as! SingleListViewController
+            singleListVC.list = lists[listIndex]
         }
     }
 }
@@ -101,5 +117,11 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        selectedListIndex = indexPath.row
+        performSegue(withIdentifier: "goToSingleList", sender: self)
     }
 }
