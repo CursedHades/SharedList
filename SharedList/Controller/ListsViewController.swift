@@ -13,7 +13,7 @@ class ListsViewController: UIViewController {
     @IBOutlet var listNameTextField: UITextField!
     @IBOutlet var tableView: UITableView!
     
-    var lists : [List]?
+    var lists = [List]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +36,17 @@ class ListsViewController: UIViewController {
 
     @IBAction func AddListPressed(_ sender: Any) {
         
+        if (listNameTextField.text?.count == 0) {
+            print("cannot add list with empty name")
+        }
+        else {
+            let newList = List()
+            newList.name = listNameTextField.text!
+            
+            lists.append(newList)
+            
+            tableView.reloadData()
+        }
     }
 }
 
@@ -43,8 +54,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if let count = lists?.count {
-            return count
+        if lists.count != 0 {
+            return lists.count
         }
         else {
             return 1
@@ -55,11 +66,11 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath)
         
-        if let list = lists?[indexPath.row] {
-            cell.textLabel?.text = list.name
+        if lists.count != 0 {
+            cell.textLabel?.text = lists[indexPath.row].name
         }
         else {
-            cell.textLabel?.text = "Add new list."
+            cell.textLabel?.text = "Add new list"
         }
         
         return cell
