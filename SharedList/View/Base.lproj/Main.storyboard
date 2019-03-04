@@ -47,6 +47,11 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Welcome" id="ZOr-IC-JRR"/>
+                    <connections>
+                        <outlet property="logInButton" destination="QMt-z7-KMV" id="oeB-k2-DQi"/>
+                        <outlet property="registerButton" destination="rSo-oa-qns" id="BtA-Ff-GaH"/>
+                        <segue destination="2o2-vd-tY5" kind="show" identifier="goToLists" id="Ce4-SF-gRw"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -255,6 +260,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="5hz-mS-hGt"/>
+        <segue reference="Ce4-SF-gRw"/>
     </inferredMetricsTieBreakers>
 </document>
