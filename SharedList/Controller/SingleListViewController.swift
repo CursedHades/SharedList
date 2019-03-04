@@ -15,11 +15,11 @@ class SingleListViewController: UIViewController {
     
     var list : List? {
         didSet {
-            AddListObserve()
+            AddListObservers()
         }
     }
     
-    var items = [String]()
+    var items = [Item]()
     
     
     override func viewDidLoad() {
@@ -32,13 +32,32 @@ class SingleListViewController: UIViewController {
     }
     
     
-    func AddListObserve() {
+    func AddListObservers() {
         
         guard let itemsDbRef = list?.dbReference?.child("items") else { fatalError("Cannot ref to items") }
         
-        itemsDbRef.observe(.childAdded) { (snapshot) in
+        itemsDbRef.observe(.childAdded)
+        { (snapshot) in
             
-            self.items.append(snapshot.key)
+            let newItem = Item()
+            newItem.name = snapshot.key
+            newItem.dbReference = snapshot.ref
+            
+            self.items.append(newItem)
+            
+            self.tableView.reloadData()
+        }
+        
+        itemsDbRef.observe(.childRemoved)
+        { (snapshot) in
+            
+            for (index, item) in self.items.enumerated() {
+                if (item.name == snapshot.key) {
+                    self.items.remove(at: index)
+                    break
+                }
+            }
+            
             self.tableView.reloadData()
         }
     }
@@ -77,12 +96,26 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource 
         let cell = tableView.dequeueReusableCell(withIdentifier: "singleListTableViewCell")
         
         if (items.count != 0) {
-            cell?.textLabel?.text = items[indexPath.row]
+            cell?.textLabel?.text = items[indexPath.row].name
         }
         else {
             cell?.textLabel?.text = "Add items"
         }
         
         return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        guard let ref = items[indexPath.row].dbReference else {
+            fatalError("Failed to get reference to object selected for deletion.")
+        }
+        
+        ref.removeValue(completionBlock:
+        { (error, snapshot) in
+            if (error != nil) {
+                print ("Deleting item failed: \(error!)")
+            }
+        })
     }
 }
