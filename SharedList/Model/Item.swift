@@ -9,13 +9,18 @@
 import Firebase
 
 class Item {
+    
+    enum Keys : String {
+        case title = "title"
+    }
+    
     var title : String = ""
     var dbRef : DatabaseReference?
     
     static func Serialize(title: String) -> [String : String] {
     
         var dict = [String : String]()
-        dict["title"] = title
+        dict[Keys.title.rawValue] = title
         
         return dict
     }
@@ -23,7 +28,7 @@ class Item {
     static func Deserialize(data: [String : String]) -> Item {
         
         let newItem = Item()
-        newItem.title = data["title"]!
+        newItem.title = data[Keys.title.rawValue]!
         
         return newItem
     }
