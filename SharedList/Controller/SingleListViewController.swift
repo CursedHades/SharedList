@@ -56,10 +56,10 @@ class SingleListViewController: UIViewController {
         
         listRef.observeSingleEvent(of: .value) {
             (snapshot) in
-            if (snapshot.hasChild("items_id")) {
+            if (snapshot.hasChild(List.Keys.items_id.rawValue)) {
                 
                 let dict = snapshot.value as! [String: String]
-                let itemsId = dict["items_id"]!
+                let itemsId = dict[List.Keys.items_id.rawValue]!
                 
                 self.AddItemsObserver(itemsId: itemsId)
             }
@@ -80,10 +80,10 @@ class SingleListViewController: UIViewController {
         
         listRef.observeSingleEvent(of: .value) {
             (snapshot) in
-            if (snapshot.hasChild("items_id")) {
+            if (snapshot.hasChild(List.Keys.items_id.rawValue)) {
                 
                 let dict = snapshot.value as! [String: String]
-                let itemsId = dict["items_id"]!
+                let itemsId = dict[List.Keys.items_id.rawValue]!
                 let itemsListDbRef = Database.database().reference().child("items/\(itemsId)")
                 
                 let itemTitle = self.newItemTextField.text!
@@ -93,7 +93,7 @@ class SingleListViewController: UIViewController {
                 // New item list created using auto_id
                 let itemsDbRef = Database.database().reference().child("items").childByAutoId()
                 
-                listRef.child("items_id").setValue(itemsDbRef.key!)
+                listRef.child(List.Keys.items_id.rawValue).setValue(itemsDbRef.key!)
                 
                 let itemTitle = self.newItemTextField.text!
                 self.AddItemToItemsList(title: itemTitle, itemsDbRef: itemsDbRef)

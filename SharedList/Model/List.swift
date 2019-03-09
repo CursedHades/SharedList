@@ -9,27 +9,33 @@
 import Firebase
 
 class List {
+    
+    enum Keys : String {
+        case title = "title"
+        case owner_id = "owner_id"
+        case items_id = "items_id"
+    }
+    
     var title : String = ""
     var owner_id : String = ""
     var items_id : String?
     var dbRef : DatabaseReference?
     
+    
     func Serializa() -> [String: String] {
         
-        var dict = List.Serialize(title: title, owner_id: owner_id)
-        
-        if (items_id != nil) {
-            dict["items_id"] = items_id
-        }
-        
-        return dict
+        return List.Serialize(title: title, owner_id: owner_id, items_id: items_id)
     }
     
-    static func Serialize(title : String, owner_id : String) -> [String : String] {
+    static func Serialize(title : String, owner_id : String, items_id : String?) -> [String : String] {
         
         var dict = [String: String]()
-        dict["title"] = title
-        dict["owner_id"] = owner_id
+        dict[Keys.title.rawValue] = title
+        dict[Keys.owner_id.rawValue] = owner_id
+        
+        if (items_id != nil) {
+            dict[Keys.items_id.rawValue] = items_id
+        }
         
         return dict
     }
@@ -38,10 +44,10 @@ class List {
         
         let newList = List()
         
-        newList.title = data["title"]!
-        newList.owner_id = data["owner_id"]!
+        newList.title = data[Keys.title.rawValue]!
+        newList.owner_id = data[Keys.owner_id.rawValue]!
         
-        if let items_id = data["items_id"] {
+        if let items_id = data[Keys.items_id.rawValue] {
             newList.items_id = items_id
         }
         

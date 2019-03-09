@@ -43,7 +43,7 @@ class ListsViewController: UIViewController {
             let listDbRef = dbRef.child("lists").childByAutoId()
             
             // Save owner of the list
-            let serialized = List.Serialize(title: listTitle, owner_id: userId)
+            let serialized = List.Serialize(title: listTitle, owner_id: userId, items_id: nil)
             listDbRef.setValue(serialized)
             
             // Save list id under users/user_id/lists
