@@ -11,7 +11,7 @@ import Firebase
 
 class ListsViewController: UIViewController {
 
-    @IBOutlet var listNameTextField: UITextField!
+    @IBOutlet var listTitleTextField: UITextField!
     @IBOutlet var tableView: UITableView!
     
     var lists = [List]()
@@ -31,48 +31,48 @@ class ListsViewController: UIViewController {
 
     @IBAction func AddListPressed(_ sender: Any) {
         
-        if (listNameTextField.text?.count == 0) {
+        if (listTitleTextField.text?.count == 0) {
             print("cannot add list with empty name")
         }
         else {
-            let newList = List()
-            newList.name = listNameTextField.text!
-            
-            let userID = Auth.auth().currentUser!.uid
             let dbRef = Database.database().reference().root
+            let listTitle = listTitleTextField.text!
+            let userId = Auth.auth().currentUser!.uid
             
-            // Saving list with new auto Id
-            let listRef = dbRef.child("lists").childByAutoId()
-            listRef.setValue(["name": newList.name])
+            // Generate new list with autoId
+            let listDbRef = dbRef.child("lists").childByAutoId()
             
-            // Saving userId for list
-            listRef.child("users").setValue([userID : 1])
+            // Save owner of the list
+            let serialized = List.Serialize(title: listTitle, owner_id: userId)
+            listDbRef.setValue(serialized)
             
-            // Saving list for user
-            dbRef.child("users").child(userID).child("lists").child(listRef.key!).setValue(1)
-            
-            tableView.reloadData()
+            // Save list id under users/user_id/lists
+            dbRef.child("users/\(userId)/lists/\(listDbRef.key!)").setValue(true)
         }
     }
     
     func AddListsObserver() {
         
-        let listsDbRef = Database.database().reference().child("lists")
-        
-        listsDbRef.observe(.childAdded)
-        { (snapshot) in
+        // Observer set for /users/user_id/lists
+        let userId = Auth.auth().currentUser!.uid
+        let listsKeyDbRef = Database.database().reference().child("users/\(userId)/lists")
+        listsKeyDbRef.observe(.childAdded)
+        { (listKeySnapshot) in
             
-            let listKey = snapshot.key
+            let listKey = listKeySnapshot.key
+            let listDbRef = Database.database().reference().child("lists/\(listKey)")
             
-            listsDbRef.child("\(listKey)/name").observeSingleEvent(of: .value, with:
-                { (snapshot2) in
-                    let list = List()
-                    list.name = snapshot2.value as! String
-                    list.dbReference = listsDbRef.child("\(listKey)")
-                    
-                    self.lists.append(list)
-                    
-                    self.tableView.reloadData()
+            // Observer for lists id
+            listDbRef.observeSingleEvent(of: .value, with:
+            { (listSnapshot) in
+                let dict = listSnapshot.value as! [String: String]
+                
+                let list = List.Deserialize(data: dict)
+                list.dbRef = listDbRef
+                
+                self.lists.append(list)
+                self.tableView.reloadData()
+                
             })
         }
     }
@@ -110,7 +110,7 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath)
         
         if lists.count != 0 {
-            cell.textLabel?.text = lists[indexPath.row].name
+            cell.textLabel?.text = lists[indexPath.row].title
         }
         else {
             cell.textLabel?.text = "Add new list"

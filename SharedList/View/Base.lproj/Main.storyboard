@@ -205,7 +205,7 @@
                         <viewLayoutGuide key="safeArea" id="mO9-8f-vzl"/>
                     </view>
                     <connections>
-                        <outlet property="listNameTextField" destination="DoQ-eC-tIB" id="uso-i4-4fu"/>
+                        <outlet property="listTitleTextField" destination="DoQ-eC-tIB" id="DuG-uF-Bh4"/>
                         <outlet property="tableView" destination="LFy-Pc-kWz" id="Hso-D7-4qe"/>
                         <segue destination="3uV-RH-cye" kind="show" identifier="goToSingleList" id="iyg-Zo-S5w"/>
                     </connections>

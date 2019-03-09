@@ -29,14 +29,24 @@ class RegisterViewController: UIViewController {
                                password: passwordTextField.text!)
         { (user, error) in
             
-            SVProgressHUD.dismiss()
-            
             if (error != nil) {
+                SVProgressHUD.dismiss()
                 print("Registrtion failed: \(error!)")
             }
             else {
-                print("Registration sucessfull")
-                self.performSegue(withIdentifier: "goToLists", sender: self)
+                let userDbRef = Database.database().reference().child("users").child(user!.user.uid)
+                userDbRef.setValue(["email": user!.user.email!])
+                { error, snapshot in
+                    
+                    SVProgressHUD.dismiss()
+                    
+                    if (error != nil) {
+                        print("Adding user to firebase failed: \(error!)")
+                    }
+                    else {
+                        self.performSegue(withIdentifier: "goToLists", sender: self)
+                    }
+                }
             }
         }
     }

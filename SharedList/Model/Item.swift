@@ -9,6 +9,22 @@
 import Firebase
 
 class Item {
-    var name : String = ""
-    var dbReference : DatabaseReference?
+    var title : String = ""
+    var dbRef : DatabaseReference?
+    
+    static func Serialize(title: String) -> [String : String] {
+    
+        var dict = [String : String]()
+        dict["title"] = title
+        
+        return dict
+    }
+    
+    static func Deserialize(data: [String : String]) -> Item {
+        
+        let newItem = Item()
+        newItem.title = data["title"]!
+        
+        return newItem
+    }
 }

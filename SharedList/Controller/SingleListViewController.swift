@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SingleListViewController: UIViewController {
     
@@ -31,34 +32,37 @@ class SingleListViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "singleListTableViewCell")
     }
     
+    func AddItemsObserver(itemsId : String) {
+        
+        let itemsListDbRef = Database.database().reference().child("items/\(itemsId)")
+        
+        itemsListDbRef.observe(.childAdded, with: { (itemSnapshot) in
+            
+            let itemDict = itemSnapshot.value as! [String: String]
+            let newItem = Item.Deserialize(data: itemDict)
+            newItem.dbRef = itemSnapshot.ref
+            
+            self.items.append(newItem)
+            self.tableView.reloadData()
+        })
+    }
+    
     
     func AddListObservers() {
         
-        guard let itemsDbRef = list?.dbReference?.child("items") else { fatalError("Cannot ref to items") }
+        guard let _ = list else { fatalError("list not set") }
         
-        itemsDbRef.observe(.childAdded)
-        { (snapshot) in
-            
-            let newItem = Item()
-            newItem.name = snapshot.key
-            newItem.dbReference = snapshot.ref
-            
-            self.items.append(newItem)
-            
-            self.tableView.reloadData()
-        }
+        let listRef = list!.dbRef!
         
-        itemsDbRef.observe(.childRemoved)
-        { (snapshot) in
-            
-            for (index, item) in self.items.enumerated() {
-                if (item.name == snapshot.key) {
-                    self.items.remove(at: index)
-                    break
-                }
+        listRef.observeSingleEvent(of: .value) {
+            (snapshot) in
+            if (snapshot.hasChild("items_id")) {
+                
+                let dict = snapshot.value as! [String: String]
+                let itemsId = dict["items_id"]!
+                
+                self.AddItemsObserver(itemsId: itemsId)
             }
-            
-            self.tableView.reloadData()
         }
     }
     
@@ -72,12 +76,43 @@ class SingleListViewController: UIViewController {
             return
         }
         
-        let itemName = newItemTextField.text!
-        let listRef = list!.dbReference!
+        let listRef = list!.dbRef!
         
-        listRef.child("items").child(itemName).setValue(1)
+        listRef.observeSingleEvent(of: .value) {
+            (snapshot) in
+            if (snapshot.hasChild("items_id")) {
+                
+                let dict = snapshot.value as! [String: String]
+                let itemsId = dict["items_id"]!
+                let itemsListDbRef = Database.database().reference().child("items/\(itemsId)")
+                
+                let itemTitle = self.newItemTextField.text!
+                self.AddItemToItemsList(title: itemTitle, itemsDbRef: itemsListDbRef)
+            }
+            else {
+                // New item list created using auto_id
+                let itemsDbRef = Database.database().reference().child("items").childByAutoId()
+                
+                listRef.child("items_id").setValue(itemsDbRef.key!)
+                
+                let itemTitle = self.newItemTextField.text!
+                self.AddItemToItemsList(title: itemTitle, itemsDbRef: itemsDbRef)
+                
+                self.AddItemsObserver(itemsId: itemsDbRef.key!)
+            }
+        }
+    }
+    
+    func AddItemToItemsList(title: String, itemsDbRef: DatabaseReference) {
+        let itemDbRef = itemsDbRef.childByAutoId()
+        
+        let itemDict = Item.Serialize(title: title)
+        itemDbRef.setValue(itemDict) { (error, sth) in
+            //TODO: handle error
+        }
     }
 }
+
 
 extension SingleListViewController : UITableViewDelegate, UITableViewDataSource {
     
@@ -96,7 +131,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource 
         let cell = tableView.dequeueReusableCell(withIdentifier: "singleListTableViewCell")
         
         if (items.count != 0) {
-            cell?.textLabel?.text = items[indexPath.row].name
+            cell?.textLabel?.text = items[indexPath.row].title
         }
         else {
             cell?.textLabel?.text = "Add items"
@@ -107,7 +142,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        guard let ref = items[indexPath.row].dbReference else {
+        guard let ref = items[indexPath.row].dbRef else {
             fatalError("Failed to get reference to object selected for deletion.")
         }
         
