@@ -16,7 +16,7 @@ class SingleListViewController: UIViewController {
     
     var list : List? {
         didSet {
-            AddListObservers()
+            AddObservers()
         }
     }
     
@@ -30,6 +30,29 @@ class SingleListViewController: UIViewController {
         tableView.dataSource = self
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "singleListTableViewCell")
+    }
+    
+    func AddObservers() {
+        
+        guard let _ = list else { fatalError("list not set") }
+        let listRef = list!.dbRef!
+        
+        listRef.observe(.childAdded)
+        { (childSnapshot) in
+            
+            if (childSnapshot.key == List.Keys.items_id.rawValue) {
+                
+                let newItemsId = childSnapshot.value as! String
+                
+                if (self.list?.items_id != nil
+                    && self.list?.items_id != newItemsId) {
+                    fatalError("list already has items_id")
+                }
+                
+                self.list!.items_id = newItemsId
+                self.AddItemsObserver(itemsId: newItemsId)
+            }
+        }
     }
     
     func AddItemsObserver(itemsId : String) {
@@ -47,24 +70,18 @@ class SingleListViewController: UIViewController {
         })
     }
     
-    
-    func AddListObservers() {
-        
-        guard let _ = list else { fatalError("list not set") }
-        
-        let listRef = list!.dbRef!
-        
-        listRef.observeSingleEvent(of: .value) {
-            (snapshot) in
-            if (snapshot.hasChild(List.Keys.items_id.rawValue)) {
-                
-                let dict = snapshot.value as! [String: String]
-                let itemsId = dict[List.Keys.items_id.rawValue]!
-                
-                self.AddItemsObserver(itemsId: itemsId)
-            }
-        }
-    }
+    //        itemsDbRef.observe(.childRemoved)
+    //        { (snapshot) in
+    //
+    //            for (index, item) in self.items.enumerated() {
+    //                if (item.name == snapshot.key) {
+    //                    self.items.remove(at: index)
+    //                    break
+    //                }
+    //            }
+    //
+    //            self.tableView.reloadData()
+    //        }
     
     
     @IBAction func AddItemPressed(_ sender: UIButton) {
@@ -84,21 +101,28 @@ class SingleListViewController: UIViewController {
                 
                 let dict = snapshot.value as! [String: String]
                 let itemsId = dict[List.Keys.items_id.rawValue]!
-                let itemsListDbRef = Database.database().reference().child("items/\(itemsId)")
                 
+                let itemsListDbRef = Database.database().reference().child("items/\(itemsId)")
                 let itemTitle = self.newItemTextField.text!
                 self.AddItemToItemsList(title: itemTitle, itemsDbRef: itemsListDbRef)
             }
             else {
                 // New item list created using auto_id
                 let itemsDbRef = Database.database().reference().child("items").childByAutoId()
+                let newItemsId = itemsDbRef.key!
                 
-                listRef.child(List.Keys.items_id.rawValue).setValue(itemsDbRef.key!)
+                if (self.list?.items_id != nil
+                    && self.list?.items_id != newItemsId) {
+                    fatalError("list already has items_id")
+                }
+                else {
+                    self.list?.items_id = itemsDbRef.key!
+                }
+                
+                listRef.child(List.Keys.items_id.rawValue).setValue(newItemsId)
                 
                 let itemTitle = self.newItemTextField.text!
                 self.AddItemToItemsList(title: itemTitle, itemsDbRef: itemsDbRef)
-                
-                self.AddItemsObserver(itemsId: itemsDbRef.key!)
             }
         }
     }
