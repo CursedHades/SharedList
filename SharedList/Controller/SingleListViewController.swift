@@ -35,9 +35,11 @@ class SingleListViewController: UIViewController {
     func AddObservers() {
         
         guard let _ = list else { fatalError("list not set") }
-        let listRef = list!.dbRef!
+        guard let _ = list?.id else {fatalError("list without id") }
         
-        listRef.observe(.childAdded)
+        let listDbRef = Database.database().reference().child("lists/\(list!.id!)")
+        
+        listDbRef.observe(.childAdded)
         { (listChildSnapshot) in
             
             if (listChildSnapshot.key == List.Keys.items_id.rawValue) {
@@ -54,7 +56,7 @@ class SingleListViewController: UIViewController {
             }
         }
         
-        listRef.observe(.childRemoved)
+        listDbRef.observe(.childRemoved)
         { (listChildSnapshot) in
             if (listChildSnapshot.key == List.Keys.owner_id.rawValue) {
                 self.list?.items_id = nil
@@ -70,7 +72,7 @@ class SingleListViewController: UIViewController {
             
             let itemDict = itemSnapshot.value as! [String: String]
             let newItem = Item.Deserialize(data: itemDict)
-            newItem.dbRef = itemSnapshot.ref
+            newItem.id = itemSnapshot.key
             
             self.items.append(newItem)
             self.tableView.reloadData()
@@ -109,7 +111,8 @@ class SingleListViewController: UIViewController {
             let itemsDbRef = Database.database().reference().child("items").childByAutoId()
             let newItemsId = itemsDbRef.key!
             
-            self.list!.dbRef!.child(List.Keys.items_id.rawValue).setValue(newItemsId)
+            let listDbRef = Database.database().reference().child("lists/\(self.list!.id!)")
+            listDbRef.child(List.Keys.items_id.rawValue).setValue(newItemsId)
             
             let itemTitle = self.newItemTextField.text!
             self.AddItemToItemsList(title: itemTitle, itemsId: newItemsId)
@@ -156,15 +159,15 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        guard let ref = items[indexPath.row].dbRef else {
-            fatalError("Failed to get reference to object selected for deletion.")
-        }
-        
-        ref.removeValue(completionBlock:
-        { (error, snapshot) in
-            if (error != nil) {
-                print ("Deleting item failed: \(error!)")
-            }
-        })
+//        guard let ref = items[indexPath.row].dbRef else {
+//            fatalError("Failed to get reference to object selected for deletion.")
+//        }
+//
+//        ref.removeValue(completionBlock:
+//        { (error, snapshot) in
+//            if (error != nil) {
+//                print ("Deleting item failed: \(error!)")
+//            }
+//        })
     }
 }

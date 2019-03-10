@@ -68,7 +68,7 @@ class ListsViewController: UIViewController {
                 let dict = listSnapshot.value as! [String: String]
                 
                 let list = List.Deserialize(data: dict)
-                list.dbRef = listDbRef
+                list.id = listDbRef.key
                 
                 self.lists.append(list)
                 self.tableView.reloadData()

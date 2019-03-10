@@ -6,16 +6,14 @@
 //  Copyright © 2019 Lukasz. All rights reserved.
 //
 
-import Firebase
-
 class Item {
     
     enum Keys : String {
         case title = "title"
     }
     
+    var id : String?
     var title : String = ""
-    var dbRef : DatabaseReference?
     
     static func Serialize(title: String) -> [String : String] {
     

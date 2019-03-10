@@ -6,8 +6,6 @@
 //  Copyright © 2019 Lukasz. All rights reserved.
 //
 
-import Firebase
-
 class List {
     
     enum Keys : String {
@@ -16,11 +14,10 @@ class List {
         case items_id = "items_id"
     }
     
+    var id : String?
     var title : String = ""
     var owner_id : String = ""
     var items_id : String?
-    var dbRef : DatabaseReference?
-    
     
     func Serializa() -> [String: String] {
         
