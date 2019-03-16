@@ -67,6 +67,7 @@ class SingleListViewController: UIViewController {
                 {
                     self.items.remove(at: index)
                     self.tableView.reloadData()
+                    return
                 }
             }
         }
