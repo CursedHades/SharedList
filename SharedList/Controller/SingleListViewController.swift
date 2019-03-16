@@ -37,31 +37,7 @@ class SingleListViewController: UIViewController {
         guard let _ = list else { fatalError("list not set") }
         guard let _ = list?.id else {fatalError("list without id") }
         
-        let listDbRef = Database.database().reference().child("lists/\(list!.id!)")
-        
-        listDbRef.observe(.childAdded)
-        { (listChildSnapshot) in
-            
-            if (listChildSnapshot.key == List.Keys.items_id.rawValue) {
-                
-                let newItemsId = listChildSnapshot.value as! String
-                
-                if (self.list?.items_id != nil
-                    && self.list?.items_id != newItemsId) {
-                    fatalError("list already has items_id")
-                }
-                
-                self.list!.items_id = newItemsId
-                self.AddItemsObserver(itemsId: newItemsId)
-            }
-        }
-        
-        listDbRef.observe(.childRemoved)
-        { (listChildSnapshot) in
-            if (listChildSnapshot.key == List.Keys.owner_id.rawValue) {
-                self.list?.items_id = nil
-            }
-        }
+        AddItemsObserver(itemsId: list!.items_id)
     }
     
     func AddItemsObserver(itemsId : String) {
@@ -70,12 +46,15 @@ class SingleListViewController: UIViewController {
         
         itemsListDbRef.observe(.childAdded, with: { (itemSnapshot) in
             
-            let itemDict = itemSnapshot.value as! [String: String]
-            let newItem = Item.Deserialize(data: itemDict)
-            newItem.id = itemSnapshot.key
-            
-            self.items.append(newItem)
-            self.tableView.reloadData()
+            if (itemSnapshot.key != "list_id")
+            {
+                let itemDict = itemSnapshot.value as! [String: String]
+                let newItem = Item.Deserialize(data: itemDict)
+                newItem.id = itemSnapshot.key
+                
+                self.items.append(newItem)
+                self.tableView.reloadData()
+            }
         })
     }
     
@@ -102,21 +81,8 @@ class SingleListViewController: UIViewController {
             return
         }
         
-        if let itemsId = list?.items_id {
-            let itemTitle = self.newItemTextField.text!
-            
-            self.AddItemToItemsList(title: itemTitle, itemsId: itemsId)
-        }
-        else {
-            let itemsDbRef = Database.database().reference().child("items").childByAutoId()
-            let newItemsId = itemsDbRef.key!
-            
-            let listDbRef = Database.database().reference().child("lists/\(self.list!.id!)")
-            listDbRef.child(List.Keys.items_id.rawValue).setValue(newItemsId)
-            
-            let itemTitle = self.newItemTextField.text!
-            self.AddItemToItemsList(title: itemTitle, itemsId: newItemsId)
-        }
+        let itemTitle = self.newItemTextField.text!
+        self.AddItemToItemsList(title: itemTitle, itemsId: list!.items_id)
     }
     
     func AddItemToItemsList(title: String, itemsId: String) {

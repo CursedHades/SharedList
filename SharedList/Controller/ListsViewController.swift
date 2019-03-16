@@ -35,19 +35,30 @@ class ListsViewController: UIViewController {
             print("cannot add list with empty name")
         }
         else {
-            let dbRef = Database.database().reference().root
+            
+            let dbRef = Database.database().reference()
+            
+            let newListRef = dbRef.child("lists").childByAutoId()
+            let newListKey = newListRef.key!
+            
+            let itemsRef = dbRef.child("items").childByAutoId()
+            let itemsKey = itemsRef.key!
+            
             let listTitle = listTitleTextField.text!
             let userId = Auth.auth().currentUser!.uid
             
-            // Generate new list with autoId
-            let listDbRef = dbRef.child("lists").childByAutoId()
+            let serialized = List.Serialize(title: listTitle, owner_id: userId, items_id: itemsKey)
+            let updateData = ["users/\(userId)/lists/\(newListKey)" : true,
+                              "lists/\(newListKey)" : serialized,
+                              "items/\(itemsKey)/list_id" : newListKey] as [String : Any]
             
-            // Save owner of the list
-            let serialized = List.Serialize(title: listTitle, owner_id: userId, items_id: nil)
-            listDbRef.setValue(serialized)
-            
-            // Save list id under users/user_id/lists
-            dbRef.child("users/\(userId)/lists/\(listDbRef.key!)").setValue(true)
+            dbRef.updateChildValues(updateData)
+            { (error, snapshot) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+            }
         }
     }
     
