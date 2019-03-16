@@ -95,6 +95,19 @@ class SingleListViewController: UIViewController {
             //TODO: handle error
         }
     }
+    
+    func RemoveItem(Index: Int) {
+        
+        let item = items[Index]
+        
+        let itemRef = Database.database().reference().child("items/\(list!.items_id)/\(item.id!)")
+        
+        itemRef.removeValue { (error, snapshot) in
+            if (error != nil) {
+                print(("Item removing failed with error: \(error!)"))
+            }
+        }
+    }
 }
 
 
@@ -125,16 +138,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-//        guard let ref = items[indexPath.row].dbRef else {
-//            fatalError("Failed to get reference to object selected for deletion.")
-//        }
-//
-//        ref.removeValue(completionBlock:
-//        { (error, snapshot) in
-//            if (error != nil) {
-//                print ("Deleting item failed: \(error!)")
-//            }
-//        })
+    
+        RemoveItem(Index: indexPath.row)
     }
 }
