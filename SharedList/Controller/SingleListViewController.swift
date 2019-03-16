@@ -42,9 +42,9 @@ class SingleListViewController: UIViewController {
     
     func AddItemsObserver(itemsId : String) {
         
-        let itemsListDbRef = Database.database().reference().child("items/\(itemsId)")
+        let itemsDbRef = Database.database().reference().child("items/\(itemsId)")
         
-        itemsListDbRef.observe(.childAdded, with: { (itemSnapshot) in
+        itemsDbRef.observe(.childAdded, with: { (itemSnapshot) in
             
             if (itemSnapshot.key != "list_id")
             {
@@ -56,20 +56,21 @@ class SingleListViewController: UIViewController {
                 self.tableView.reloadData()
             }
         })
+        
+        itemsDbRef.observe(.childRemoved)
+        { (snapshot) in
+            
+            let title = (snapshot.value as! [String : String])[Item.Keys.title.rawValue]
+            for (index, item) in self.items.enumerated() {
+                
+                if (item.title == title)
+                {
+                    self.items.remove(at: index)
+                    self.tableView.reloadData()
+                }
+            }
+        }
     }
-    
-    //        itemsDbRef.observe(.childRemoved)
-    //        { (snapshot) in
-    //
-    //            for (index, item) in self.items.enumerated() {
-    //                if (item.name == snapshot.key) {
-    //                    self.items.remove(at: index)
-    //                    break
-    //                }
-    //            }
-    //
-    //            self.tableView.reloadData()
-    //        }
     
     
     @IBAction func AddItemPressed(_ sender: UIButton) {
