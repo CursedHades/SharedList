@@ -15,7 +15,13 @@ class ListsViewController: UIViewController {
     
     var selectedListIndex : Int?
     
-    let firebaseManager = FirebaseManager()
+    var listManager : ListManager? {
+        
+        didSet {
+            listManager?.delegate = self
+            listManager?.ActivateObservers()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,9 +30,6 @@ class ListsViewController: UIViewController {
         tableView.dataSource = self
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "listCell")
-        
-        firebaseManager.listManager.delegate = self
-        firebaseManager.listManager.ActivateListObservers()
     }
 
     @IBAction func AddListPressed(_ sender: Any) {
@@ -36,7 +39,7 @@ class ListsViewController: UIViewController {
         }
         else {
             let listTitle = listTitleTextField.text!
-            firebaseManager.listManager.AddNewList(title: listTitle)
+            listManager!.AddNewList(title: listTitle)
         }
     }
     
@@ -49,7 +52,7 @@ class ListsViewController: UIViewController {
         if (segue.identifier == "goToSingleList")
         {
             let singleListVC = segue.destination as! SingleListViewController
-            singleListVC.list = firebaseManager.listManager.lists[listIndex]
+            singleListVC.list = listManager!.lists[listIndex]
         }
     }
     
@@ -71,8 +74,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if firebaseManager.listManager.lists.count != 0 {
-            return firebaseManager.listManager.lists.count
+        if listManager!.lists.count != 0 {
+            return listManager!.lists.count
         }
         else {
             return 1
@@ -83,8 +86,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath)
         
-        if firebaseManager.listManager.lists.count != 0 {
-            cell.textLabel?.text = firebaseManager.listManager.lists[indexPath.row].title
+        if listManager!.lists.count != 0 {
+            cell.textLabel?.text = listManager!.lists[indexPath.row].title
         }
         else {
             cell.textLabel?.text = "Add new list"

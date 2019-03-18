@@ -21,16 +21,16 @@ class ListManager {
     
     var lists = [List]()
     
-    var listObservers = [DataEventType: DatabaseHandle?]()
+    var observers = [DataEventType: DatabaseHandle?]()
     
-    func ActivateListObservers()
+    func ActivateObservers()
     {
-        if (listObservers[.childAdded] != nil) {
+        if (observers[.childAdded] != nil) {
             
             let userId = Auth.auth().currentUser!.uid
             let userListsDbRef = Database.database().reference().child("users/\(userId)/lists")
             
-            listObservers[.childAdded] = userListsDbRef.observe(.childAdded)
+            observers[.childAdded] = userListsDbRef.observe(.childAdded)
             { (listKeySnapshot) in
                 
                 let listDbRef = Database.database().reference().child("lists/\(listKeySnapshot.key)")
@@ -46,11 +46,11 @@ class ListManager {
             }
         }
         
-        if (listObservers[.childRemoved] != nil) {
+        if (observers[.childRemoved] != nil) {
             
             let userId = Auth.auth().currentUser!.uid
             let listsKeyDbRef = Database.database().reference().child("users/\(userId)/lists")
-            listObservers[.childRemoved] = listsKeyDbRef.observe(.childRemoved)
+            observers[.childRemoved] = listsKeyDbRef.observe(.childRemoved)
             { (listKeySnapshot) in
                 
                 for (index, list) in self.lists.enumerated() {
@@ -67,6 +67,15 @@ class ListManager {
                 }
             }
         }
+    }
+    
+    func DeactivateObservers()
+    {
+        let userId = Auth.auth().currentUser!.uid
+        let listsKeyDbRef = Database.database().reference().child("users/\(userId)/lists")
+     
+        listsKeyDbRef.removeAllObservers()
+        observers.removeAll()
     }
     
     func AddNewList(title: String) {
