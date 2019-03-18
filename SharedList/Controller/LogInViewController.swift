@@ -15,6 +15,8 @@ class LogInViewController: UIViewController {
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
     
+    var firebaseManager : FirebaseManager?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -37,6 +39,15 @@ class LogInViewController: UIViewController {
                 print("Logging sucessfull")
                 self.performSegue(withIdentifier: "goToLists", sender: self)
             }
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if (segue.identifier == "goToList") {
+            
+            let listsVC = segue.destination as! ListsViewController
+            listsVC.listManager = firebaseManager?.listManager
         }
     }
 }

@@ -15,11 +15,12 @@ class RegisterViewController: UIViewController {
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
     
+    var firebaseManager : FirebaseManager?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
     }
-    
 
     @IBAction func RegisterPressed(_ sender: Any) {
         
@@ -48,6 +49,15 @@ class RegisterViewController: UIViewController {
                     }
                 }
             }
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if (segue.identifier == "goToList") {
+            
+            let listsVC = segue.destination as! ListsViewController
+            listsVC.listManager = firebaseManager?.listManager
         }
     }
 }

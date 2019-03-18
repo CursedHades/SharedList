@@ -14,10 +14,11 @@ class ViewController: UIViewController {
     
     @IBOutlet var registerButton: UIButton!
     @IBOutlet var logInButton: UIButton!
+    
+    var frbManager : FirebaseManager?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
     
     func DisableUI() {
@@ -34,16 +35,36 @@ class ViewController: UIViewController {
         
         SVProgressHUD.show()
         DisableUI()
-        
+
         Auth.auth().addStateDidChangeListener { (auth, user) in
-            
+
             SVProgressHUD.dismiss()
             self.EnableUI()
-            
+
             if (user != nil) {
                 self.performSegue(withIdentifier: "goToLists", sender: self)
             }
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if (segue.identifier == "goToLists") {
+            
+            let listsVC = segue.destination as! ListsViewController
+            listsVC.listManager = frbManager?.listManager
+        }
+        else if (segue.identifier == "goToRegister") {
+            let registerVC = segue.destination as! RegisterViewController
+            registerVC.firebaseManager = frbManager
+            
+        }
+        else if (segue.identifier == "goToLogIn") {
+            let logInVC = segue.destination as! LogInViewController
+            logInVC.firebaseManager = frbManager
+        }
+    }
+
+    
 }
 
