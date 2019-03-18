@@ -25,7 +25,7 @@ class ListManager {
     
     func ActivateObservers()
     {
-        if (observers[.childAdded] != nil) {
+        if (observers[.childAdded] == nil) {
             
             let userId = Auth.auth().currentUser!.uid
             let userListsDbRef = Database.database().reference().child("users/\(userId)/lists")
@@ -46,7 +46,7 @@ class ListManager {
             }
         }
         
-        if (observers[.childRemoved] != nil) {
+        if (observers[.childRemoved] == nil) {
             
             let userId = Auth.auth().currentUser!.uid
             let listsKeyDbRef = Database.database().reference().child("users/\(userId)/lists")
