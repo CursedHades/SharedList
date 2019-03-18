@@ -15,11 +15,13 @@
 		B2A29B01222491FA00698D05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2A29AFF222491FA00698D05 /* LaunchScreen.storyboard */; };
 		B2B35E1E222C1ED7000EC2B2 /* SingleListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B35E1D222C1ED7000EC2B2 /* SingleListViewController.swift */; };
 		B2B35E20222DBB17000EC2B2 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B35E1F222DBB17000EC2B2 /* Item.swift */; };
+		B2B35E22222EEF5A000EC2B2 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B35E21222EEF5A000EC2B2 /* FirebaseManager.swift */; };
 		B2C3D60E222BD343005321BB /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D60D222BD343005321BB /* RegisterViewController.swift */; };
 		B2C3D610222BD34D005321BB /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D60F222BD34D005321BB /* LogInViewController.swift */; };
 		B2C3D612222BD358005321BB /* ListsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D611222BD358005321BB /* ListsViewController.swift */; };
 		B2C3D614222BD59E005321BB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D613222BD59E005321BB /* GoogleService-Info.plist */; };
 		B2C3D616222BE395005321BB /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D615222BE395005321BB /* List.swift */; };
+		B2D9A66222404F2000576591 /* ListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A66122404F2000576591 /* ListManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,11 +37,13 @@
 		B2A29B02222491FA00698D05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2B35E1D222C1ED7000EC2B2 /* SingleListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleListViewController.swift; sourceTree = "<group>"; };
 		B2B35E1F222DBB17000EC2B2 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		B2B35E21222EEF5A000EC2B2 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		B2C3D60D222BD343005321BB /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		B2C3D60F222BD34D005321BB /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		B2C3D611222BD358005321BB /* ListsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsViewController.swift; sourceTree = "<group>"; };
 		B2C3D613222BD59E005321BB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B2C3D615222BE395005321BB /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
+		B2D9A66122404F2000576591 /* ListManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +96,8 @@
 		B2A29AF5222491F800698D05 /* SharedList */ = {
 			isa = PBXGroup;
 			children = (
+				B2D9A66122404F2000576591 /* ListManager.swift */,
+				B2B35E21222EEF5A000EC2B2 /* FirebaseManager.swift */,
 				B2A29AF6222491F800698D05 /* AppDelegate.swift */,
 				B2C3D60B222BD314005321BB /* Controller */,
 				B2C3D60C222BD327005321BB /* View */,
@@ -267,11 +273,13 @@
 				B2C3D610222BD34D005321BB /* LogInViewController.swift in Sources */,
 				B2C3D60E222BD343005321BB /* RegisterViewController.swift in Sources */,
 				B2A29AF9222491F800698D05 /* ViewController.swift in Sources */,
+				B2B35E22222EEF5A000EC2B2 /* FirebaseManager.swift in Sources */,
 				B2A29AF7222491F800698D05 /* AppDelegate.swift in Sources */,
 				B2B35E20222DBB17000EC2B2 /* Item.swift in Sources */,
 				B2C3D612222BD358005321BB /* ListsViewController.swift in Sources */,
 				B2C3D616222BE395005321BB /* List.swift in Sources */,
 				B2B35E1E222C1ED7000EC2B2 /* SingleListViewController.swift in Sources */,
+				B2D9A66222404F2000576591 /* ListManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,6 +427,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = B942GL56UY;
 				INFOPLIST_FILE = SharedList/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -437,6 +446,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = B942GL56UY;
 				INFOPLIST_FILE = SharedList/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
