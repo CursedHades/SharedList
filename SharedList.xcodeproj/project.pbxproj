@@ -96,8 +96,7 @@
 		B2A29AF5222491F800698D05 /* SharedList */ = {
 			isa = PBXGroup;
 			children = (
-				B2D9A66122404F2000576591 /* ListManager.swift */,
-				B2B35E21222EEF5A000EC2B2 /* FirebaseManager.swift */,
+				B2D9A663224052B800576591 /* Managers */,
 				B2A29AF6222491F800698D05 /* AppDelegate.swift */,
 				B2C3D60B222BD314005321BB /* Controller */,
 				B2C3D60C222BD327005321BB /* View */,
@@ -137,6 +136,15 @@
 				B2B35E1F222DBB17000EC2B2 /* Item.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		B2D9A663224052B800576591 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				B2D9A66122404F2000576591 /* ListManager.swift */,
+				B2B35E21222EEF5A000EC2B2 /* FirebaseManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
