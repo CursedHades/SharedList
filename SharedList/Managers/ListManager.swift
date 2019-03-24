@@ -37,6 +37,8 @@ class ListManager {
                 listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
                     
                     let newList = List.Deserialize(data: listSnapshot.value as! [String: String])
+                    newList.id = listSnapshot.key
+                    
                     self.lists.append(newList)
                     
                     if let del = self.delegate {
