@@ -24,6 +24,7 @@
 		B2D9A66222404F2000576591 /* ListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A66122404F2000576591 /* ListManager.swift */; };
 		B2D9A6672247D76A00576591 /* ProposalManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A6662247D76A00576591 /* ProposalManger.swift */; };
 		B2D9A6692247D91400576591 /* Proposal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A6682247D91400576591 /* Proposal.swift */; };
+		B2D9A66B2248230300576591 /* ProposalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A66A2248230300576591 /* ProposalsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		B2D9A66122404F2000576591 /* ListManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListManager.swift; sourceTree = "<group>"; };
 		B2D9A6662247D76A00576591 /* ProposalManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProposalManger.swift; sourceTree = "<group>"; };
 		B2D9A6682247D91400576591 /* Proposal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Proposal.swift; sourceTree = "<group>"; };
+		B2D9A66A2248230300576591 /* ProposalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProposalsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 				B2C3D60F222BD34D005321BB /* LogInViewController.swift */,
 				B2C3D611222BD358005321BB /* ListsViewController.swift */,
 				B2B35E1D222C1ED7000EC2B2 /* SingleListViewController.swift */,
+				B2D9A66A2248230300576591 /* ProposalsViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -285,6 +288,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2C3D610222BD34D005321BB /* LogInViewController.swift in Sources */,
+				B2D9A66B2248230300576591 /* ProposalsViewController.swift in Sources */,
 				B2D9A6672247D76A00576591 /* ProposalManger.swift in Sources */,
 				B2C3D60E222BD343005321BB /* RegisterViewController.swift in Sources */,
 				B2D9A6692247D91400576591 /* Proposal.swift in Sources */,

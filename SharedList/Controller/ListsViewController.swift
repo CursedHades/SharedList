@@ -46,6 +46,10 @@ class ListsViewController: UIViewController {
         }
     }
     
+    @IBAction func ProposalsPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "goToProposals", sender: self)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if (segue.identifier == "goToSingleList")
@@ -61,7 +65,8 @@ class ListsViewController: UIViewController {
         
         if (segue.identifier == "goToProposals")
         {
-            
+            let proposalVC = segue.destination as! ProposalsViewController
+            proposalVC.frbManager = frbManager
         }
     }
     
