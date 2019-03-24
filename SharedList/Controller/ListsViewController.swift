@@ -18,9 +18,12 @@ class ListsViewController: UIViewController {
     var frbManager : FirebaseManager? {
         
         didSet {
-             listManager = frbManager?.listManager
+            listManager = frbManager?.listManager
             listManager?.delegate = self
             listManager?.ActivateObservers()
+            
+            frbManager?.proposalManager.LoadData()
+            frbManager?.proposalManager.ActivateObservers()
         }
     }
     
@@ -69,17 +72,6 @@ class ListsViewController: UIViewController {
             proposalVC.frbManager = frbManager
         }
     }
-    
-//    override func viewDidAppear(_ animated: Bool) {
-//
-//        let dbRef = Database.database().reference().root
-//
-//        let query = dbRef.child("users").queryOrdered(byChild: "email").queryEqual(toValue: "1@2.com")
-//
-//        query.observeSingleEvent(of: .value) { (snapshot) in
-//
-//        }
-//    }
 }
 
 

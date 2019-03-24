@@ -16,6 +16,7 @@ class ProposalsViewController: UIViewController {
         
         didSet {
             proposalManager = frbManager?.proposalManager
+            proposalManager?.delegate = self
         }
     }
     

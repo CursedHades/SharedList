@@ -31,7 +31,5 @@ class FirebaseManager {
     
     init () {
         FirebaseApp.configure()
-        
-        proposalManager.LoadData()
     }
 }

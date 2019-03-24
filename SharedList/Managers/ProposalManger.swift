@@ -46,8 +46,6 @@ class ProposalManager {
             if let del = self.delegate {
                 del.ProposalAdded()
             }
-            
-            self.ActivateObservers()
         }
     }
     
