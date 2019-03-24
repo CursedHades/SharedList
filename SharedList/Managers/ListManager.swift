@@ -22,9 +22,12 @@ class ListManager {
     var lists = [List]()
     
     var observers = [DataEventType: DatabaseHandle?]()
+    fileprivate var activeObservers = 0
     
     func ActivateObservers()
     {
+        activeObservers = activeObservers + 1
+        
         if (observers[.childAdded] == nil) {
             
             let userId = Auth.auth().currentUser!.uid
@@ -73,11 +76,18 @@ class ListManager {
     
     func DeactivateObservers()
     {
-        let userId = Auth.auth().currentUser!.uid
-        let listsKeyDbRef = Database.database().reference().child("users/\(userId)/lists")
-     
-        listsKeyDbRef.removeAllObservers()
-        observers.removeAll()
+        if (activeObservers == 0) { fatalError("No active observers.") }
+        
+        activeObservers = activeObservers - 1
+        
+        if (activeObservers == 0) {
+            
+            let userId = Auth.auth().currentUser!.uid
+            let listsKeyDbRef = Database.database().reference().child("users/\(userId)/lists")
+         
+            listsKeyDbRef.removeAllObservers()
+            observers.removeAll()
+        }
     }
     
     func AddNewList(title: String) {
