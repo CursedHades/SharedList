@@ -47,7 +47,7 @@ class LogInViewController: UIViewController {
         if (segue.identifier == "goToLists") {
             
             let listsVC = segue.destination as! ListsViewController
-            listsVC.listManager = firebaseManager?.listManager
+            listsVC.frbManager = firebaseManager
         }
     }
 }

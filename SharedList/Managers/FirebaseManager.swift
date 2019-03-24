@@ -27,8 +27,11 @@ class FirebaseManager {
 //    }
     
     var listManager = ListManager()
+    var proposalManager = ProposalManager()
     
     init () {
         FirebaseApp.configure()
+        
+        proposalManager.LoadData()
     }
 }

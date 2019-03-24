@@ -15,13 +15,16 @@ class ListsViewController: UIViewController {
     
     var selectedListIndex : Int?
     
-    var listManager : ListManager? {
+    var frbManager : FirebaseManager? {
         
         didSet {
+             listManager = frbManager?.listManager
             listManager?.delegate = self
             listManager?.ActivateObservers()
         }
     }
+    
+    fileprivate var listManager : ListManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,14 +48,20 @@ class ListsViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        guard let listIndex = selectedListIndex else { fatalError("No list was selected") }
-        
-        selectedListIndex = nil
-        
         if (segue.identifier == "goToSingleList")
         {
+            guard let listIndex = selectedListIndex else { fatalError("No list was selected") }
+            
+            selectedListIndex = nil
+            
             let singleListVC = segue.destination as! SingleListViewController
             singleListVC.list = listManager!.lists[listIndex]
+            singleListVC.frbManager = frbManager
+        }
+        
+        if (segue.identifier == "goToProposals")
+        {
+            
         }
     }
     

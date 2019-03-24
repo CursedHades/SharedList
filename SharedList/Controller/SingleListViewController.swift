@@ -22,6 +22,7 @@ class SingleListViewController: UIViewController {
     
     var items = [Item]()
     
+    var frbManager : FirebaseManager? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,6 +109,11 @@ class SingleListViewController: UIViewController {
                 print(("Item removing failed with error: \(error!)"))
             }
         }
+    }
+    
+    @IBAction func ShareButtonPressed(_ sender: UIButton) {
+
+        frbManager?.proposalManager.SendProposal(destinationUserEmail: "1@2.com", listId: list!.id!)
     }
 }
 

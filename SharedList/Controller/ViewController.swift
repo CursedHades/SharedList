@@ -52,7 +52,7 @@ class ViewController: UIViewController {
         if (segue.identifier == "goToLists") {
             
             let listsVC = segue.destination as! ListsViewController
-            listsVC.listManager = frbManager?.listManager
+            listsVC.frbManager = frbManager
         }
         else if (segue.identifier == "goToRegister") {
             let registerVC = segue.destination as! RegisterViewController
