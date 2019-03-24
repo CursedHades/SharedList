@@ -44,7 +44,7 @@ class LogInViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if (segue.identifier == "goToList") {
+        if (segue.identifier == "goToLists") {
             
             let listsVC = segue.destination as! ListsViewController
             listsVC.listManager = firebaseManager?.listManager
