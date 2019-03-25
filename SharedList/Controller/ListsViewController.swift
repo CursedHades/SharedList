@@ -19,8 +19,8 @@ class ListsViewController: UIViewController {
     
     var selectedListIndex : Int?
     
+    fileprivate var listManager : ListManager?
     var frbManager : FirebaseManager? {
-        
         didSet {
             listManager = frbManager?.listManager
             listManager?.delegate = self
@@ -29,8 +29,8 @@ class ListsViewController: UIViewController {
             frbManager?.proposalManager.ActivateObservers()
         }
     }
-    
-    fileprivate var listManager : ListManager?
+
+    fileprivate let loadingGuard = TimeoutGuard()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,9 +40,8 @@ class ListsViewController: UIViewController {
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "listCell")
         
-        listManager?.LoadData()
-        DisableUI()
-        SVProgressHUD.show(withStatus: "Loading data...")
+        LoadData()
+        PresentDataLoading()
     }
 
     @IBAction func AddListPressed(_ sender: Any) {
@@ -80,6 +79,34 @@ class ListsViewController: UIViewController {
         }
     }
     
+    fileprivate func LoadData() {
+        
+        listManager?.LoadData()
+        loadingGuard.delegate = self
+        loadingGuard.Activate()
+    }
+    
+    fileprivate func PresentDataLoading() {
+        DisableUI()
+        SVProgressHUD.show(withStatus: "Loading data...")
+    }
+    
+    fileprivate func DismisDataLoading(success: Bool) {
+        if (SVProgressHUD.isVisible()) {
+            
+            if (success) {
+                SVProgressHUD.showSuccess(withStatus: "Awsome!")
+            }
+            else {
+                SVProgressHUD.showError(withStatus: "Failed.")
+            }
+            
+            SVProgressHUD.dismiss(withDelay: 0.6) {
+                self.EnableUI()
+            }
+        }
+    }
+    
     fileprivate func DisableUI() {
         listTitleTextField.isEnabled = false
         tableView.allowsSelection = false
@@ -91,7 +118,7 @@ class ListsViewController: UIViewController {
     fileprivate func EnableUI() {
         listTitleTextField.isEnabled = true
         tableView.allowsSelection = true
-        tableView.isScrollEnabled = false
+        tableView.isScrollEnabled = true
         addListButton.isEnabled = true
         proposalsButton.isEnabled = true
     }
@@ -149,6 +176,10 @@ extension ListsViewController : ListManagerDelegate {
     func NewListAdded() {
         
         tableView.reloadData()
+        
+        if (loadingGuard.isActive) {
+            loadingGuard.Refresh()
+        }
     }
     
     func ListRemoved() {
@@ -161,9 +192,14 @@ extension ListsViewController : ListManagerDelegate {
         tableView.reloadData()
         listManager?.ActivateObservers()
         
-        SVProgressHUD.showSuccess(withStatus: "Awsome!")
-        SVProgressHUD.dismiss(withDelay: 0.6) {
-            self.EnableUI()
-        }
+        loadingGuard.Deactivate()
+        DismisDataLoading(success: true)
+    }
+}
+
+extension ListsViewController : TimeoutGuardDelegate {
+    
+    func TimeoutGuardFired() {
+        DismisDataLoading(success: false)
     }
 }
