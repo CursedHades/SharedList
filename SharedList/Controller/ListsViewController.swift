@@ -27,9 +27,6 @@ class ListsViewController: UIViewController {
             
             frbManager?.proposalManager.LoadData()
             frbManager?.proposalManager.ActivateObservers()
-            
-            SVProgressHUD.show(withStatus: "Loading data...")
-            
         }
     }
     
@@ -45,6 +42,7 @@ class ListsViewController: UIViewController {
         
         listManager?.LoadData()
         DisableUI()
+        SVProgressHUD.show(withStatus: "Loading data...")
     }
 
     @IBAction func AddListPressed(_ sender: Any) {
@@ -82,7 +80,7 @@ class ListsViewController: UIViewController {
         }
     }
     
-    func DisableUI() {
+    fileprivate func DisableUI() {
         listTitleTextField.isEnabled = false
         tableView.allowsSelection = false
         tableView.isScrollEnabled = false
@@ -90,7 +88,7 @@ class ListsViewController: UIViewController {
         proposalsButton.isEnabled = false
     }
     
-    func EnableUI() {
+    fileprivate func EnableUI() {
         listTitleTextField.isEnabled = true
         tableView.allowsSelection = true
         tableView.isScrollEnabled = false
