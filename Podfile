@@ -11,6 +11,7 @@ target 'SharedList' do
     pod 'Firebase/Database'
     pod 'SVProgressHUD'
     pod 'ChameleonFramework'
+    pod 'MulticastDelegateSwift'
 end
 
 post_install do |installer|

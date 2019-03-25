@@ -66,6 +66,7 @@ PODS:
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.2.1)
   - leveldb-library (1.20)
+  - MulticastDelegateSwift (2.1.2)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -78,6 +79,7 @@ DEPENDENCIES:
   - Firebase
   - Firebase/Auth
   - Firebase/Database
+  - MulticastDelegateSwift
   - SVProgressHUD
 
 SPEC REPOS:
@@ -94,6 +96,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMSessionFetcher
     - leveldb-library
+    - MulticastDelegateSwift
     - nanopb
     - SVProgressHUD
 
@@ -110,9 +113,10 @@ SPEC CHECKSUMS:
   GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+  MulticastDelegateSwift: b1fbf3d3a699110f3ad5297c701c3c4f8541e68e
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: 7f16e8796cf08c5fee31249d9eb5e0d580a495a5
+PODFILE CHECKSUM: bbf8ab98c736335628f298e20e44f8457e4dde72
 
 COCOAPODS: 1.5.3
