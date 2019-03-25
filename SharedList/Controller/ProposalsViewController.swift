@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PopupDialog
 
 class ProposalsViewController: UIViewController {
 
@@ -53,5 +54,21 @@ extension ProposalsViewController : UITableViewDelegate, UITableViewDataSource {
         cell.textLabel!.text = proposalManager!.proposals[indexPath.row].user_email
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let title = proposalManager?.proposals[indexPath.row].user_email
+        let message = proposalManager?.proposals[indexPath.row].message
+        
+        let popup = PopupDialog(title: title, message: message)
+        
+        let buttonOne = CancelButton(title: "CANCEL") {
+            
+        }
+        
+        popup.addButton(buttonOne)
+        
+        self.present(popup, animated: true, completion: nil)
     }
 }

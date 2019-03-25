@@ -50,7 +50,7 @@ class ProposalManager {
         }
     }
     
-    func SendProposal(destinationUserEmail: String, listId: String) {
+    func SendProposal(destinationUserEmail: String, listId: String, message: String) {
         
         let dbRef = Database.database().reference().root
         
@@ -66,7 +66,8 @@ class ProposalManager {
             
             let myEmail = Auth.auth().currentUser?.email
             
-            let dataDict = ["user" : myEmail!]
+            let dataDict = [Proposal.Keys.user_email.rawValue : myEmail!,
+                            Proposal.Keys.message.rawValue : message]
             
             proposalDbRef.setValue(dataDict)
         }
