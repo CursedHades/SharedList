@@ -47,4 +47,8 @@ class TimeoutGuard {
         
         isActive = false
     }
+    
+    func Refresh() {
+        Activate()
+    }
 }
