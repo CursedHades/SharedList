@@ -213,7 +213,9 @@
                         <viewLayoutGuide key="safeArea" id="mO9-8f-vzl"/>
                     </view>
                     <connections>
+                        <outlet property="addListButton" destination="S7m-FQ-raR" id="HXr-c4-Lnb"/>
                         <outlet property="listTitleTextField" destination="DoQ-eC-tIB" id="DuG-uF-Bh4"/>
+                        <outlet property="proposalsButton" destination="bOt-Eg-s2n" id="jTq-3o-Osa"/>
                         <outlet property="tableView" destination="LFy-Pc-kWz" id="Hso-D7-4qe"/>
                         <segue destination="3uV-RH-cye" kind="show" identifier="goToSingleList" id="iyg-Zo-S5w"/>
                         <segue destination="xUi-Fo-k9s" kind="show" identifier="goToProposals" id="QlL-Ka-9Nb"/>

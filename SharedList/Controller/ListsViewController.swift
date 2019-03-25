@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class ListsViewController: UIViewController {
 
     @IBOutlet var listTitleTextField: UITextField!
     @IBOutlet var tableView: UITableView!
+    
+    @IBOutlet var addListButton: UIButton!
+    @IBOutlet var proposalsButton: UIButton!
     
     var selectedListIndex : Int?
     
@@ -20,10 +24,12 @@ class ListsViewController: UIViewController {
         didSet {
             listManager = frbManager?.listManager
             listManager?.delegate = self
-            listManager?.LoadData()
             
             frbManager?.proposalManager.LoadData()
             frbManager?.proposalManager.ActivateObservers()
+            
+            SVProgressHUD.show(withStatus: "Loading data...")
+            
         }
     }
     
@@ -36,6 +42,9 @@ class ListsViewController: UIViewController {
         tableView.dataSource = self
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "listCell")
+        
+        listManager?.LoadData()
+        DisableUI()
     }
 
     @IBAction func AddListPressed(_ sender: Any) {
@@ -72,8 +81,23 @@ class ListsViewController: UIViewController {
             proposalVC.frbManager = frbManager
         }
     }
+    
+    func DisableUI() {
+        listTitleTextField.isEnabled = false
+        tableView.allowsSelection = false
+        tableView.isScrollEnabled = false
+        addListButton.isEnabled = false
+        proposalsButton.isEnabled = false
+    }
+    
+    func EnableUI() {
+        listTitleTextField.isEnabled = true
+        tableView.allowsSelection = true
+        tableView.isScrollEnabled = false
+        addListButton.isEnabled = true
+        proposalsButton.isEnabled = true
+    }
 }
-
 
 
 extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
@@ -138,5 +162,10 @@ extension ListsViewController : ListManagerDelegate {
         
         tableView.reloadData()
         listManager?.ActivateObservers()
+        
+        SVProgressHUD.showSuccess(withStatus: "Awsome!")
+        SVProgressHUD.dismiss(withDelay: 0.6) {
+            self.EnableUI()
+        }
     }
 }
