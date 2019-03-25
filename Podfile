@@ -12,6 +12,7 @@ target 'SharedList' do
     pod 'SVProgressHUD'
     pod 'ChameleonFramework'
     pod 'MulticastDelegateSwift'
+    pod 'PopupDialog', '~> 0.9'
 end
 
 post_install do |installer|
