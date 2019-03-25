@@ -47,10 +47,13 @@ class ListManager {
                     self.lists.append(newList)
                     
                     listsCounter = listsCounter - 1
-                    if (listsCounter == 0)
-                    {
-                        if let del = self.delegate {
+                    
+                    if let del = self.delegate {
+                        if (listsCounter == 0) {
                             del.DataLoaded()
+                        }
+                        else {
+                            del.NewListAdded()
                         }
                     }
                 })
