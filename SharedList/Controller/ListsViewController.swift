@@ -20,7 +20,7 @@ class ListsViewController: UIViewController {
         didSet {
             listManager = frbManager?.listManager
             listManager?.delegate = self
-            listManager?.ActivateObservers()
+            listManager?.LoadData()
             
             frbManager?.proposalManager.LoadData()
             frbManager?.proposalManager.ActivateObservers()
@@ -132,5 +132,11 @@ extension ListsViewController : ListManagerDelegate {
     func ListRemoved() {
         
         tableView.reloadData()
+    }
+    
+    func DataLoaded() {
+        
+        tableView.reloadData()
+        listManager?.ActivateObservers()
     }
 }

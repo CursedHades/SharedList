@@ -11,6 +11,7 @@ import Firebase
 
 protocol ListManagerDelegate : class {
     
+    func DataLoaded()
     func NewListAdded()
     func ListRemoved()
 }
@@ -24,6 +25,39 @@ class ListManager {
     var observers = [DataEventType: DatabaseHandle?]()
     fileprivate var activeObservers = 0
     
+    func LoadData() {
+        
+        let userId = Auth.auth().currentUser!.uid
+        let userListsDbRef = Database.database().reference().child("users/\(userId)/lists")
+        
+        let query = userListsDbRef.queryOrderedByKey()
+        
+        query.observeSingleEvent(of: .value)
+        { (listsSnapshot) in
+            
+            let listsIds = (listsSnapshot.value! as! [String : Any]).keys
+            var listsCounter = listsIds.count
+            
+            for (listId) in listsIds {
+                
+                let listDbRef = Database.database().reference().child("lists/\(listId)")
+                listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
+                    
+                    let newList = List.Deserialize(id: listId, data: listSnapshot.value as! [String : String])
+                    self.lists.append(newList)
+                    
+                    listsCounter = listsCounter - 1
+                    if (listsCounter == 0)
+                    {
+                        if let del = self.delegate {
+                            del.DataLoaded()
+                        }
+                    }
+                })
+            }
+        }
+    }
+    
     func ActivateObservers()
     {
         activeObservers = activeObservers + 1
@@ -35,6 +69,12 @@ class ListManager {
             
             observers[.childAdded] = userListsDbRef.observe(.childAdded)
             { (listKeySnapshot) in
+                
+                for list in self.lists {
+                    if (list.id == listKeySnapshot.key) {
+                        return
+                    }
+                }
                 
                 let listDbRef = Database.database().reference().child("lists/\(listKeySnapshot.key)")
                 listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
