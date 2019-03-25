@@ -39,8 +39,7 @@ class ListManager {
                 let listDbRef = Database.database().reference().child("lists/\(listKeySnapshot.key)")
                 listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
                     
-                    let newList = List.Deserialize(data: listSnapshot.value as! [String: String])
-                    newList.id = listSnapshot.key
+                    let newList = List.Deserialize(id: listKeySnapshot.key, data: listSnapshot.value as! [String: String])
                     
                     self.lists.append(newList)
                     
@@ -60,7 +59,7 @@ class ListManager {
                 
                 for (index, list) in self.lists.enumerated() {
                     
-                    if (list.id! == listKeySnapshot.key) {
+                    if (list.id == listKeySnapshot.key) {
                         
                         self.lists.remove(at: index)
                         
@@ -123,7 +122,7 @@ class ListManager {
         {
             let dbRef = Database.database().reference()
             
-            let listId = lists[index].id!
+            let listId = lists[index].id
             let itemsId = lists[index].items_id
             let userId = Auth.auth().currentUser!.uid
             

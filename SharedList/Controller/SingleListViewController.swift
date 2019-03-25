@@ -113,7 +113,7 @@ class SingleListViewController: UIViewController {
     
     @IBAction func ShareButtonPressed(_ sender: UIButton) {
 
-        frbManager?.proposalManager.SendProposal(destinationUserEmail: "1@2.com", listId: list!.id!)
+        frbManager?.proposalManager.SendProposal(destinationUserEmail: "1@2.com", listId: list!.id)
     }
 }
 

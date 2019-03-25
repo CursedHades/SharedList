@@ -14,10 +14,17 @@ class List {
         case items_id = "items_id"
     }
     
-    var id : String?
-    var title : String = ""
-    var owner_id : String = ""
-    var items_id : String = ""
+    let id : String
+    let title : String
+    let owner_id : String
+    let items_id : String
+    
+    fileprivate init(id: String, title: String, ownerId: String, itemsId: String) {
+        self.id = id
+        self.title = title
+        self.owner_id = ownerId
+        self.items_id = itemsId
+    }
     
     func Serializa() -> [String: String] {
         
@@ -34,14 +41,11 @@ class List {
         return dict
     }
     
-    static func Deserialize(data: [String : String]) -> List {
+    static func Deserialize(id: String, data: [String : String]) -> List {
         
-        let newList = List()
-        
-        newList.title = data[Keys.title.rawValue]!
-        newList.owner_id = data[Keys.owner_id.rawValue]!
-        newList.items_id = data[Keys.items_id.rawValue]!
-
-        return newList
+        return List(id: id,
+                    title: data[Keys.title.rawValue]!,
+                    ownerId: data[Keys.owner_id.rawValue]!,
+                    itemsId: data[Keys.items_id.rawValue]!)
     }
 }
