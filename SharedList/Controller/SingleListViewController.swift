@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import PopupDialog
 
 class SingleListViewController: UIViewController {
     
@@ -113,7 +114,22 @@ class SingleListViewController: UIViewController {
     
     @IBAction func ShareButtonPressed(_ sender: UIButton) {
 
-        frbManager?.proposalManager.SendProposal(destinationUserEmail: "1@2.com", listId: list!.id)
+        let title = "title"
+        let message = "message"
+        
+        let popup = PopupDialog(title: title, message: message)
+        
+        let cancelButton = CancelButton(title: "cancel") {}
+        
+        let shareButton = DefaultButton(title: "share") {
+            self.frbManager?.proposalManager.SendProposal(destinationUserEmail: "1@2.com",
+                                                          listId: self.list!.id,
+                                                          message: "message")
+        }
+        
+        popup.addButtons([shareButton, cancelButton])
+        
+        self.present(popup, animated: true, completion: nil)
     }
 }
 
