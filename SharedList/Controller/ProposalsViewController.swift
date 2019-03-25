@@ -16,7 +16,7 @@ class ProposalsViewController: UIViewController {
         
         didSet {
             proposalManager = frbManager?.proposalManager
-            proposalManager?.delegate = self
+            proposalManager?.delegates.addDelegate(self)
         }
     }
     
@@ -33,6 +33,7 @@ class ProposalsViewController: UIViewController {
 }
 
 extension ProposalsViewController : ProposalManagerDelegate {
+    
     func ProposalAdded() {
         tableView.reloadData()
     }

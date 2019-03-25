@@ -8,6 +8,7 @@
 
 import Foundation
 import Firebase
+import MulticastDelegateSwift
 
 
 protocol ProposalManagerDelegate : class {
@@ -16,7 +17,7 @@ protocol ProposalManagerDelegate : class {
 
 class ProposalManager {
     
-    weak var delegate : ProposalManagerDelegate? = nil
+    let delegates = MulticastDelegate<ProposalManagerDelegate>()
     
     var proposals = [Proposal]()
     
@@ -43,9 +44,9 @@ class ProposalManager {
                 }
             }
             
-            if let del = self.delegate {
-                del.ProposalAdded()
-            }
+            self.delegates.invokeDelegates({ (delegate) in
+                delegate.ProposalAdded()
+            })
         }
     }
     
@@ -97,9 +98,9 @@ class ProposalManager {
                     
                     self.proposals.append(proposal)
                     
-                    if let del = self.delegate {
-                        del.ProposalAdded()
-                    }
+                    self.delegates.invokeDelegates({ (delegate) in
+                        delegate.ProposalAdded()
+                    })
                 }
             }
         }
