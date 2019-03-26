@@ -28,14 +28,19 @@ class ProposalsViewController: UIViewController {
 
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "proposalCell")
         
-         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "proposalCell")
+        
     }
 }
 
 extension ProposalsViewController : ProposalManagerDelegate {
     
     func ProposalAdded() {
+        tableView.reloadData()
+    }
+    
+    func ProposalRemoved() {
         tableView.reloadData()
     }
 }
@@ -49,25 +54,42 @@ extension ProposalsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = UITableViewCell()
+        let proposal = proposalManager!.proposals[indexPath.row]
         
-        cell.textLabel!.text = proposalManager!.proposals[indexPath.row].user_email
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "proposalCell")
+        cell.textLabel!.text = "title: loading..."
+        cell.detailTextLabel!.text = "owner: \(proposal.user_email)"
+        
+        proposalManager?.GetListNameForProposal(proposal, CompletionHandler: { (returnedTitle) in
+            if let title = returnedTitle {
+                cell.textLabel!.text = "Title: \(title)"
+            } else {
+                cell.textLabel!.text = "List no longer exist."
+                cell.detailTextLabel!.text = "Removing proposal..."
+            }
+        })
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let title = proposalManager?.proposals[indexPath.row].user_email
-        let message = proposalManager?.proposals[indexPath.row].message
+        let proposal = proposalManager!.proposals[indexPath.row]
+        
+        let title = proposal.user_email
+        let message = proposal.message
         
         let popup = PopupDialog(title: title, message: message)
         
-        let buttonOne = CancelButton(title: "CANCEL") {
-            
+        let acceptButton = DefaultButton(title: "Accept") {
+            self.proposalManager?.AcceptProposal(proposal)
+        }
+        let discardButton = DefaultButton(title: "Discard") {
+            self.proposalManager?.RemoveProposal(proposal)
         }
         
-        popup.addButton(buttonOne)
+        popup.addButtons([acceptButton, discardButton])
+        popup.buttonAlignment = .horizontal
         
         self.present(popup, animated: true, completion: nil)
     }
