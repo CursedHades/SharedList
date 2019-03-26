@@ -10,10 +10,13 @@ import Firebase
 
 class FirebaseManager {
     
-    var listManager = ListManager()
-    var proposalManager = ProposalManager()
+    let listManager : ListManager
+    let proposalManager : ProposalManager
     
     init () {
         FirebaseApp.configure()
+        
+        listManager = ListManager()
+        proposalManager = ProposalManager(listManager: listManager)
     }
 }
