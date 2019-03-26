@@ -176,4 +176,19 @@ class ListManager {
             dbRef.updateChildValues(updateData)
         }
     }
+    
+    func GetListById(_ id: String, completionHandler: @escaping (_ list: List?) -> Void) {
+        
+        let listDbRef = Database.database().reference().child("lists/\(id)")
+        listDbRef.observeSingleEvent(of: .value) { (listSnapshot) in
+            
+            if let listData = listSnapshot.value as? [String : String] {
+                let list = List.Deserialize(id: id, data: listData)
+                completionHandler(list)
+            }
+            else {
+                completionHandler(nil)
+            }
+        }
+    }
 }

@@ -12,24 +12,28 @@ class Proposal {
     
     enum Keys : String {
         case user_email = "user"
+        case message = "message"
     }
     
     let list_id : String
     let user_email : String
+    let message : String
     
-    init(listId: String, userEmail: String)
+    init(listId: String, userEmail: String, message: String)
     {
-        list_id = listId
-        user_email = userEmail
+        self.list_id = listId
+        self.user_email = userEmail
+        self.message = message
     }
     
     static func Deserialize(listId: String, data: [String : String]) -> Proposal? {
         
         if let userEmail = data[Keys.user_email.rawValue] {
-            return Proposal(listId: listId, userEmail: userEmail)
+            if let message = data[Keys.message.rawValue] {
+                return Proposal(listId: listId, userEmail: userEmail, message: message)
+            }
         }
-        else {
-            return nil
-        }
+        
+        return nil
     }
 }
