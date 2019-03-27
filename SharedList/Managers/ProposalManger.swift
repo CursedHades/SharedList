@@ -42,22 +42,22 @@ class ProposalManager {
         
         let query = userPorposalsDbRef.queryOrderedByKey()
         
-        query.observeSingleEvent(of: .value) { (proposalSnapshot) in
+        query.observeSingleEvent(of: .value) { (proposalsSnapshot) in
             
-            let proposalsDict = proposalSnapshot.value as! [String : Any]
-            
-            for (listId , userData) in proposalsDict {
-                
-                if let dataDict = userData as? [String : String] {
-                    if let proposal = Proposal.Deserialize(listId: listId, data: dataDict) {
-                        self.proposals.append(proposal)
+            if let proposalsDict = proposalsSnapshot.value as? [String : Any] {
+                for (listId , userData) in proposalsDict {
+                    
+                    if let dataDict = userData as? [String : String] {
+                        if let proposal = Proposal.Deserialize(listId: listId, data: dataDict) {
+                            self.proposals.append(proposal)
+                        }
                     }
                 }
+                
+                self.delegates.invokeDelegates({ (delegate) in
+                    delegate.ProposalAdded()
+                })
             }
-            
-            self.delegates.invokeDelegates({ (delegate) in
-                delegate.ProposalAdded()
-            })
         }
     }
     

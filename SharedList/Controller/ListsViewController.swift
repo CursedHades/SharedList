@@ -19,29 +19,33 @@ class ListsViewController: UIViewController {
     
     var selectedListIndex : Int?
     
+    fileprivate let loadingGuard = TimeoutGuard()
+    fileprivate var loadingInProgress = false
+    
     fileprivate var listManager : ListManager?
+    fileprivate var proposalManager : ProposalManager?
     var frbManager : FirebaseManager? {
         didSet {
             listManager = frbManager?.listManager
             listManager?.delegate = self
             
-            frbManager?.proposalManager.LoadData()
-            frbManager?.proposalManager.ActivateObservers()
+            proposalManager = frbManager?.proposalManager
+            proposalManager?.delegates.addDelegate(self)
+            proposalManager?.LoadData()
+            proposalManager?.ActivateObservers()
         }
     }
-
-    fileprivate let loadingGuard = TimeoutGuard()
     
+    //*********************************************************************
+    // MARK: - Functions
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "listCell")
         
-        LoadData()
-        PresentDataLoading()
+        InitiateDataLoad()
     }
 
     @IBAction func AddListPressed(_ sender: Any) {
@@ -79,21 +83,33 @@ class ListsViewController: UIViewController {
         }
     }
     
-    fileprivate func LoadData() {
+    fileprivate func InitiateDataLoad() {
+        
+        loadingInProgress = true
+        UpdateUI()
+        SVProgressHUD.show(withStatus: "Loading data...")
         
         listManager?.LoadData()
+        
         loadingGuard.delegate = self
         loadingGuard.Activate()
     }
     
-    fileprivate func PresentDataLoading() {
-        DisableUI()
-        SVProgressHUD.show(withStatus: "Loading data...")
+    //*********************************************************************
+    // MARK: - UI management
+    fileprivate func UpdateUI() {
+        
+        if loadingInProgress {
+            DisableUI()
+        }
+        else {
+            EnableUI()
+        }
     }
     
-    fileprivate func DismisDataLoading(success: Bool) {
+    fileprivate func DismisDataLoad(success: Bool) {
+        
         if (SVProgressHUD.isVisible()) {
-            
             if (success) {
                 SVProgressHUD.showSuccess(withStatus: "Awsome!")
             }
@@ -102,7 +118,8 @@ class ListsViewController: UIViewController {
             }
             
             SVProgressHUD.dismiss(withDelay: 0.6) {
-                self.EnableUI()
+                self.loadingInProgress = false
+                self.UpdateUI()
             }
         }
     }
@@ -120,7 +137,16 @@ class ListsViewController: UIViewController {
         tableView.allowsSelection = true
         tableView.isScrollEnabled = true
         addListButton.isEnabled = true
-        proposalsButton.isEnabled = true
+        UpdateProposalEnable()
+    }
+    
+    fileprivate func UpdateProposalEnable() {
+        if (!loadingInProgress && proposalManager?.proposals.count != 0) {
+            proposalsButton.isEnabled = true
+        }
+        else {
+            proposalsButton.isEnabled = false
+        }
     }
 }
 
@@ -193,13 +219,24 @@ extension ListsViewController : ListManagerDelegate {
         listManager?.ActivateObservers()
         
         loadingGuard.Deactivate()
-        DismisDataLoading(success: true)
+        DismisDataLoad(success: true)
+    }
+}
+
+extension ListsViewController : ProposalManagerDelegate {
+    
+    func ProposalAdded() {
+        UpdateProposalEnable()
+    }
+    
+    func ProposalRemoved() {
+        UpdateProposalEnable()
     }
 }
 
 extension ListsViewController : TimeoutGuardDelegate {
     
     func TimeoutGuardFired() {
-        DismisDataLoading(success: false)
+        DismisDataLoad(success: false)
     }
 }
