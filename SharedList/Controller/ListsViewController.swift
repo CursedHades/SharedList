@@ -150,7 +150,8 @@ class ListsViewController: UIViewController {
     }
 }
 
-
+//*********************************************************************
+// MARK: - Table View extension
 extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -197,6 +198,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+//*********************************************************************
+// MARK: - List Manager extension
 extension ListsViewController : ListManagerDelegate {
     
     func NewListAdded() {
@@ -223,6 +226,8 @@ extension ListsViewController : ListManagerDelegate {
     }
 }
 
+//*********************************************************************
+// MARK: - Proposal Manager extension
 extension ListsViewController : ProposalManagerDelegate {
     
     func ProposalAdded() {
@@ -234,6 +239,8 @@ extension ListsViewController : ProposalManagerDelegate {
     }
 }
 
+//*********************************************************************
+// MARK: - Timeout Guard extension
 extension ListsViewController : TimeoutGuardDelegate {
     
     func TimeoutGuardFired() {
