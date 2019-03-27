@@ -30,20 +30,18 @@ class ListManager {
         let userId = Auth.auth().currentUser!.uid
         let userListsDbRef = Database.database().reference().child("users/\(userId)/lists")
         
-        let query = userListsDbRef.queryOrderedByKey()
-        
-        query.observeSingleEvent(of: .value)
+        userListsDbRef.observeSingleEvent(of: .value)
         { (listsSnapshot) in
             
             let listsIds = (listsSnapshot.value! as! [String : Any]).keys
             var listsCounter = listsIds.count
-            
+
             for (listId) in listsIds {
                 
                 let listDbRef = Database.database().reference().child("lists/\(listId)")
                 listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
                     
-                    let newList = List.Deserialize(id: listId, data: listSnapshot.value as! [String : String])
+                    let newList = List.Deserialize(id: listId, data: listSnapshot.value as! [String : Any])
                     self.lists.append(newList)
                     
                     listsCounter = listsCounter - 1
@@ -82,7 +80,7 @@ class ListManager {
                 let listDbRef = Database.database().reference().child("lists/\(listKeySnapshot.key)")
                 listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
                     
-                    let newList = List.Deserialize(id: listKeySnapshot.key, data: listSnapshot.value as! [String: String])
+                    let newList = List.Deserialize(id: listKeySnapshot.key, data: listSnapshot.value as! [String: Any])
                     
                     self.lists.append(newList)
                     
@@ -144,7 +142,8 @@ class ListManager {
         
         let userId = Auth.auth().currentUser!.uid
         
-        let serializedList = List.Serialize(title: title, owner_id: userId, items_id: newItemsKey)
+        var serializedList = List.Serialize(title: title, owner_id: userId, items_id: newItemsKey)
+        serializedList["users"] = ["\(userId)" : true]
         
         let updateData = ["users/\(userId)/lists/\(newListKey)" : true,
                           "lists/\(newListKey)" : serializedList,
@@ -161,19 +160,36 @@ class ListManager {
     
     func RemoveList(index: Int) {
         
-        if (lists.count > index)
+        if (index < lists.count)
         {
-            let dbRef = Database.database().reference()
-            
             let listId = lists[index].id
             let itemsId = lists[index].items_id
-            let userId = Auth.auth().currentUser!.uid
+            let listUsersDbRef = Database.database().reference().child("lists/\(listId)/users")
             
-            let updateData = ["users/\(userId)/lists/\(listId)" : NSNull(),
-                              "lists/\(listId)" : NSNull(),
-                              "items/\(itemsId)" : NSNull()] as [String : Any]
+            listUsersDbRef.observeSingleEvent(of: .value) { (usersSnapshot) in
+                
+                let usersDict = usersSnapshot.value as! [String : Any]
+                
+                var updateData = ["lists/\(listId)" : NSNull(),
+                                  "items/\(itemsId)" : NSNull()] as [String : Any]
+                
+                for userId in usersDict.keys {
+                    updateData["users/\(userId)/lists/\(listId)"] = NSNull()
+                }
+                
+                Database.database().reference().updateChildValues(updateData)
+            }
             
-            dbRef.updateChildValues(updateData)
+            
+//            let listId = lists[index].id
+//            let itemsId = lists[index].items_id
+//            
+//            
+//            let updateData = ["users/\(userId)/lists/\(listId)" : NSNull(),
+//                              "lists/\(listId)" : NSNull(),
+//                              "items/\(itemsId)" : NSNull()] as [String : Any]
+//            
+//            dbRef.updateChildValues(updateData)
         }
     }
     

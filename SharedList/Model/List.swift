@@ -26,14 +26,14 @@ class List {
         self.items_id = itemsId
     }
     
-    func Serializa() -> [String: String] {
+    func Serializa() -> [String: Any] {
         
         return List.Serialize(title: title, owner_id: owner_id, items_id: items_id)
     }
     
-    static func Serialize(title : String, owner_id : String, items_id : String) -> [String : String] {
+    static func Serialize(title : String, owner_id : String, items_id : String) -> [String : Any] {
         
-        var dict = [String: String]()
+        var dict = [String: Any]()
         dict[Keys.title.rawValue] = title
         dict[Keys.owner_id.rawValue] = owner_id
         dict[Keys.items_id.rawValue] = items_id
@@ -41,11 +41,11 @@ class List {
         return dict
     }
     
-    static func Deserialize(id: String, data: [String : String]) -> List {
+    static func Deserialize(id: String, data: [String : Any]) -> List {
         
         return List(id: id,
-                    title: data[Keys.title.rawValue]!,
-                    ownerId: data[Keys.owner_id.rawValue]!,
-                    itemsId: data[Keys.items_id.rawValue]!)
+                    title: data[Keys.title.rawValue] as! String,
+                    ownerId: data[Keys.owner_id.rawValue] as! String,
+                    itemsId: data[Keys.items_id.rawValue] as! String)
     }
 }
