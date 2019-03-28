@@ -14,22 +14,70 @@ protocol ListManagerDelegate : class {
     func DataLoaded()
     func NewListAdded()
     func ListRemoved()
+    func ListUpdated()
+}
+
+protocol ListObserverDelegate : class {
+    
+    func ListUpdated()
+}
+
+class ListChangedObserver {
+    
+    let list : List
+    weak var delegate : ListObserverDelegate?
+    
+    private var active = false
+    
+    init(_ list : List) {
+        self.list = list
+    }
+    
+    func Activate() {
+        if (active == false) {
+            frb_utils.ListDbRef(list.id).observe(.childChanged, with: self.UpdateCallback)
+            active = true
+        }
+    }
+    
+    func Deactivate() {
+        frb_utils.ListDbRef(list.id).removeAllObservers()
+        active = false
+    }
+    
+    private func UpdateCallback(_ childSnap: DataSnapshot) {
+        let DataDict = [childSnap.key : childSnap.value]
+        self.list.Update(data: DataDict)
+        
+        if let del = self.delegate {
+            del.ListUpdated()
+        }
+    }
 }
 
 class ListManager {
     
     weak var delegate : ListManagerDelegate? = nil
     
-    var lists = [List]()
-    
-    var observers = [DataEventType: DatabaseHandle?]()
+    fileprivate var observers = [DataEventType: DatabaseHandle?]()
     fileprivate var activeObservers = 0
+    
+    fileprivate var wrapedLists = [ListChangedObserver]()
+    
+    var listCount : Int {
+        get { return wrapedLists.count }
+    }
+    
+    func GetList(_ idx : Int) -> List? {
+        if (idx < listCount) {
+            return wrapedLists[idx].list
+        }
+        return nil
+    }
     
     func LoadData() {
         
-        let userId = Auth.auth().currentUser!.uid
-        let userListsDbRef = Database.database().reference().child("users/\(userId)/lists")
-        
+        let userListsDbRef = frb_utils.UserListsDbRef()
         userListsDbRef.observeSingleEvent(of: .value)
         { (listsSnapshot) in
             
@@ -38,11 +86,10 @@ class ListManager {
 
             for (listId) in listsIds {
                 
-                let listDbRef = Database.database().reference().child("lists/\(listId)")
-                listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
+                let listDbRef = frb_utils.ListDbRef(listId)
+                listDbRef.observeSingleEvent(of: .value, with:{ (listSnapshot) in
                     
-                    let newList = List.Deserialize(id: listId, data: listSnapshot.value as! [String : Any])
-                    self.lists.append(newList)
+                    self.AddLoadedList(id: listId, data: listSnapshot.value as! [String : Any])
                     
                     listsCounter = listsCounter - 1
                     
@@ -65,24 +112,20 @@ class ListManager {
         
         if (observers[.childAdded] == nil) {
             
-            let userId = Auth.auth().currentUser!.uid
-            let userListsDbRef = Database.database().reference().child("users/\(userId)/lists")
+            let userListsDbRef = frb_utils.UserListsDbRef()
             
             observers[.childAdded] = userListsDbRef.observe(.childAdded)
             { (listKeySnapshot) in
                 
-                for list in self.lists {
-                    if (list.id == listKeySnapshot.key) {
-                        return
-                    }
+                let listId = listKeySnapshot.key
+                if self.ListLoaded(listId) {
+                    return
                 }
                 
-                let listDbRef = Database.database().reference().child("lists/\(listKeySnapshot.key)")
+                let listDbRef = frb_utils.ListDbRef(listId)
                 listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
-                    
-                    let newList = List.Deserialize(id: listKeySnapshot.key, data: listSnapshot.value as! [String: Any])
-                    
-                    self.lists.append(newList)
+
+                    self.AddLoadedList(id: listId, data: listSnapshot.value as! [String : Any])
                     
                     if let del = self.delegate {
                         del.NewListAdded()
@@ -93,16 +136,15 @@ class ListManager {
         
         if (observers[.childRemoved] == nil) {
             
-            let userId = Auth.auth().currentUser!.uid
-            let listsKeyDbRef = Database.database().reference().child("users/\(userId)/lists")
+            let listsKeyDbRef = frb_utils.UserListsDbRef()
             observers[.childRemoved] = listsKeyDbRef.observe(.childRemoved)
             { (listKeySnapshot) in
                 
-                for (index, list) in self.lists.enumerated() {
+                for (index, wraper) in self.wrapedLists.enumerated() {
                     
-                    if (list.id == listKeySnapshot.key) {
+                    if (wraper.list.id == listKeySnapshot.key) {
                         
-                        self.lists.remove(at: index)
+                        self.wrapedLists.remove(at: index)
                         
                         if let del = self.delegate {
                             del.ListRemoved()
@@ -111,6 +153,10 @@ class ListManager {
                     }
                 }
             }
+        }
+        
+        for listObserver in wrapedLists {
+            listObserver.Activate()
         }
     }
     
@@ -122,22 +168,32 @@ class ListManager {
         
         if (activeObservers == 0) {
             
-            let userId = Auth.auth().currentUser!.uid
-            let listsKeyDbRef = Database.database().reference().child("users/\(userId)/lists")
-         
+            let listsKeyDbRef = frb_utils.UserListsDbRef()
+            
             listsKeyDbRef.removeAllObservers()
             observers.removeAll()
+            
+            for listObserver in wrapedLists {
+                listObserver.Deactivate()
+            }
         }
+    }
+    
+    fileprivate func AddLoadedList(id: String, data: [String : Any]) {
+        let newList = List.Deserialize(id: id, data: data)
+        let observer = ListChangedObserver(newList)
+        observer.delegate = self
+        wrapedLists.append(observer)
     }
     
     func AddNewList(title: String) {
         
         let dbRef = Database.database().reference()
         
-        let newListRef = dbRef.child("lists").childByAutoId()
+        let newListRef = frb_utils.ListsDbRef().childByAutoId()
         let newListKey = newListRef.key!
         
-        let newItemsRef = dbRef.child("items").childByAutoId()
+        let newItemsRef = frb_utils.ItemsDbRef().childByAutoId()
         let newItemsKey = newItemsRef.key!
         
         let userId = Auth.auth().currentUser!.uid
@@ -160,10 +216,10 @@ class ListManager {
     
     func RemoveList(index: Int) {
         
-        if (index < lists.count)
+        if (index < listCount)
         {
-            let listId = lists[index].id
-            let itemsId = lists[index].items_id
+            let listId = wrapedLists[index].list.id
+            let itemsId = wrapedLists[index].list.items_id
             let listUsersDbRef = Database.database().reference().child("lists/\(listId)/users")
             
             listUsersDbRef.observeSingleEvent(of: .value) { (usersSnapshot) in
@@ -179,23 +235,12 @@ class ListManager {
                 
                 Database.database().reference().updateChildValues(updateData)
             }
-            
-            
-//            let listId = lists[index].id
-//            let itemsId = lists[index].items_id
-//            
-//            
-//            let updateData = ["users/\(userId)/lists/\(listId)" : NSNull(),
-//                              "lists/\(listId)" : NSNull(),
-//                              "items/\(itemsId)" : NSNull()] as [String : Any]
-//            
-//            dbRef.updateChildValues(updateData)
         }
     }
     
     func GetListById(_ id: String, completionHandler: @escaping (_ list: List?) -> Void) {
         
-        let listDbRef = Database.database().reference().child("lists/\(id)")
+        let listDbRef = frb_utils.ListDbRef(id)
         listDbRef.observeSingleEvent(of: .value) { (listSnapshot) in
             
             if let listData = listSnapshot.value as? [String : String] {
@@ -205,6 +250,33 @@ class ListManager {
             else {
                 completionHandler(nil)
             }
+        }
+    }
+    
+    fileprivate func ListLoaded(_ id : String) -> Bool {
+        
+        if FindList(id) != nil {
+            return true
+        }
+        return false
+    }
+    
+    fileprivate func FindList(_ id : String) -> List? {
+        
+        for wraper in wrapedLists {
+            if (wraper.list.id == id) {
+                return wraper.list
+            }
+        }
+        return nil
+    }
+}
+
+extension ListManager : ListObserverDelegate {
+    
+    func ListUpdated() {
+        if let del = delegate {
+            del.ListUpdated()
         }
     }
 }
