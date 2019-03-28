@@ -15,7 +15,7 @@ class List {
     }
     
     let id : String
-    let title : String
+    private(set) var title : String
     let owner_id : String
     let items_id : String
     
@@ -24,6 +24,18 @@ class List {
         self.title = title
         self.owner_id = ownerId
         self.items_id = itemsId
+    }
+    
+    func Update(data : [String : Any?]) {
+        
+        let keys = data.keys
+        for key in keys {
+            if key == Keys.title.rawValue {
+                if let newTitle = data[key] as? String {
+                    title = newTitle
+                }
+            }
+        }
     }
     
     func Serializa() -> [String: Any] {
