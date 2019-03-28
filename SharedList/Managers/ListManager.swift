@@ -113,7 +113,6 @@ class ListManager {
         if (observers[.childAdded] == nil) {
             
             let userListsDbRef = frb_utils.UserListsDbRef()
-            
             observers[.childAdded] = userListsDbRef.observe(.childAdded)
             { (listKeySnapshot) in
                 
@@ -144,6 +143,7 @@ class ListManager {
                     
                     if (wraper.list.id == listKeySnapshot.key) {
                         
+                        wraper.Deactivate()
                         self.wrapedLists.remove(at: index)
                         
                         if let del = self.delegate {
