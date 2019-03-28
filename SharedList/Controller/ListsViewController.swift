@@ -72,7 +72,7 @@ class ListsViewController: UIViewController {
             selectedListIndex = nil
             
             let singleListVC = segue.destination as! SingleListViewController
-            singleListVC.list = listManager!.lists[listIndex]
+            singleListVC.list = listManager!.GetList(listIndex)
             singleListVC.frbManager = frbManager
         }
         
@@ -150,13 +150,14 @@ class ListsViewController: UIViewController {
     }
 }
 
-
+//*********************************************************************
+// MARK: - Table View extension
 extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if listManager!.lists.count != 0 {
-            return listManager!.lists.count
+        if listManager!.listCount != 0 {
+            return listManager!.listCount
         }
         else {
             return 1
@@ -167,8 +168,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath)
         
-        if listManager!.lists.count != 0 {
-            cell.textLabel?.text = listManager!.lists[indexPath.row].title
+        if listManager!.listCount != 0 {
+            cell.textLabel?.text = listManager!.GetList(indexPath.row)!.title
         }
         else {
             cell.textLabel?.text = "Add new list"
@@ -190,14 +191,20 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
 //
 //        return
         
-//        firebaseManager.RemoveList(index: indexPath.row)
+        listManager?.RemoveList(index: indexPath.row)
         
-        selectedListIndex = indexPath.row
-        performSegue(withIdentifier: "goToSingleList", sender: self)
+//        selectedListIndex = indexPath.row
+//        performSegue(withIdentifier: "goToSingleList", sender: self)
     }
 }
 
+//*********************************************************************
+// MARK: - List Manager extension
 extension ListsViewController : ListManagerDelegate {
+    
+    func ListUpdated() {
+        tableView.reloadData()
+    }
     
     func NewListAdded() {
         
@@ -223,6 +230,8 @@ extension ListsViewController : ListManagerDelegate {
     }
 }
 
+//*********************************************************************
+// MARK: - Proposal Manager extension
 extension ListsViewController : ProposalManagerDelegate {
     
     func ProposalAdded() {
@@ -234,6 +243,8 @@ extension ListsViewController : ProposalManagerDelegate {
     }
 }
 
+//*********************************************************************
+// MARK: - Timeout Guard extension
 extension ListsViewController : TimeoutGuardDelegate {
     
     func TimeoutGuardFired() {
