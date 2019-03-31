@@ -58,7 +58,7 @@ class ViewController: UIViewController {
 
 extension ViewController : AuthManagerDelegate {
     
-    func UserStateChanged(loggedIn: Bool) {
+    func UserAutoLoginFinished(loggedIn: Bool) {
         EnableUI()
         
         frbManager?.authManager.delegate = nil

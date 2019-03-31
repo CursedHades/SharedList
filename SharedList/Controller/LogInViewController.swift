@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Firebase
 import SVProgressHUD
 
 class LogInViewController: UIViewController {
@@ -26,20 +25,12 @@ class LogInViewController: UIViewController {
         
         SVProgressHUD.show()
         
-        Auth.auth().signIn(withEmail: emailTextField.text!,
-                           password: passwordTextField.text!)
-        { (user, error) in
-            
-            SVProgressHUD.dismiss()
-            
-            if (error != nil) {
-                print("Logging failed: \(error!)")
-            }
-            else {
-                print("Logging sucessfull")
-                self.performSegue(withIdentifier: "goToLists", sender: self)
-            }
-        }
+        let email = emailTextField.text!
+        let password = passwordTextField.text!
+        
+        firebaseManager?.authManager.delegate = self
+        firebaseManager?.authManager.LogIn(email: email,
+                                           password: password)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -48,6 +39,18 @@ class LogInViewController: UIViewController {
             
             let listsVC = segue.destination as! ListsViewController
             listsVC.frbManager = firebaseManager
+        }
+    }
+}
+
+extension LogInViewController : AuthManagerDelegate {
+    
+    func UserLoginFinished(error: Error?) {
+        
+        SVProgressHUD.dismiss()
+        firebaseManager?.authManager.delegate = nil
+        if error == nil {
+            self.performSegue(withIdentifier: "goToLists", sender: self)
         }
     }
 }

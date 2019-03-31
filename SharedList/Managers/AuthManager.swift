@@ -10,14 +10,16 @@ import Firebase
 
 protocol AuthManagerDelegate: class {
     
-    func UserStateChanged(loggedIn: Bool)
+    func UserAutoLoginFinished(loggedIn: Bool)
     func UserRegistrationFinished(error: Error?)
+    func UserLoginFinished(error: Error?)
 }
 
 extension AuthManagerDelegate {
     
-    func UserStateChanged(loggedIn: Bool) {}
+    func UserAutoLoginFinished(loggedIn: Bool) {}
     func UserRegistrationFinished(error: Error?) {}
+    func UserLoginFinished(error: Error?) {}
 }
 
 
@@ -36,13 +38,13 @@ class AuthManager {
                     self.currentUser = loadedUser
                     
                     if let del = self.delegate {
-                        del.UserStateChanged(loggedIn: true)
+                        del.UserAutoLoginFinished(loggedIn: true)
                     }
                 })
             }
             else {
                 if let del = self.delegate {
-                    del.UserStateChanged(loggedIn: false)
+                    del.UserAutoLoginFinished(loggedIn: false)
                 }
             }
         }
@@ -77,8 +79,27 @@ class AuthManager {
         }
     }
     
-    func LogIn() {
+    func LogIn(email: String, password: String) {
         
+        Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
+            
+            if (error != nil) {
+                if let del = self.delegate {
+                    del.UserLoginFinished(error: error)
+                }
+                return
+            }
+            
+            self.GetUserById(result!.user.uid, completionHandler: { (userOpt) in
+                
+                if let user = userOpt {
+                    self.currentUser = user
+                }
+                if let del = self.delegate {
+                    del.UserLoginFinished(error: (userOpt != nil) ? nil : NSError())
+                }
+            })
+        }
     }
     
     func LogOut() {
