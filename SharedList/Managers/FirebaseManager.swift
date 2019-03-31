@@ -12,11 +12,15 @@ class FirebaseManager {
     
     let listManager : ListManager
     let proposalManager : ProposalManager
+    let authManager : AuthManager
     
     init () {
         FirebaseApp.configure()
         
         listManager = ListManager()
         proposalManager = ProposalManager(listManager: listManager)
+        authManager = AuthManager()
+        
+        authManager.TryAutoLogIn()
     }
 }

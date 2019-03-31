@@ -8,7 +8,6 @@
 
 import UIKit
 import SVProgressHUD
-import Firebase
 
 class ViewController: UIViewController {
     
@@ -19,32 +18,23 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        DisableUI()
+        
+        frbManager?.authManager.delegate = self
+        frbManager?.authManager.TryAutoLogIn()
     }
     
     func DisableUI() {
+        SVProgressHUD.show()
         registerButton.isEnabled = false
         logInButton.isEnabled = false
     }
     
     func EnableUI() {
+        SVProgressHUD.dismiss()
         registerButton.isEnabled = true
         logInButton.isEnabled = true
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        
-        SVProgressHUD.show()
-        DisableUI()
-
-        Auth.auth().addStateDidChangeListener { (auth, user) in
-
-            SVProgressHUD.dismiss()
-            self.EnableUI()
-
-            if (user != nil) {
-                self.performSegue(withIdentifier: "goToLists", sender: self)
-            }
-        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -64,7 +54,18 @@ class ViewController: UIViewController {
             logInVC.firebaseManager = frbManager
         }
     }
+}
 
+extension ViewController : AuthManagerDelegate {
     
+    func UserStateChanged(loggedIn: Bool) {
+        EnableUI()
+        
+        frbManager?.authManager.delegate = nil
+        
+        if (loggedIn) {
+            performSegue(withIdentifier: "goToLists", sender: self)
+        }
+    }
 }
 
