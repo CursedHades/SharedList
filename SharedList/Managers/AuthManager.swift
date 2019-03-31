@@ -54,28 +54,26 @@ class AuthManager {
         
         Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
             
-            if (error == nil) {
-                let userData = User.Serialize(name: name, email: email)
-                let uId = result!.user.uid
-                
-                frb_utils.UserDbRef(uId).setValue(userData, withCompletionBlock: { (error, userDbRef) in
-                    
-                    if (error == nil) {
-                        self.currentUser = User.Deserialize(id: uId, data: userData)
-                    }
-                    
-                    if let del = self.delegate {
-                        del.UserRegistrationFinished(error: error)
-                    }
-                    
-                    return
-                })
-            }
-            else {
+            if (error != nil) {
                 if let del = self.delegate {
                     del.UserRegistrationFinished(error: error)
                 }
+                return
             }
+            
+            let userData = User.Serialize(name: name, email: email)
+            let uId = result!.user.uid
+            
+            frb_utils.UserDbRef(uId).setValue(userData, withCompletionBlock: { (error, userDbRef) in
+                
+                if (error == nil) {
+                    self.currentUser = User.Deserialize(id: uId, data: userData)
+                }
+                
+                if let del = self.delegate {
+                    del.UserRegistrationFinished(error: error)
+                }
+            })
         }
     }
     
