@@ -23,6 +23,15 @@ class User {
         self.email = email
     }
     
+    static func Serialize(name : String, email : String) -> [String : Any] {
+        
+        var dict = [String: Any]()
+        dict[Keys.name.rawValue] = name
+        dict[Keys.email.rawValue] = email
+        
+        return dict
+    }
+    
     static func Deserialize(id: String, data: [String : Any]) -> User {
         
         return User(id: id,
