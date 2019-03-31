@@ -41,8 +41,10 @@ class ListChangedObserver {
     }
     
     func Deactivate() {
-        frb_utils.ListDbRef(list.id).removeAllObservers()
-        active = false
+        if (active) {
+            frb_utils.ListDbRef(list.id).removeAllObservers()
+            active = false
+        }
     }
     
     private func UpdateCallback(_ childSnap: DataSnapshot) {
