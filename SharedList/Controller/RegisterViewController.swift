@@ -7,11 +7,11 @@
 //
 
 import UIKit
-import Firebase
 import SVProgressHUD
 
 class RegisterViewController: UIViewController {
 
+    @IBOutlet var nameTextField: UITextField!
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
     
@@ -26,30 +26,14 @@ class RegisterViewController: UIViewController {
         
         SVProgressHUD.show()
         
-        Auth.auth().createUser(withEmail: emailTextField.text!,
-                               password: passwordTextField.text!)
-        { (user, error) in
-            
-            if (error != nil) {
-                SVProgressHUD.dismiss()
-                print("Registrtion failed: \(error!)")
-            }
-            else {
-                let userDbRef = Database.database().reference().child("users").child(user!.user.uid)
-                userDbRef.setValue(["email": user!.user.email!])
-                { error, snapshot in
-                    
-                    SVProgressHUD.dismiss()
-                    
-                    if (error != nil) {
-                        print("Adding user to firebase failed: \(error!)")
-                    }
-                    else {
-                        self.performSegue(withIdentifier: "goToLists", sender: self)
-                    }
-                }
-            }
-        }
+        let name = nameTextField.text!
+        let email = emailTextField.text!
+        let password = passwordTextField.text!
+        
+        firebaseManager?.authManager.delegate = self
+        firebaseManager?.authManager.CreateUser(name: name,
+                                                email: email,
+                                                password: password)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -58,6 +42,19 @@ class RegisterViewController: UIViewController {
             
             let listsVC = segue.destination as! ListsViewController
             listsVC.frbManager = firebaseManager
+        }
+    }
+}
+
+extension RegisterViewController : AuthManagerDelegate {
+    
+    func UserRegistrationFinished(error: Error?) {
+        
+        SVProgressHUD.dismiss()
+        firebaseManager?.authManager.delegate = nil
+        
+        if (error == nil) {
+            self.performSegue(withIdentifier: "goToLists", sender: self)
         }
     }
 }

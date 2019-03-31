@@ -83,6 +83,13 @@ class ListManager {
         userListsDbRef.observeSingleEvent(of: .value)
         { (listsSnapshot) in
             
+            if (listsSnapshot.exists() == false) {
+                if let del = self.delegate {
+                    del.DataLoaded()
+                }
+                return
+            }
+            
             let listsIds = (listsSnapshot.value! as! [String : Any]).keys
             var listsCounter = listsIds.count
 

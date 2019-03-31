@@ -180,21 +180,10 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-//        do {
-//            try Auth.auth().signOut()
-//
-//            navigationController?.popToRootViewController(animated: true)
-//        }
-//        catch {
-//            print("singing out failed with errror: \(error)")
-//        }
-//
-//        return
+//        listManager?.RemoveList(index: indexPath.row)
         
-        listManager?.RemoveList(index: indexPath.row)
-        
-//        selectedListIndex = indexPath.row
-//        performSegue(withIdentifier: "goToSingleList", sender: self)
+        selectedListIndex = indexPath.row
+        performSegue(withIdentifier: "goToSingleList", sender: self)
     }
 }
 
