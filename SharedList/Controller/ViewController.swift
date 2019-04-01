@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         
         DisableUI()
         
-        frbManager?.authManager.delegate = self
+        frbManager?.authManager.delegates.addDelegate(self)
         frbManager?.authManager.TryAutoLogIn()
     }
     
@@ -61,7 +61,7 @@ extension ViewController : AuthManagerDelegate {
     func UserAutoLoginFinished(loggedIn: Bool) {
         EnableUI()
         
-        frbManager?.authManager.delegate = nil
+        frbManager?.authManager.delegates.removeDelegate(self)
         
         if (loggedIn) {
             performSegue(withIdentifier: "goToLists", sender: self)

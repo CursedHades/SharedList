@@ -28,7 +28,7 @@ class LogInViewController: UIViewController {
         let email = emailTextField.text!
         let password = passwordTextField.text!
         
-        firebaseManager?.authManager.delegate = self
+        firebaseManager?.authManager.delegates.addDelegate(self)
         firebaseManager?.authManager.LogIn(email: email,
                                            password: password)
     }
@@ -48,7 +48,7 @@ extension LogInViewController : AuthManagerDelegate {
     func UserLoginFinished(error: Error?) {
         
         SVProgressHUD.dismiss()
-        firebaseManager?.authManager.delegate = nil
+        firebaseManager?.authManager.delegates.removeDelegate(self)
         if error == nil {
             self.performSegue(withIdentifier: "goToLists", sender: self)
         }
