@@ -63,6 +63,12 @@ class ListsViewController: UIViewController {
         performSegue(withIdentifier: "goToProposals", sender: self)
     }
     
+    @IBAction func LogOutPressed(_ sender: UIBarButtonItem) {
+        frbManager?.authManager.LogOut()
+    
+        self.navigationController?.popToRootViewController(animated: true)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if (segue.identifier == "goToSingleList")

@@ -220,6 +220,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="mO9-8f-vzl"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Title" id="a2k-bT-nWJ">
+                        <barButtonItem key="leftBarButtonItem" title="Log Out" id="fPe-Om-A1I" userLabel="Log Out">
+                            <connections>
+                                <action selector="LogOutPressed:" destination="2o2-vd-tY5" id="06f-6B-vhc"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="addListButton" destination="S7m-FQ-raR" id="HXr-c4-Lnb"/>
                         <outlet property="listTitleTextField" destination="DoQ-eC-tIB" id="DuG-uF-Bh4"/>
