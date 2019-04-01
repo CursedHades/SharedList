@@ -30,8 +30,7 @@ class frb_utils {
     
     static func UserDbRef(_ id: String) -> DatabaseReference {
         
-        let userId = Auth.auth().currentUser!.uid
-        return DbRef().child(UserPath(userId))
+        return DbRef().child(UserPath(id))
     }
     
     static func UserListsDbRef() -> DatabaseReference {

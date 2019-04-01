@@ -21,6 +21,8 @@ class FirebaseManager {
         proposalManager = ProposalManager(listManager: listManager)
         authManager = AuthManager()
         
+        authManager.delegates.addDelegate(listManager)
+        authManager.delegates.addDelegate(proposalManager)
         authManager.TryAutoLogIn()
     }
 }

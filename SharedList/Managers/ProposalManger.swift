@@ -27,7 +27,6 @@ class ProposalManager {
     var proposals = [Proposal]()
     
     fileprivate var observers = [DataEventType: DatabaseHandle?]()
-    fileprivate var activeObservers = 0
     
     fileprivate let listManager : ListManager
     
@@ -62,8 +61,6 @@ class ProposalManager {
     }
     
     func ActivateObservers() {
-        
-        activeObservers = activeObservers + 1
         
         if (observers[.childAdded] == nil) {
             
@@ -118,20 +115,11 @@ class ProposalManager {
         }
     }
     
-    func DeactivateObservers()
+    fileprivate func DeactivateObservers(userId: String)
     {
-        if (activeObservers == 0) { fatalError("No active observers.") }
-        
-        activeObservers = activeObservers - 1
-        
-        if (activeObservers == 0) {
-            
-            let userId = Auth.auth().currentUser!.uid
-            let userPorposalsDbRef = Database.database().reference().child("users/\(userId)/proposals")
-            
-            userPorposalsDbRef.removeAllObservers()
-            observers.removeAll()
-        }
+        let userPorposalsDbRef = frb_utils.UserDbRef(userId).child("proposals")
+        userPorposalsDbRef.removeAllObservers()
+        observers.removeAll()
     }
     
     func SendProposal(destinationUserEmail: String, listId: String, message: String) {
@@ -192,5 +180,18 @@ class ProposalManager {
                 self.RemoveProposal(proposal)
             }
         }
+    }
+    
+    fileprivate func Cleanup(userId: String) {
+        
+        DeactivateObservers(userId: userId)
+        proposals.removeAll()
+    }
+}
+
+extension ProposalManager : AuthManagerDelegate {
+    
+    func UserLogedOut(userId: String) {
+        Cleanup(userId: userId)
     }
 }

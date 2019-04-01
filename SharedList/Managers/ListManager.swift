@@ -62,7 +62,6 @@ class ListManager {
     weak var delegate : ListManagerDelegate? = nil
     
     fileprivate var observers = [DataEventType: DatabaseHandle?]()
-    fileprivate var activeObservers = 0
     
     fileprivate var wrapedLists = [ListChangedObserver]()
     
@@ -117,8 +116,6 @@ class ListManager {
     
     func ActivateObservers()
     {
-        activeObservers = activeObservers + 1
-        
         if (observers[.childAdded] == nil) {
             
             let userListsDbRef = frb_utils.UserListsDbRef()
@@ -169,22 +166,14 @@ class ListManager {
         }
     }
     
-    func DeactivateObservers()
+    fileprivate func DeactivateObservers(userId: String)
     {
-        if (activeObservers == 0) { fatalError("No active observers.") }
+        let listsKeyDbRef = frb_utils.UserDbRef(userId)
+        listsKeyDbRef.removeAllObservers()
+        observers.removeAll()
         
-        activeObservers = activeObservers - 1
-        
-        if (activeObservers == 0) {
-            
-            let listsKeyDbRef = frb_utils.UserListsDbRef()
-            
-            listsKeyDbRef.removeAllObservers()
-            observers.removeAll()
-            
-            for listObserver in wrapedLists {
-                listObserver.Deactivate()
-            }
+        for listObserver in wrapedLists {
+            listObserver.Deactivate()
         }
     }
     
@@ -279,6 +268,14 @@ class ListManager {
         }
         return nil
     }
+    
+    fileprivate func Cleanup(userId: String) {
+        
+        DeactivateObservers(userId: userId)
+        wrapedLists.removeAll()
+        
+        delegate = nil
+    }
 }
 
 extension ListManager : ListObserverDelegate {
@@ -287,5 +284,12 @@ extension ListManager : ListObserverDelegate {
         if let del = delegate {
             del.ListUpdated()
         }
+    }
+}
+
+extension ListManager : AuthManagerDelegate {
+    
+    func UserLogedOut(userId: String) {
+        Cleanup(userId: userId)
     }
 }
