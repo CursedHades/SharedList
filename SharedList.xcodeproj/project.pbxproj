@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		26D1A9ADC6E1B7F5F8D9D1B8 /* Pods_SharedList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149806525C5E9CFE227BC804 /* Pods_SharedList.framework */; };
+		B21C3D44225A5E2800723702 /* ItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21C3D43225A5E2800723702 /* ItemsManager.swift */; };
+		B21C3D46225A5EE400723702 /* ObserversHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21C3D45225A5EE400723702 /* ObserversHandler.swift */; };
 		B26A275722511C9E00091C43 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275622511C9E00091C43 /* User.swift */; };
 		B26A275922511D0C00091C43 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275822511D0C00091C43 /* AuthManager.swift */; };
 		B2A29AF7222491F800698D05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A29AF6222491F800698D05 /* AppDelegate.swift */; };
@@ -35,6 +37,8 @@
 		01555E8B0F1869532C63765B /* Pods-SharedList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.debug.xcconfig"; sourceTree = "<group>"; };
 		056A402CC157056C2FD6A153 /* Pods-SharedList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.release.xcconfig"; sourceTree = "<group>"; };
 		149806525C5E9CFE227BC804 /* Pods_SharedList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B21C3D43225A5E2800723702 /* ItemsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsManager.swift; sourceTree = "<group>"; };
+		B21C3D45225A5EE400723702 /* ObserversHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserversHandler.swift; sourceTree = "<group>"; };
 		B26A275622511C9E00091C43 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B26A275822511D0C00091C43 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		B2A29AF3222491F800698D05 /* SharedList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SharedList.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,6 +176,8 @@
 				B2D9A6662247D76A00576591 /* ProposalManger.swift */,
 				B2A7266A224D6E610087B46B /* FirebaseUtilities.swift */,
 				B26A275822511D0C00091C43 /* AuthManager.swift */,
+				B21C3D43225A5E2800723702 /* ItemsManager.swift */,
+				B21C3D45225A5EE400723702 /* ObserversHandler.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -313,11 +319,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B21C3D44225A5E2800723702 /* ItemsManager.swift in Sources */,
 				B2C3D610222BD34D005321BB /* LogInViewController.swift in Sources */,
 				B2D9A66B2248230300576591 /* InvitationsViewController.swift in Sources */,
 				B2D9A6672247D76A00576591 /* ProposalManger.swift in Sources */,
 				B2C3D60E222BD343005321BB /* RegisterViewController.swift in Sources */,
 				B26A275722511C9E00091C43 /* User.swift in Sources */,
+				B21C3D46225A5EE400723702 /* ObserversHandler.swift in Sources */,
 				B2D9A6692247D91400576591 /* Invitation.swift in Sources */,
 				B2A29AF9222491F800698D05 /* ViewController.swift in Sources */,
 				B26A275922511D0C00091C43 /* AuthManager.swift in Sources */,
