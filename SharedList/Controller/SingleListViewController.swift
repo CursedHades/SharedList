@@ -51,9 +51,9 @@ class SingleListViewController: UIViewController {
             
             if (itemSnapshot.key != "list_id")
             {
+                let itemId = itemSnapshot.key
                 let itemDict = itemSnapshot.value as! [String: String]
-                let newItem = Item.Deserialize(data: itemDict)
-                newItem.id = itemSnapshot.key
+                let newItem = Item.Deserialize(id: itemId, data: itemDict)
                 
                 self.items.append(newItem)
                 self.tableView.reloadData()
@@ -92,7 +92,7 @@ class SingleListViewController: UIViewController {
     
     func AddItemToItemsList(title: String, itemsId: String) {
         
-        let itemDict = Item.Serialize(title: title)
+        let itemDict = Item.Serialize(title: title, done: false)
         let itemDbRef = Database.database().reference().child("items/\(itemsId)").childByAutoId()
         
         itemDbRef.setValue(itemDict) { (error, sth) in
@@ -104,7 +104,7 @@ class SingleListViewController: UIViewController {
         
         let item = items[Index]
         
-        let itemRef = Database.database().reference().child("items/\(list!.items_id)/\(item.id!)")
+        let itemRef = Database.database().reference().child("items/\(list!.items_id)/\(item.id)")
         
         itemRef.removeValue { (error, snapshot) in
             if (error != nil) {
