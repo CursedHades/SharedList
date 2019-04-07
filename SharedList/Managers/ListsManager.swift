@@ -61,8 +61,7 @@ class ListsManager {
     
     weak var delegate : ListsManagerDelegate? = nil
     
-    fileprivate var observers = [DataEventType: DatabaseHandle?]()
-    
+    fileprivate var observersHandler : ObserversHandler?
     fileprivate var wrapedLists = [ListChangedObserver]()
     
     var listCount : Int {
@@ -74,6 +73,15 @@ class ListsManager {
             return wrapedLists[idx].list
         }
         return nil
+    }
+    
+    init() {
+        InitObserverHandler()
+    }
+    
+    fileprivate func InitObserverHandler() {
+        let userListsDbRef = frb_utils.UserListsDbRef()
+        observersHandler = ObserversHandler(userListsDbRef)
     }
     
     func LoadData() {
@@ -116,47 +124,41 @@ class ListsManager {
     
     func ActivateObservers()
     {
-        if (observers[.childAdded] == nil) {
-            
-            let userListsDbRef = frb_utils.UserListsDbRef()
-            observers[.childAdded] = userListsDbRef.observe(.childAdded)
-            { (listKeySnapshot) in
-                
-                let listId = listKeySnapshot.key
-                if self.ListLoaded(listId) {
-                    return
-                }
-                
-                let listDbRef = frb_utils.ListDbRef(listId)
-                listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
-
-                    self.AddLoadedList(id: listId, data: listSnapshot.value as! [String : Any])
-                    
-                    if let del = self.delegate {
-                        del.NewListAdded()
-                    }
-                })
-            }
+        if let _ = observersHandler {
+            InitObserverHandler()
         }
         
-        if (observers[.childRemoved] == nil) {
+        observersHandler!.AddObserver(eventType: .childAdded) { (listKeySnapshot) in
             
-            let listsKeyDbRef = frb_utils.UserListsDbRef()
-            observers[.childRemoved] = listsKeyDbRef.observe(.childRemoved)
-            { (listKeySnapshot) in
+            let listId = listKeySnapshot.key
+            if self.ListLoaded(listId) {
+                return
+            }
+            
+            let listDbRef = frb_utils.ListDbRef(listId)
+            listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
                 
-                for (index, wraper) in self.wrapedLists.enumerated() {
+                self.AddLoadedList(id: listId, data: listSnapshot.value as! [String : Any])
+                
+                if let del = self.delegate {
+                    del.NewListAdded()
+                }
+            })
+        }
+        
+        observersHandler!.AddObserver(eventType: .childRemoved) { (listKeySnapshot) in
+
+            for (index, wraper) in self.wrapedLists.enumerated() {
+                
+                if (wraper.list.id == listKeySnapshot.key) {
                     
-                    if (wraper.list.id == listKeySnapshot.key) {
-                        
-                        wraper.Deactivate()
-                        self.wrapedLists.remove(at: index)
-                        
-                        if let del = self.delegate {
-                            del.ListRemoved()
-                        }
-                        return
+                    wraper.Deactivate()
+                    self.wrapedLists.remove(at: index)
+                    
+                    if let del = self.delegate {
+                        del.ListRemoved()
                     }
+                    return
                 }
             }
         }
@@ -166,18 +168,8 @@ class ListsManager {
         }
     }
     
-    fileprivate func DeactivateObservers(userId: String)
-    {
-        let listsKeyDbRef = frb_utils.UserDbRef(userId)
-        listsKeyDbRef.removeAllObservers()
-        observers.removeAll()
-        
-        for listObserver in wrapedLists {
-            listObserver.Deactivate()
-        }
-    }
-    
     fileprivate func AddLoadedList(id: String, data: [String : Any]) {
+        
         let newList = List.Deserialize(id: id, data: data)
         let observer = ListChangedObserver(newList)
         observer.delegate = self
@@ -269,12 +261,15 @@ class ListsManager {
         return nil
     }
     
-    fileprivate func Cleanup(userId: String) {
+    fileprivate func Cleanup() {
         
-        DeactivateObservers(userId: userId)
-        wrapedLists.removeAll()
-        
+        observersHandler = nil
         delegate = nil
+        
+        for listObserver in wrapedLists {
+            listObserver.Deactivate()
+        }
+        wrapedLists.removeAll()
     }
 }
 
@@ -290,6 +285,10 @@ extension ListsManager : ListObserverDelegate {
 extension ListsManager : AuthManagerDelegate {
     
     func UserLogedOut(userId: String) {
-        Cleanup(userId: userId)
+        Cleanup()
+    }
+    
+    func UserSuccessfullyLogedIn() {
+        InitObserverHandler()
     }
 }
