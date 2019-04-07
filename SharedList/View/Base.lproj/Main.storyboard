@@ -211,16 +211,16 @@
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bOt-Eg-s2n">
                                 <rect key="frame" x="0.0" y="627" width="375" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Proposals"/>
+                                <state key="normal" title="Invitations"/>
                                 <connections>
-                                    <action selector="ProposalsPressed:" destination="2o2-vd-tY5" eventType="touchUpInside" id="BCT-Ao-zId"/>
+                                    <action selector="InvitationsPressed:" destination="2o2-vd-tY5" eventType="touchUpInside" id="0fT-6a-EW7"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="mO9-8f-vzl"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="a2k-bT-nWJ">
+                    <navigationItem key="navigationItem" title="Lists" id="a2k-bT-nWJ">
                         <barButtonItem key="leftBarButtonItem" title="Log Out" id="fPe-Om-A1I" userLabel="Log Out">
                             <connections>
                                 <action selector="LogOutPressed:" destination="2o2-vd-tY5" id="06f-6B-vhc"/>
@@ -229,11 +229,11 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addListButton" destination="S7m-FQ-raR" id="HXr-c4-Lnb"/>
+                        <outlet property="invitationsButton" destination="bOt-Eg-s2n" id="enl-op-tLq"/>
                         <outlet property="listTitleTextField" destination="DoQ-eC-tIB" id="DuG-uF-Bh4"/>
-                        <outlet property="proposalsButton" destination="bOt-Eg-s2n" id="jTq-3o-Osa"/>
                         <outlet property="tableView" destination="LFy-Pc-kWz" id="Hso-D7-4qe"/>
                         <segue destination="3uV-RH-cye" kind="show" identifier="goToSingleList" id="iyg-Zo-S5w"/>
-                        <segue destination="xUi-Fo-k9s" kind="show" identifier="goToProposals" id="QlL-Ka-9Nb"/>
+                        <segue destination="xUi-Fo-k9s" kind="show" identifier="goToInvitations" id="QlL-Ka-9Nb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Pq-Oe-bGg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -312,10 +312,10 @@
             </objects>
             <point key="canvasLocation" x="3557.5999999999999" y="-564.46776611694156"/>
         </scene>
-        <!--Proposals View Controller-->
+        <!--Invitations-->
         <scene sceneID="h8I-To-hke">
             <objects>
-                <viewController id="xUi-Fo-k9s" customClass="ProposalsViewController" customModule="SharedList" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="xUi-Fo-k9s" customClass="InvitationsViewController" customModule="SharedList" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1fs-ia-Ett">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -329,6 +329,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="cw3-Y6-pXK"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Invitations" id="jiX-Y4-6il"/>
                     <connections>
                         <outlet property="tableView" destination="0D8-OV-Fzj" id="2kt-RV-XVS"/>
                     </connections>

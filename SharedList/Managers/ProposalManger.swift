@@ -1,5 +1,5 @@
 //
-//  ProposalManger.swift
+//  InvitationManger.swift
 //  SharedList
 //
 //  Created by Lukasz on 24/03/2019.
@@ -11,23 +11,22 @@ import Firebase
 import MulticastDelegateSwift
 
 
-protocol ProposalManagerDelegate : class {
-    func ProposalAdded()
-    func ProposalRemoved()
+protocol InvitationManagerDelegate : class {
+    func InvitationAdded()
+    func InvitationRemoved()
 }
 
-extension ProposalManagerDelegate {
-    func ProposalRemoved() {}
+extension InvitationManagerDelegate {
+    func InvitationRemoved() {}
 }
 
-class ProposalManager {
+class InvitationManager {
     
-    let delegates = MulticastDelegate<ProposalManagerDelegate>()
+    let delegates = MulticastDelegate<InvitationManagerDelegate>()
     
-    var proposals = [Proposal]()
+    var invitations = [Invitation]()
     
     fileprivate var observers = [DataEventType: DatabaseHandle?]()
-    fileprivate var activeObservers = 0
     
     fileprivate let listManager : ListManager
     
@@ -38,24 +37,24 @@ class ProposalManager {
     func LoadData() {
         
         let userId = Auth.auth().currentUser!.uid
-        let userPorposalsDbRef = Database.database().reference().child("users/\(userId)/proposals")
+        let userPorposalsDbRef = Database.database().reference().child("users/\(userId)/invitations")
         
         let query = userPorposalsDbRef.queryOrderedByKey()
         
-        query.observeSingleEvent(of: .value) { (proposalsSnapshot) in
+        query.observeSingleEvent(of: .value) { (invitationsSnapshot) in
             
-            if let proposalsDict = proposalsSnapshot.value as? [String : Any] {
-                for (listId , userData) in proposalsDict {
+            if let invitationsDict = invitationsSnapshot.value as? [String : Any] {
+                for (listId , userData) in invitationsDict {
                     
                     if let dataDict = userData as? [String : String] {
-                        if let proposal = Proposal.Deserialize(listId: listId, data: dataDict) {
-                            self.proposals.append(proposal)
+                        if let invitation = Invitation.Deserialize(listId: listId, data: dataDict) {
+                            self.invitations.append(invitation)
                         }
                     }
                 }
                 
                 self.delegates.invokeDelegates({ (delegate) in
-                    delegate.ProposalAdded()
+                    delegate.InvitationAdded()
                 })
             }
         }
@@ -63,32 +62,30 @@ class ProposalManager {
     
     func ActivateObservers() {
         
-        activeObservers = activeObservers + 1
-        
         if (observers[.childAdded] == nil) {
             
             let userId = Auth.auth().currentUser!.uid
-            let userPorposalsDbRef = Database.database().reference().child("users/\(userId)/proposals")
+            let userInvitationsDbRef = Database.database().reference().child("users/\(userId)/invitations")
             
-            observers[.childAdded] = userPorposalsDbRef.observe(.childAdded)
-            { (proposalSnapshot) in
+            observers[.childAdded] = userInvitationsDbRef.observe(.childAdded)
+            { (invitationSnapshot) in
                 
-                let listId = proposalSnapshot.key
+                let listId = invitationSnapshot.key
                 
-                for proposal in self.proposals {
-                    if (proposal.list_id == listId) {
+                for invitation in self.invitations {
+                    if (invitation.list_id == listId) {
                         return
                     }
                 }
                 
-                let dataDict = proposalSnapshot.value as! [String : String]
+                let dataDict = invitationSnapshot.value as! [String : String]
                 
-                if let proposal = Proposal.Deserialize(listId: listId, data: dataDict) {
+                if let invitation = Invitation.Deserialize(listId: listId, data: dataDict) {
                     
-                    self.proposals.append(proposal)
+                    self.invitations.append(invitation)
                     
                     self.delegates.invokeDelegates({ (delegate) in
-                        delegate.ProposalAdded()
+                        delegate.InvitationAdded()
                     })
                 }
             }
@@ -96,19 +93,19 @@ class ProposalManager {
         
         if (observers[.childRemoved] == nil) {
             let userId = Auth.auth().currentUser!.uid
-            let userPorposalsDbRef = Database.database().reference().child("users/\(userId)/proposals")
+            let userInvitationsDbRef = Database.database().reference().child("users/\(userId)/invitations")
             
-            observers[.childRemoved] = userPorposalsDbRef.observe(.childRemoved, with:
-            { (proposalSnapshot) in
+            observers[.childRemoved] = userInvitationsDbRef.observe(.childRemoved, with:
+            { (invitationSnapshot) in
                 
-                for (index, proposal) in self.proposals.enumerated() {
+                for (index, invitation) in self.invitations.enumerated() {
                     
-                    if (proposal.list_id == proposalSnapshot.key) {
+                    if (invitation.list_id == invitationSnapshot.key) {
                         
-                        self.proposals.remove(at: index)
+                        self.invitations.remove(at: index)
                         
                         self.delegates.invokeDelegates({ (delegate) in
-                            delegate.ProposalRemoved()
+                            delegate.InvitationRemoved()
                         })
                         
                         return
@@ -118,23 +115,14 @@ class ProposalManager {
         }
     }
     
-    func DeactivateObservers()
+    fileprivate func DeactivateObservers(userId: String)
     {
-        if (activeObservers == 0) { fatalError("No active observers.") }
-        
-        activeObservers = activeObservers - 1
-        
-        if (activeObservers == 0) {
-            
-            let userId = Auth.auth().currentUser!.uid
-            let userPorposalsDbRef = Database.database().reference().child("users/\(userId)/proposals")
-            
-            userPorposalsDbRef.removeAllObservers()
-            observers.removeAll()
-        }
+        let userInvitationsDbRef = frb_utils.UserDbRef(userId).child("invitations")
+        userInvitationsDbRef.removeAllObservers()
+        observers.removeAll()
     }
     
-    func SendProposal(destinationUserEmail: String, listId: String, message: String) {
+    func SendInvitation(destinationUserEmail: String, listId: String, message: String) {
         
         let dbRef = Database.database().reference().root
         
@@ -146,42 +134,42 @@ class ProposalManager {
             let snapshotDict = snapshot.value as! [String : Any]
             let destinationUserId = snapshotDict.keys.first
             
-            let proposalDbRef = dbRef.child("users/\(destinationUserId!)/proposals/\(listId)")
+            let invitationDbRef = dbRef.child("users/\(destinationUserId!)/invitations/\(listId)")
             
             let myEmail = Auth.auth().currentUser?.email
             
-            let dataDict = [Proposal.Keys.user_email.rawValue : myEmail!,
-                            Proposal.Keys.message.rawValue : message]
+            let dataDict = [Invitation.Keys.user_email.rawValue : myEmail!,
+                            Invitation.Keys.message.rawValue : message]
             
-            proposalDbRef.setValue(dataDict)
+            invitationDbRef.setValue(dataDict)
         }
     }
     
-    func AcceptProposal(_ proposal: Proposal) {
+    func AcceptInvitation(_ invitation: Invitation) {
         
         let userId = Auth.auth().currentUser?.uid
-        let listId = proposal.list_id
+        let listId = invitation.list_id
         
         let data = ["users/\(userId!)/lists/\(listId)" : true]
         
         Database.database().reference().updateChildValues(data) { (error, _) in
-            self.RemoveProposal(proposal)
+            self.RemoveInvitation(invitation)
         }
     }
     
-    func RemoveProposal(_ proposal: Proposal) {
+    func RemoveInvitation(_ invitation: Invitation) {
         
         let userId = Auth.auth().currentUser?.uid
-        let proposalId = proposal.list_id
+        let invitationId = invitation.list_id
         
-        let updateData = ["users/\(userId!)/proposals/\(proposalId)": NSNull()]
+        let updateData = ["users/\(userId!)/invitations/\(invitationId)": NSNull()]
         
         Database.database().reference().updateChildValues(updateData)
     }
     
-    func GetListNameForProposal(_ proposal: Proposal, CompletionHandler: @escaping (_ name: String?) -> Void) {
+    func GetListNameForInvitation(_ invitation: Invitation, CompletionHandler: @escaping (_ name: String?) -> Void) {
         
-        listManager.GetListById(proposal.list_id) { (returnedList) in
+        listManager.GetListById(invitation.list_id) { (returnedList) in
             
             if let list = returnedList {
                 CompletionHandler(list.title)
@@ -189,8 +177,21 @@ class ProposalManager {
             else {
                 // List does not exist anymore, remove invitation
                 CompletionHandler(nil)
-                self.RemoveProposal(proposal)
+                self.RemoveInvitation(invitation)
             }
         }
+    }
+    
+    fileprivate func Cleanup(userId: String) {
+        
+        DeactivateObservers(userId: userId)
+        invitations.removeAll()
+    }
+}
+
+extension InvitationManager : AuthManagerDelegate {
+    
+    func UserLogedOut(userId: String) {
+        Cleanup(userId: userId)
     }
 }

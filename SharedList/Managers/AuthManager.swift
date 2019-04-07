@@ -7,12 +7,14 @@
 //
 
 import Firebase
+import MulticastDelegateSwift
 
 protocol AuthManagerDelegate: class {
     
     func UserAutoLoginFinished(loggedIn: Bool)
     func UserRegistrationFinished(error: Error?)
     func UserLoginFinished(error: Error?)
+    func UserLogedOut(userId: String)
 }
 
 extension AuthManagerDelegate {
@@ -20,13 +22,16 @@ extension AuthManagerDelegate {
     func UserAutoLoginFinished(loggedIn: Bool) {}
     func UserRegistrationFinished(error: Error?) {}
     func UserLoginFinished(error: Error?) {}
+    func UserLogedOut(userId: String) {}
 }
 
 
 class AuthManager {
     
     var currentUser : User?
-    weak var delegate : AuthManagerDelegate?
+    
+    let delegates = MulticastDelegate<AuthManagerDelegate>()
+
     
     func TryAutoLogIn() {
         
@@ -37,15 +42,15 @@ class AuthManager {
                 self.GetUserById(user.uid, completionHandler: { (loadedUser) in
                     self.currentUser = loadedUser
                     
-                    if let del = self.delegate {
-                        del.UserAutoLoginFinished(loggedIn: true)
-                    }
+                    self.delegates.invokeDelegates({ (delegate) in
+                        delegate.UserAutoLoginFinished(loggedIn: true)
+                    })
                 })
             }
             else {
-                if let del = self.delegate {
-                    del.UserAutoLoginFinished(loggedIn: false)
-                }
+                self.delegates.invokeDelegates({ (delegate) in
+                    delegate.UserAutoLoginFinished(loggedIn: false)
+                })
             }
         }
     }
@@ -55,9 +60,9 @@ class AuthManager {
         Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
             
             if (error != nil) {
-                if let del = self.delegate {
-                    del.UserRegistrationFinished(error: error)
-                }
+                self.delegates.invokeDelegates({ (delegate) in
+                    delegate.UserRegistrationFinished(error: error)
+                })
                 return
             }
             
@@ -70,9 +75,9 @@ class AuthManager {
                     self.currentUser = User.Deserialize(id: uId, data: userData)
                 }
                 
-                if let del = self.delegate {
-                    del.UserRegistrationFinished(error: error)
-                }
+                self.delegates.invokeDelegates({ (delegate) in
+                    delegate.UserRegistrationFinished(error: error)
+                })
             })
         }
     }
@@ -82,9 +87,9 @@ class AuthManager {
         Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
             
             if (error != nil) {
-                if let del = self.delegate {
-                    del.UserLoginFinished(error: error)
-                }
+                self.delegates.invokeDelegates({ (delegate) in
+                    delegate.UserLoginFinished(error: error)
+                })
                 return
             }
             
@@ -93,19 +98,27 @@ class AuthManager {
                 if let user = userOpt {
                     self.currentUser = user
                 }
-                if let del = self.delegate {
-                    del.UserLoginFinished(error: (userOpt != nil) ? nil : NSError())
-                }
+                self.delegates.invokeDelegates({ (delegate) in
+                    delegate.UserLoginFinished(error: (userOpt != nil) ? nil : NSError())
+                })
             })
         }
     }
     
     func LogOut() {
+        
+        let userId = currentUser!.id
+        
         do {
             try Auth.auth().signOut()
         }
         catch {
             print("singing out failed with errror: \(error)")
+        }
+        
+        currentUser = nil
+        self.delegates.invokeDelegates { (delegate) in
+            delegate.UserLogedOut(userId: userId)
         }
     }
     

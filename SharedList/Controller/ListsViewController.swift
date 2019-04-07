@@ -15,7 +15,7 @@ class ListsViewController: UIViewController {
     @IBOutlet var tableView: UITableView!
     
     @IBOutlet var addListButton: UIButton!
-    @IBOutlet var proposalsButton: UIButton!
+    @IBOutlet var invitationsButton: UIButton!
     
     var selectedListIndex : Int?
     
@@ -23,16 +23,16 @@ class ListsViewController: UIViewController {
     fileprivate var loadingInProgress = false
     
     fileprivate var listManager : ListManager?
-    fileprivate var proposalManager : ProposalManager?
+    fileprivate var invitationManager : InvitationManager?
     var frbManager : FirebaseManager? {
         didSet {
             listManager = frbManager?.listManager
             listManager?.delegate = self
             
-            proposalManager = frbManager?.proposalManager
-            proposalManager?.delegates.addDelegate(self)
-            proposalManager?.LoadData()
-            proposalManager?.ActivateObservers()
+            invitationManager = frbManager?.invitationManager
+            invitationManager?.delegates.addDelegate(self)
+            invitationManager?.LoadData()
+            invitationManager?.ActivateObservers()
         }
     }
     
@@ -59,8 +59,8 @@ class ListsViewController: UIViewController {
         }
     }
     
-    @IBAction func ProposalsPressed(_ sender: UIButton) {
-        performSegue(withIdentifier: "goToProposals", sender: self)
+    @IBAction func InvitationsPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "goToInvitations", sender: self)
     }
     
     @IBAction func LogOutPressed(_ sender: UIBarButtonItem) {
@@ -82,10 +82,10 @@ class ListsViewController: UIViewController {
             singleListVC.frbManager = frbManager
         }
         
-        if (segue.identifier == "goToProposals")
+        if (segue.identifier == "goToInvitations")
         {
-            let proposalVC = segue.destination as! ProposalsViewController
-            proposalVC.frbManager = frbManager
+            let invitationVC = segue.destination as! InvitationsViewController
+            invitationVC.frbManager = frbManager
         }
     }
     
@@ -135,7 +135,7 @@ class ListsViewController: UIViewController {
         tableView.allowsSelection = false
         tableView.isScrollEnabled = false
         addListButton.isEnabled = false
-        proposalsButton.isEnabled = false
+        invitationsButton.isEnabled = false
     }
     
     fileprivate func EnableUI() {
@@ -143,15 +143,15 @@ class ListsViewController: UIViewController {
         tableView.allowsSelection = true
         tableView.isScrollEnabled = true
         addListButton.isEnabled = true
-        UpdateProposalEnable()
+        UpdateInvitationEnable()
     }
     
-    fileprivate func UpdateProposalEnable() {
-        if (!loadingInProgress && proposalManager?.proposals.count != 0) {
-            proposalsButton.isEnabled = true
+    fileprivate func UpdateInvitationEnable() {
+        if (!loadingInProgress && invitationManager?.invitations.count != 0) {
+            invitationsButton.isEnabled = true
         }
         else {
-            proposalsButton.isEnabled = false
+            invitationsButton.isEnabled = false
         }
     }
 }
@@ -226,15 +226,15 @@ extension ListsViewController : ListManagerDelegate {
 }
 
 //*********************************************************************
-// MARK: - Proposal Manager extension
-extension ListsViewController : ProposalManagerDelegate {
+// MARK: - Invitation Manager extension
+extension ListsViewController : InvitationManagerDelegate {
     
-    func ProposalAdded() {
-        UpdateProposalEnable()
+    func InvitationAdded() {
+        UpdateInvitationEnable()
     }
     
-    func ProposalRemoved() {
-        UpdateProposalEnable()
+    func InvitationRemoved() {
+        UpdateInvitationEnable()
     }
 }
 
