@@ -22,12 +22,12 @@ class ListsViewController: UIViewController {
     fileprivate let loadingGuard = TimeoutGuard()
     fileprivate var loadingInProgress = false
     
-    fileprivate var listManager : ListManager?
+    fileprivate var listsManager : ListsManager?
     fileprivate var invitationManager : InvitationManager?
     var frbManager : FirebaseManager? {
         didSet {
-            listManager = frbManager?.listManager
-            listManager?.delegate = self
+            listsManager = frbManager?.listsManager
+            listsManager?.delegate = self
             
             invitationManager = frbManager?.invitationManager
             invitationManager?.delegates.addDelegate(self)
@@ -55,7 +55,7 @@ class ListsViewController: UIViewController {
         }
         else {
             let listTitle = listTitleTextField.text!
-            listManager!.AddNewList(title: listTitle)
+            listsManager!.AddNewList(title: listTitle)
         }
     }
     
@@ -78,7 +78,7 @@ class ListsViewController: UIViewController {
             selectedListIndex = nil
             
             let singleListVC = segue.destination as! SingleListViewController
-            singleListVC.list = listManager!.GetList(listIndex)
+            singleListVC.list = listsManager!.GetList(listIndex)
             singleListVC.frbManager = frbManager
         }
         
@@ -95,7 +95,7 @@ class ListsViewController: UIViewController {
         UpdateUI()
         SVProgressHUD.show(withStatus: "Loading data...")
         
-        listManager?.LoadData()
+        listsManager?.LoadData()
         
         loadingGuard.delegate = self
         loadingGuard.Activate()
@@ -162,8 +162,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if listManager!.listCount != 0 {
-            return listManager!.listCount
+        if listsManager!.listCount != 0 {
+            return listsManager!.listCount
         }
         else {
             return 1
@@ -174,8 +174,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath)
         
-        if listManager!.listCount != 0 {
-            cell.textLabel?.text = listManager!.GetList(indexPath.row)!.title
+        if listsManager!.listCount != 0 {
+            cell.textLabel?.text = listsManager!.GetList(indexPath.row)!.title
         }
         else {
             cell.textLabel?.text = "Add new list"
@@ -195,7 +195,7 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
 
 //*********************************************************************
 // MARK: - List Manager extension
-extension ListsViewController : ListManagerDelegate {
+extension ListsViewController : ListsManagerDelegate {
     
     func ListUpdated() {
         tableView.reloadData()
@@ -218,7 +218,7 @@ extension ListsViewController : ListManagerDelegate {
     func DataLoaded() {
         
         tableView.reloadData()
-        listManager?.ActivateObservers()
+        listsManager?.ActivateObservers()
         
         loadingGuard.Deactivate()
         DismisDataLoad(success: true)

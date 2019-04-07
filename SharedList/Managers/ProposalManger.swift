@@ -28,9 +28,9 @@ class InvitationManager {
     
     fileprivate var observers = [DataEventType: DatabaseHandle?]()
     
-    fileprivate let listManager : ListManager
+    fileprivate let listManager : ListsManager
     
-    init(listManager: ListManager) {
+    init(listManager: ListsManager) {
         self.listManager = listManager
     }
     

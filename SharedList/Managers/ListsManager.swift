@@ -1,5 +1,5 @@
 //
-//  ListManager.swift
+//  ListsManager.swift
 //  SharedList
 //
 //  Created by Lukasz on 18/03/2019.
@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-protocol ListManagerDelegate : class {
+protocol ListsManagerDelegate : class {
     
     func DataLoaded()
     func NewListAdded()
@@ -57,9 +57,9 @@ class ListChangedObserver {
     }
 }
 
-class ListManager {
+class ListsManager {
     
-    weak var delegate : ListManagerDelegate? = nil
+    weak var delegate : ListsManagerDelegate? = nil
     
     fileprivate var observers = [DataEventType: DatabaseHandle?]()
     
@@ -278,7 +278,7 @@ class ListManager {
     }
 }
 
-extension ListManager : ListObserverDelegate {
+extension ListsManager : ListObserverDelegate {
     
     func ListUpdated() {
         if let del = delegate {
@@ -287,7 +287,7 @@ extension ListManager : ListObserverDelegate {
     }
 }
 
-extension ListManager : AuthManagerDelegate {
+extension ListsManager : AuthManagerDelegate {
     
     func UserLogedOut(userId: String) {
         Cleanup(userId: userId)
