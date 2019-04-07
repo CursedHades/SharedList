@@ -15,6 +15,7 @@ protocol AuthManagerDelegate: class {
     func UserRegistrationFinished(error: Error?)
     func UserLoginFinished(error: Error?)
     func UserLogedOut(userId: String)
+    func UserSuccessfullyLogedIn()
 }
 
 extension AuthManagerDelegate {
@@ -23,6 +24,7 @@ extension AuthManagerDelegate {
     func UserRegistrationFinished(error: Error?) {}
     func UserLoginFinished(error: Error?) {}
     func UserLogedOut(userId: String) {}
+    func UserSuccessfullyLogedIn() {}
 }
 
 
@@ -97,6 +99,9 @@ class AuthManager {
                 
                 if let user = userOpt {
                     self.currentUser = user
+                    self.delegates.invokeDelegates({ (delegate) in
+                        delegate.UserSuccessfullyLogedIn()
+                    })
                 }
                 self.delegates.invokeDelegates({ (delegate) in
                     delegate.UserLoginFinished(error: (userOpt != nil) ? nil : NSError())
