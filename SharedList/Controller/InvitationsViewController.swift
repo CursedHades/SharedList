@@ -1,5 +1,5 @@
 //
-//  ProposalsViewController.swift
+//  InvitationsViewController.swift
 //  SharedList
 //
 //  Created by Lukasz on 24/03/2019.
@@ -9,63 +9,63 @@
 import UIKit
 import PopupDialog
 
-class ProposalsViewController: UIViewController {
+class InvitationsViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
     
     var frbManager : FirebaseManager? = nil {
         
         didSet {
-            proposalManager = frbManager?.proposalManager
-            proposalManager?.delegates.addDelegate(self)
+            invitationManager = frbManager?.invitationManager
+            invitationManager?.delegates.addDelegate(self)
         }
     }
     
-    fileprivate var proposalManager : ProposalManager? = nil
+    fileprivate var invitationManager : InvitationManager? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "proposalCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "invitationCell")
         
         
     }
 }
 
-extension ProposalsViewController : ProposalManagerDelegate {
+extension InvitationsViewController : InvitationManagerDelegate {
     
-    func ProposalAdded() {
+    func InvitationAdded() {
         tableView.reloadData()
     }
     
-    func ProposalRemoved() {
+    func InvitationRemoved() {
         tableView.reloadData()
     }
 }
 
-extension ProposalsViewController : UITableViewDelegate, UITableViewDataSource {
+extension InvitationsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return proposalManager!.proposals.count
+        return invitationManager!.invitations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let proposal = proposalManager!.proposals[indexPath.row]
+        let invitation = invitationManager!.invitations[indexPath.row]
         
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "proposalCell")
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "invitationCell")
         cell.textLabel!.text = "title: loading..."
-        cell.detailTextLabel!.text = "owner: \(proposal.user_email)"
+        cell.detailTextLabel!.text = "owner: \(invitation.user_email)"
         
-        proposalManager?.GetListNameForProposal(proposal, CompletionHandler: { (returnedTitle) in
+        invitationManager?.GetListNameForInvitation(invitation, CompletionHandler: { (returnedTitle) in
             if let title = returnedTitle {
                 cell.textLabel!.text = "Title: \(title)"
             } else {
                 cell.textLabel!.text = "List no longer exist."
-                cell.detailTextLabel!.text = "Removing proposal..."
+                cell.detailTextLabel!.text = "Removing invitation..."
             }
         })
         
@@ -74,18 +74,18 @@ extension ProposalsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let proposal = proposalManager!.proposals[indexPath.row]
+        let invitation = invitationManager!.invitations[indexPath.row]
         
-        let title = proposal.user_email
-        let message = proposal.message
+        let title = invitation.user_email
+        let message = invitation.message
         
         let popup = PopupDialog(title: title, message: message)
         
         let acceptButton = DefaultButton(title: "Accept") {
-            self.proposalManager?.AcceptProposal(proposal)
+            self.invitationManager?.AcceptInvitation(invitation)
         }
         let discardButton = DefaultButton(title: "Discard") {
-            self.proposalManager?.RemoveProposal(proposal)
+            self.invitationManager?.RemoveInvitation(invitation)
         }
         
         popup.addButtons([acceptButton, discardButton])

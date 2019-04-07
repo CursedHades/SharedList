@@ -1,5 +1,5 @@
 //
-//  Proposal.swift
+//  Invitation.swift
 //  SharedList
 //
 //  Created by Lukasz on 24/03/2019.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Proposal {
+class Invitation {
     
     enum Keys : String {
         case user_email = "user"
@@ -26,11 +26,11 @@ class Proposal {
         self.message = message
     }
     
-    static func Deserialize(listId: String, data: [String : String]) -> Proposal? {
+    static func Deserialize(listId: String, data: [String : String]) -> Invitation? {
         
         if let userEmail = data[Keys.user_email.rawValue] {
             if let message = data[Keys.message.rawValue] {
-                return Proposal(listId: listId, userEmail: userEmail, message: message)
+                return Invitation(listId: listId, userEmail: userEmail, message: message)
             }
         }
         

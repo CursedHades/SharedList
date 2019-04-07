@@ -123,9 +123,9 @@ class SingleListViewController: UIViewController {
         let cancelButton = CancelButton(title: "cancel") {}
         
         let shareButton = DefaultButton(title: "share") {
-            self.frbManager?.proposalManager.SendProposal(destinationUserEmail: "1@2.com",
-                                                          listId: self.list!.id,
-                                                          message: "message")
+            self.frbManager?.invitationManager.SendInvitation(destinationUserEmail: "1@2.com",
+                                                              listId: self.list!.id,
+                                                              message: "message")
         }
         
         popup.addButtons([shareButton, cancelButton])
