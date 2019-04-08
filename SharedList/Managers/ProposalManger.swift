@@ -68,7 +68,7 @@ class InvitationManager {
     
     func ActivateObservers() {
         
-        if let _ = observersHandler {
+        if observersHandler == nil {
             InitObserverHandler()
         }
         
@@ -188,7 +188,7 @@ class InvitationManager {
 // MARK : - AuthManagerDelegate
 extension InvitationManager : AuthManagerDelegate {
     
-    func UserSuccessfullyLogedOut() {
+    func UserLogedOut() {
         Cleanup()
     }
 }

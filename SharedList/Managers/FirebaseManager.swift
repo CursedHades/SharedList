@@ -23,6 +23,5 @@ class FirebaseManager {
         
         authManager.delegates.addDelegate(listsManager)
         authManager.delegates.addDelegate(invitationManager)
-        authManager.TryAutoLogIn()
     }
 }

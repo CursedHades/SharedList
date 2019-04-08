@@ -48,13 +48,17 @@ class RegisterViewController: UIViewController {
 
 extension RegisterViewController : AuthManagerDelegate {
     
-    func UserRegistrationFinished(error: Error?) {
+    func UserRegistered() {
         
         SVProgressHUD.dismiss()
         firebaseManager?.authManager.delegates.removeDelegate(self)
         
-        if (error == nil) {
-            self.performSegue(withIdentifier: "goToLists", sender: self)
-        }
+        self.performSegue(withIdentifier: "goToLists", sender: self)
+    }
+    
+    func UserRegistrationFailed(error: Error?) {
+        
+        SVProgressHUD.dismiss()
+        firebaseManager?.authManager.delegates.removeDelegate(self)
     }
 }

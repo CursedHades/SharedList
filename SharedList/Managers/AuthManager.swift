@@ -11,22 +11,22 @@ import MulticastDelegateSwift
 
 protocol AuthManagerDelegate: class {
     
-    func UserAutoLoginFinished(loggedIn: Bool)
-    func UserRegistrationFinished(error: Error?)
-    func UserLoginFinished(error: Error?)
+    func UserRegistered()
+    func UserRegistrationFailed(error: Error?)
     
-    func UserSuccessfullyLogedOut()
-    func UserSuccessfullyLogedIn()
+    func UserLogedOut()
+    func UserLogedIn()
+    func UserLogInFailed(error: Error?)
 }
 
 extension AuthManagerDelegate {
     
-    func UserAutoLoginFinished(loggedIn: Bool) {}
-    func UserRegistrationFinished(error: Error?) {}
-    func UserLoginFinished(error: Error?) {}
+    func UserRegistered() {}
+    func UserRegistrationFailed(error: Error?) {}
     
-    func UserSuccessfullyLogedOut() {}
-    func UserSuccessfullyLogedIn() {}
+    func UserLogedOut() {}
+    func UserLogedIn() {}
+    func UserLogInFailed(error: Error?) {}
 }
 
 
@@ -47,13 +47,13 @@ class AuthManager {
                     self.currentUser = loadedUser
                     
                     self.delegates.invokeDelegates({ (delegate) in
-                        delegate.UserAutoLoginFinished(loggedIn: true)
+                        delegate.UserLogedIn()
                     })
                 })
             }
             else {
                 self.delegates.invokeDelegates({ (delegate) in
-                    delegate.UserAutoLoginFinished(loggedIn: false)
+                    delegate.UserLogInFailed(error: NSError())
                 })
             }
         }
@@ -65,7 +65,7 @@ class AuthManager {
             
             if (error != nil) {
                 self.delegates.invokeDelegates({ (delegate) in
-                    delegate.UserRegistrationFinished(error: error)
+                    delegate.UserRegistrationFailed(error: error)
                 })
                 return
             }
@@ -77,11 +77,17 @@ class AuthManager {
                 
                 if (error == nil) {
                     self.currentUser = User.Deserialize(id: uId, data: userData)
-                }
                 
-                self.delegates.invokeDelegates({ (delegate) in
-                    delegate.UserRegistrationFinished(error: error)
-                })
+                    self.delegates.invokeDelegates({ (delegate) in
+                        delegate.UserRegistered()
+                        delegate.UserLogedIn()
+                    })
+                }
+                else {
+                    self.delegates.invokeDelegates({ (delegate) in
+                        delegate.UserRegistrationFailed(error: error)
+                    })
+                }
             })
         }
     }
@@ -92,21 +98,16 @@ class AuthManager {
             
             if (error != nil) {
                 self.delegates.invokeDelegates({ (delegate) in
-                    delegate.UserLoginFinished(error: error)
+                    delegate.UserLogInFailed(error: error)
                 })
                 return
             }
             
-            self.GetUserById(result!.user.uid, completionHandler: { (userOpt) in
+            self.GetUserById(result!.user.uid, completionHandler: { (user) in
                 
-                if let user = userOpt {
-                    self.currentUser = user
-                    self.delegates.invokeDelegates({ (delegate) in
-                        delegate.UserSuccessfullyLogedIn()
-                    })
-                }
+                self.currentUser = user
                 self.delegates.invokeDelegates({ (delegate) in
-                    delegate.UserLoginFinished(error: (userOpt != nil) ? nil : NSError())
+                    delegate.UserLogedIn()
                 })
             })
         }
@@ -123,20 +124,17 @@ class AuthManager {
         
         currentUser = nil
         self.delegates.invokeDelegates { (delegate) in
-            delegate.UserSuccessfullyLogedOut()
+            delegate.UserLogedOut()
         }
     }
     
-    func GetUserById(_ id: String, completionHandler: @escaping (_ user: User?) -> Void) {
+    func GetUserById(_ id: String, completionHandler: @escaping (_ user: User) -> Void) {
         
         frb_utils.UserDbRef(id).observeSingleEvent(of: .value, with: { (userSnapshot) in
-            if let userData = userSnapshot.value as? [String : Any] {
-                let user = User.Deserialize(id: id, data: userData)
-                completionHandler(user)
-            }
-            else {
-                completionHandler(nil)
-            }
+            
+            let userData = userSnapshot.value as! [String : Any]
+            let user = User.Deserialize(id: id, data: userData)
+            completionHandler(user)
         })
     }
 }
