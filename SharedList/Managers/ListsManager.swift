@@ -118,14 +118,14 @@ class ListsManager {
         }
     }
     
-    func ActivateObservers()
-    {
+    func ActivateObservers() {
+        
         if let _ = observersHandler {
             InitObserverHandler()
         }
         
-        observersHandler!.AddObserver(eventType: .childAdded, ListsKeysChildAddedHandler)
-        observersHandler!.AddObserver(eventType: .childRemoved, ListsKeysChildRemovedHandler)
+        observersHandler!.AddObserver(eventType: .childAdded, ListsKeysChildAdded)
+        observersHandler!.AddObserver(eventType: .childRemoved, ListsKeysChildRemoved)
         
         for listObserver in wrapedLists {
             listObserver.Activate()
@@ -134,7 +134,7 @@ class ListsManager {
     
     
     // MARK: - Lists Keys Observers Handlers
-    fileprivate func ListsKeysChildAddedHandler(_ listKeySnapshot: DataSnapshot) {
+    fileprivate func ListsKeysChildAdded(_ listKeySnapshot: DataSnapshot) {
         
         let listId = listKeySnapshot.key
         if self.ListLoaded(listId) {
@@ -152,7 +152,7 @@ class ListsManager {
         })
     }
     
-    fileprivate func ListsKeysChildRemovedHandler(_ listKeySnapshot: DataSnapshot) {
+    fileprivate func ListsKeysChildRemoved(_ listKeySnapshot: DataSnapshot) {
         
         for (index, wraper) in self.wrapedLists.enumerated() {
             
@@ -275,7 +275,7 @@ class ListsManager {
     }
 }
 
-// MARK: -
+// MARK: - ListObserverDelegate
 extension ListsManager : ListObserverDelegate {
     
     func ListUpdated() {
@@ -285,7 +285,7 @@ extension ListsManager : ListObserverDelegate {
     }
 }
 
-// MARK: -
+// MARK: - AuthManagerDelegate
 extension ListsManager : AuthManagerDelegate {
     
     func UserLogedOut(userId: String) {
