@@ -288,7 +288,7 @@ extension ListsManager : ListObserverDelegate {
 // MARK: - AuthManagerDelegate
 extension ListsManager : AuthManagerDelegate {
     
-    func UserLogedOut(userId: String) {
+    func UserSuccessfullyLogedOut() {
         Cleanup()
     }
     

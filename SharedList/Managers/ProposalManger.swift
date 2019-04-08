@@ -188,7 +188,7 @@ class InvitationManager {
 // MARK : - AuthManagerDelegate
 extension InvitationManager : AuthManagerDelegate {
     
-    func UserLogedOut(userId: String) {
+    func UserSuccessfullyLogedOut() {
         Cleanup()
     }
 }

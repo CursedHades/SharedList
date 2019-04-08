@@ -14,7 +14,8 @@ protocol AuthManagerDelegate: class {
     func UserAutoLoginFinished(loggedIn: Bool)
     func UserRegistrationFinished(error: Error?)
     func UserLoginFinished(error: Error?)
-    func UserLogedOut(userId: String)
+    
+    func UserSuccessfullyLogedOut()
     func UserSuccessfullyLogedIn()
 }
 
@@ -23,7 +24,8 @@ extension AuthManagerDelegate {
     func UserAutoLoginFinished(loggedIn: Bool) {}
     func UserRegistrationFinished(error: Error?) {}
     func UserLoginFinished(error: Error?) {}
-    func UserLogedOut(userId: String) {}
+    
+    func UserSuccessfullyLogedOut() {}
     func UserSuccessfullyLogedIn() {}
 }
 
@@ -112,8 +114,6 @@ class AuthManager {
     
     func LogOut() {
         
-        let userId = currentUser!.id
-        
         do {
             try Auth.auth().signOut()
         }
@@ -123,7 +123,7 @@ class AuthManager {
         
         currentUser = nil
         self.delegates.invokeDelegates { (delegate) in
-            delegate.UserLogedOut(userId: userId)
+            delegate.UserSuccessfullyLogedOut()
         }
     }
     
