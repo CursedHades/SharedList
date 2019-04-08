@@ -26,12 +26,18 @@ class InvitationManager {
     
     var invitations = [Invitation]()
     
-    fileprivate var observers = [DataEventType: DatabaseHandle?]()
+    fileprivate var observersHandler : ObserversHandler?
     
     fileprivate let listManager : ListsManager
     
     init(listManager: ListsManager) {
         self.listManager = listManager
+    }
+    
+    fileprivate func InitObserverHandler() {
+        let userId = Auth.auth().currentUser!.uid
+        let userInvitationsDbRef = Database.database().reference().child("users/\(userId)/invitations")
+        observersHandler = ObserversHandler(userInvitationsDbRef)
     }
     
     func LoadData() {
@@ -62,66 +68,55 @@ class InvitationManager {
     
     func ActivateObservers() {
         
-        if (observers[.childAdded] == nil) {
-            
-            let userId = Auth.auth().currentUser!.uid
-            let userInvitationsDbRef = Database.database().reference().child("users/\(userId)/invitations")
-            
-            observers[.childAdded] = userInvitationsDbRef.observe(.childAdded)
-            { (invitationSnapshot) in
-                
-                let listId = invitationSnapshot.key
-                
-                for invitation in self.invitations {
-                    if (invitation.list_id == listId) {
-                        return
-                    }
-                }
-                
-                let dataDict = invitationSnapshot.value as! [String : String]
-                
-                if let invitation = Invitation.Deserialize(listId: listId, data: dataDict) {
-                    
-                    self.invitations.append(invitation)
-                    
-                    self.delegates.invokeDelegates({ (delegate) in
-                        delegate.InvitationAdded()
-                    })
-                }
+        if let _ = observersHandler {
+            InitObserverHandler()
+        }
+        
+        observersHandler!.AddObserver(eventType: .childAdded, InvitationsChildAdded)
+        observersHandler!.AddObserver(eventType: .childRemoved, InvitationsChildRemoved)
+    }
+    
+    // MARK: - Invitations Observers Handlers
+    fileprivate func InvitationsChildAdded(_ invitationSnapshot: DataSnapshot) {
+        
+        let listId = invitationSnapshot.key
+        
+        for invitation in self.invitations {
+            if (invitation.list_id == listId) {
+                return
             }
         }
         
-        if (observers[.childRemoved] == nil) {
-            let userId = Auth.auth().currentUser!.uid
-            let userInvitationsDbRef = Database.database().reference().child("users/\(userId)/invitations")
+        let dataDict = invitationSnapshot.value as! [String : String]
+        
+        if let invitation = Invitation.Deserialize(listId: listId, data: dataDict) {
             
-            observers[.childRemoved] = userInvitationsDbRef.observe(.childRemoved, with:
-            { (invitationSnapshot) in
-                
-                for (index, invitation) in self.invitations.enumerated() {
-                    
-                    if (invitation.list_id == invitationSnapshot.key) {
-                        
-                        self.invitations.remove(at: index)
-                        
-                        self.delegates.invokeDelegates({ (delegate) in
-                            delegate.InvitationRemoved()
-                        })
-                        
-                        return
-                    }
-                }
+            self.invitations.append(invitation)
+            
+            self.delegates.invokeDelegates({ (delegate) in
+                delegate.InvitationAdded()
             })
         }
     }
     
-    fileprivate func DeactivateObservers(userId: String)
-    {
-        let userInvitationsDbRef = frb_utils.UserDbRef(userId).child("invitations")
-        userInvitationsDbRef.removeAllObservers()
-        observers.removeAll()
+    fileprivate func InvitationsChildRemoved(_ invitationSnapshot: DataSnapshot) {
+        
+        for (index, invitation) in self.invitations.enumerated() {
+            
+            if (invitation.list_id == invitationSnapshot.key) {
+                
+                self.invitations.remove(at: index)
+                
+                self.delegates.invokeDelegates({ (delegate) in
+                    delegate.InvitationRemoved()
+                })
+                
+                return
+            }
+        }
     }
     
+    // MARK: - Invitation Manipulations
     func SendInvitation(destinationUserEmail: String, listId: String, message: String) {
         
         let dbRef = Database.database().reference().root
@@ -182,16 +177,18 @@ class InvitationManager {
         }
     }
     
-    fileprivate func Cleanup(userId: String) {
+    fileprivate func Cleanup() {
         
-        DeactivateObservers(userId: userId)
+        observersHandler = nil
+
         invitations.removeAll()
     }
 }
 
+// MARK : - AuthManagerDelegate
 extension InvitationManager : AuthManagerDelegate {
     
     func UserLogedOut(userId: String) {
-        Cleanup(userId: userId)
+        Cleanup()
     }
 }
