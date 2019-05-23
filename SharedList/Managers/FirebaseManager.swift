@@ -24,4 +24,9 @@ class FirebaseManager {
         authManager.delegates.addDelegate(listsManager)
         authManager.delegates.addDelegate(invitationManager)
     }
+    
+    func PrepareSingleListManager(list: List) -> SingleListManager {
+        
+        return SingleListManager(list: list, frbManager: self)
+    }
 }

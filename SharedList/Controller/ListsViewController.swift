@@ -78,8 +78,9 @@ class ListsViewController: UIViewController {
             selectedListIndex = nil
             
             let singleListVC = segue.destination as! SingleListViewController
-            singleListVC.list = listsManager!.GetList(listIndex)
-            singleListVC.frbManager = frbManager
+            singleListVC.listManager = frbManager?.PrepareSingleListManager(list: listsManager!.GetList(listIndex)!)
+//            singleListVC.list = listsManager!.GetList(listIndex)
+//            singleListVC.frbManager = frbManager
         }
         
         if (segue.identifier == "goToInvitations")

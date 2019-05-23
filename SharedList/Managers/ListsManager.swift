@@ -17,43 +17,10 @@ protocol ListsManagerDelegate : class {
     func ListUpdated()
 }
 
-protocol ListObserverDelegate : class {
+extension List : DataChangedObserverObject {
     
-    func ListUpdated()
-}
-
-class ListChangedObserver {
-    
-    let list : List
-    weak var delegate : ListObserverDelegate?
-    
-    private var active = false
-    
-    init(_ list : List) {
-        self.list = list
-    }
-    
-    func Activate() {
-        if (active == false) {
-            frb_utils.ListDbRef(list.id).observe(.childChanged, with: self.UpdateCallback)
-            active = true
-        }
-    }
-    
-    func Deactivate() {
-        if (active) {
-            frb_utils.ListDbRef(list.id).removeAllObservers()
-            active = false
-        }
-    }
-    
-    private func UpdateCallback(_ childSnap: DataSnapshot) {
-        let DataDict = [childSnap.key : childSnap.value]
-        self.list.Update(data: DataDict)
-        
-        if let del = self.delegate {
-            del.ListUpdated()
-        }
+    func Id() -> String {
+        return self.id
     }
 }
 
@@ -62,7 +29,7 @@ class ListsManager {
     weak var delegate : ListsManagerDelegate? = nil
     
     fileprivate var observersHandler : ObserversHandler?
-    fileprivate var wrapedLists = [ListChangedObserver]()
+    fileprivate var wrapedLists = [DataChangedObserver<List>]()
     
     var listCount : Int {
         get { return wrapedLists.count }
@@ -70,7 +37,7 @@ class ListsManager {
     
     func GetList(_ idx : Int) -> List? {
         if (idx < listCount) {
-            return wrapedLists[idx].list
+            return wrapedLists[idx].data
         }
         return nil
     }
@@ -156,7 +123,7 @@ class ListsManager {
         
         for (index, wraper) in self.wrapedLists.enumerated() {
             
-            if (wraper.list.id == listKeySnapshot.key) {
+            if (wraper.data.id == listKeySnapshot.key) {
                 
                 wraper.Deactivate()
                 self.wrapedLists.remove(at: index)
@@ -174,10 +141,10 @@ class ListsManager {
         
         let dbRef = Database.database().reference()
         
-        let newListRef = frb_utils.ListsDbRef().childByAutoId()
+        let newListRef = frb_utils.ListsTableDbRef().childByAutoId()
         let newListKey = newListRef.key!
         
-        let newItemsRef = frb_utils.ItemsDbRef().childByAutoId()
+        let newItemsRef = frb_utils.ItemsTableDbRef().childByAutoId()
         let newItemsKey = newItemsRef.key!
         
         let userId = Auth.auth().currentUser!.uid
@@ -202,8 +169,8 @@ class ListsManager {
         
         if (index < listCount)
         {
-            let listId = wrapedLists[index].list.id
-            let itemsId = wrapedLists[index].list.items_id
+            let listId = wrapedLists[index].data.id
+            let itemsId = wrapedLists[index].data.items_id
             let listUsersDbRef = Database.database().reference().child("lists/\(listId)/users")
             
             listUsersDbRef.observeSingleEvent(of: .value) { (usersSnapshot) in
@@ -240,7 +207,7 @@ class ListsManager {
     fileprivate func AddLoadedList(id: String, data: [String : Any]) {
         
         let newList = List.Deserialize(id: id, data: data)
-        let observer = ListChangedObserver(newList)
+        let observer = DataChangedObserver(newList)
         observer.delegate = self
         wrapedLists.append(observer)
     }
@@ -256,8 +223,8 @@ class ListsManager {
     fileprivate func FindList(_ id : String) -> List? {
         
         for wraper in wrapedLists {
-            if (wraper.list.id == id) {
-                return wraper.list
+            if (wraper.data.id == id) {
+                return wraper.data
             }
         }
         return nil
@@ -276,9 +243,9 @@ class ListsManager {
 }
 
 // MARK: - ListObserverDelegate
-extension ListsManager : ListObserverDelegate {
+extension ListsManager : DataChangedObserverDelegate {
     
-    func ListUpdated() {
+    func DataUpdated() {
         if let del = delegate {
             del.ListUpdated()
         }

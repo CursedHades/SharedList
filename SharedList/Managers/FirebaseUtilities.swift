@@ -43,14 +43,18 @@ class frb_utils {
         return DbRef().child(ListPath(id))
     }
     
-    static func ListsDbRef() -> DatabaseReference {
+    static func ListsTableDbRef() -> DatabaseReference {
         
         return DbRef().child("\(Keys.lists.rawValue)")
     }
     
-    static func ItemsDbRef() -> DatabaseReference {
+    static func ItemsTableDbRef() -> DatabaseReference {
         
         return DbRef().child("\(Keys.items.rawValue)")
+    }
+    
+    static func ItemsDbRef(_ id: String) -> DatabaseReference {
+        return ItemsTableDbRef().child(id)
     }
     
     // MARK: - String Paths Getters
