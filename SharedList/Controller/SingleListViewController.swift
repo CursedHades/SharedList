@@ -7,20 +7,22 @@
 //
 
 import UIKit
-import Firebase
 import PopupDialog
+import SVProgressHUD
 
 class SingleListViewController: UIViewController {
     
     @IBOutlet var newItemTextField: UITextField!
     @IBOutlet var tableView: UITableView!
     
+    @IBOutlet var addItemButton: UIButton!
+    @IBOutlet var shareButton: UIButton!
+    
     var listManager : SingleListManager?
     {
         didSet
         {
             listManager?.delegate = self
-            listManager?.LoadData()
         }
     }
     
@@ -31,7 +33,11 @@ class SingleListViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "singleListTableViewCell")
         
-//        self.title = list?.title
+        self.title = listManager?.list.title
+        
+        listManager?.LoadData()
+        SVProgressHUD.show(withStatus: "Loading data...")
+        UpdateUI(enable: false)
     }
     
     func AddObservers() {
@@ -131,15 +137,44 @@ class SingleListViewController: UIViewController {
 //
 //        self.present(popup, animated: true, completion: nil)
     }
+    
+    
+    fileprivate func UpdateUI(enable: Bool)
+    {
+        if (enable)
+        {
+            newItemTextField.isEnabled = true
+            addItemButton.isEnabled = true
+            shareButton.isEnabled = true
+            
+            tableView.allowsSelection = true
+        }
+        else
+        {
+            newItemTextField.isEnabled = false
+            addItemButton.isEnabled = false
+            shareButton.isEnabled = false
+            
+            tableView.allowsSelection = false
+        }
+    }
 }
 
 extension SingleListViewController : SingleListManagerDelegate
 {
-    func DataLoaded() {
+    func DataLoaded()
+    {
         tableView.reloadData()
+        
+        SVProgressHUD.showSuccess(withStatus: "Awsome!")
+        SVProgressHUD.dismiss(withDelay: 0.6)
+        {
+            self.UpdateUI(enable: true)
+        }
     }
     
-    func NewItemAdded() {
+    func NewItemAdded()
+    {
         tableView.reloadData()
     }
 }

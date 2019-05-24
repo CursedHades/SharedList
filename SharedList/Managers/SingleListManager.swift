@@ -39,8 +39,9 @@ class SingleListManager {
         get { return data.count }
     }
     
+    let list : List
+    
     fileprivate let frbManager : FirebaseManager
-    fileprivate let list : List
     
     fileprivate var data = [ItemWithObserver]()
     
