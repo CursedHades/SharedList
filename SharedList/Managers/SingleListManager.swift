@@ -8,22 +8,22 @@
 
 import Firebase
 
-class ItemWithObserver {
+class ItemWithObserver
+{
     var item : Item
     var observer : ChangedObserver
     
-    init (item: Item) {
+    init (item: Item)
+    {
         self.item = item
         observer = ChangedObserver(dbRef: DatabaseReference())
+        { (snapshot) in
+            let dataDict = [snapshot.key : snapshot.value]
+            fatalError("Not yet implemented")
+        }
     }
 }
 
-extension ItemWithObserver : ChangedObserverDelegate {
-    
-    func DataChanged(data: [String : Any?]) {
-        fatalError("Not yet implemented")
-    }
-}
 
 protocol SingleListManagerDelegate : class {
     

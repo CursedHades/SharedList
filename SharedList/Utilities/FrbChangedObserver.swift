@@ -55,29 +55,25 @@ class DataChangedObserver<T : DataChangedObserverObject> {
     }
 }
 
-
-protocol ChangedObserverDelegate : class {
-    
-    func DataChanged(data : [String : Any?])
-}
-
 class ChangedObserver {
-    
-    weak var delegate : ChangedObserverDelegate?
     
     private let dbRef : DatabaseReference
     private var active = false
     
-    init (dbRef : DatabaseReference)
+    private var dataChangedCallback : (DataSnapshot) -> Void
+    
+    init (dbRef : DatabaseReference,
+          dataChangedCallback: @escaping (DataSnapshot) -> Void)
     {
         self.dbRef = dbRef
+        self.dataChangedCallback = dataChangedCallback
     }
     
     func Activate()
     {
         if (active == false)
         {
-            dbRef.observe(.childChanged, with: self.UpdateCallback)
+            dbRef.observe(.childChanged, with: self.dataChangedCallback)
             active = true
         }
     }
@@ -90,14 +86,4 @@ class ChangedObserver {
             active = false
         }
     }
-    
-    private func UpdateCallback(_ childSnap: DataSnapshot)
-    {
-        if let del = self.delegate
-        {
-            let DataDict = [childSnap.key : childSnap.value]
-            del.DataChanged(data: DataDict)
-        }
-    }
-    
 }
