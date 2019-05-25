@@ -43,7 +43,6 @@ class ListsViewController: UIViewController {
 
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "listCell")
         
         InitiateDataLoad()
     }
@@ -173,7 +172,7 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
         
         if listsManager!.listCount != 0 {
             cell.textLabel?.text = listsManager!.GetList(indexPath.row)!.title

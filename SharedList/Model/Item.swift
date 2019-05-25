@@ -15,7 +15,28 @@ class Item {
     
     let id : String
     private(set) var title : String
-    let done : Bool
+    private(set) var done : Bool
+    
+    func Update(data : [String : Any?])
+    {
+        for key in data.keys
+        {
+            if key == Keys.title.rawValue
+            {
+                if let newTitle = data[key] as? String
+                {
+                    title = newTitle
+                }
+            }
+            else if key == Keys.done.rawValue
+            {
+                if let newDone = data[key] as? Bool
+                {
+                    done = newDone
+                }
+            }
+        }
+    }
     
     fileprivate init(id:String, title: String, done: Bool)
     {

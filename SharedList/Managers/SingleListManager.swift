@@ -8,18 +8,46 @@
 
 import Firebase
 
+protocol ItemWithObserverDelegate : class
+{
+    func ItemUpdated()
+}
+
 class ItemWithObserver
 {
-    var item : Item
-    var observer : ChangedObserver
+    let item : Item
     
-    init (item: Item)
+    weak var delegate : ItemWithObserverDelegate?
+    
+    private let itemsId : String
+    private var observer : ChangedObserver?
+    private var active : Bool = false
+    
+    init (item: Item, itemsId: String)
     {
         self.item = item
-        observer = ChangedObserver(dbRef: DatabaseReference())
-        { (snapshot) in
-            let dataDict = [snapshot.key : snapshot.value]
-            fatalError("Not yet implemented")
+        self.itemsId = itemsId
+    }
+    
+    func Activate()
+    {
+        if (active == false)
+        {
+            let itemDbRef = frb_utils.ItemsDbRef(itemsId).child(Items.Keys.items.rawValue).child(item.id)
+            observer = ChangedObserver(dbRef: itemDbRef, dataChangedCallback: Updated(snapshot:))
+            observer?.Activate()
+            active = true
+        }
+    }
+    
+    func Updated(snapshot : DataSnapshot)
+    {
+        let itemData = [snapshot.key : snapshot.value]
+        self.item.Update(data: itemData)
+        
+        if let del = delegate
+        {
+            del.ItemUpdated()
         }
     }
 }
@@ -126,12 +154,33 @@ class SingleListManager {
         }
     }
     
+    func ReverseDone(index : Int)
+    {
+        let item = data[index].item
+        let updateData = ["items/\(list.items_id)/items/\(item.id)/done" : !item.done]
+        
+        let dbRef = Database.database().reference()
+        dbRef.updateChildValues(updateData)
+        { (error, snapshot) in
+            
+            if (error != nil) {
+                print("Cant change done property failed with error: \(error!)")
+            }
+        }
+    }
+    
     fileprivate func ActivateObservers()
     {
         if (observerActive == false)
         {
             obsererversManager.AddObserver(eventType: .childAdded, ItemsChildAdded)
             obsererversManager.AddObserver(eventType: .childRemoved, ItemsChildRemoved)
+            
+            for observer in data
+            {
+                observer.Activate()
+            }
+            
             observerActive = true
         }
     }
@@ -139,8 +188,9 @@ class SingleListManager {
     fileprivate func AddLoadedItem(id: String, data: [String : Any])
     {
         let newItem = Item.Deserialize(id: id, data: data)
-        let observer = ItemWithObserver(item: newItem)
-//        observer.delegate = self
+        let observer = ItemWithObserver(item: newItem, itemsId: list.items_id)
+        observer.delegate = self
+        
         self.data.append(observer)
     }
     
@@ -176,5 +226,16 @@ class SingleListManager {
             }
         }
         return nil
+    }
+}
+
+extension SingleListManager : ItemWithObserverDelegate
+{
+    func ItemUpdated()
+    {
+        if let del = delegate
+        {
+            del.DataLoaded()
+        }
     }
 }

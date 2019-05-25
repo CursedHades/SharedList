@@ -26,61 +26,21 @@ class SingleListViewController: UIViewController {
         }
     }
     
+    fileprivate var dataLoading : Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "singleListTableViewCell")
-        
+
         self.title = listManager?.list.title
         
         listManager?.LoadData()
         SVProgressHUD.show(withStatus: "Loading data...")
         UpdateUI(enable: false)
+        dataLoading = true
     }
-    
-    func AddObservers() {
-        
-//        guard let _ = list else { fatalError("list not set") }
-//        guard let _ = list?.id else {fatalError("list without id") }
-        
-//        AddItemsObserver(itemsId: list!.items_id)
-    }
-    
-    func AddItemsObserver(itemsId : String) {
-        
-//        let itemsDbRef = Database.database().reference().child("items/\(itemsId)")
-//
-//        itemsDbRef.observe(.childAdded, with: { (itemSnapshot) in
-//
-//            if (itemSnapshot.key != "list_id")
-//            {
-//                let itemId = itemSnapshot.key
-//                let itemDict = itemSnapshot.value as! [String: String]
-//                let newItem = Item.Deserialize(id: itemId, data: itemDict)
-//
-//                self.items.append(newItem)
-//                self.tableView.reloadData()
-//            }
-//        })
-//
-//        itemsDbRef.observe(.childRemoved)
-//        { (snapshot) in
-//
-//            let title = (snapshot.value as! [String : String])[Item.Keys.title.rawValue]
-//            for (index, item) in self.items.enumerated() {
-//
-//                if (item.title == title)
-//                {
-//                    self.items.remove(at: index)
-//                    self.tableView.reloadData()
-//                    return
-//                }
-//            }
-//        }
-    }
-    
     
     @IBAction func AddItemPressed(_ sender: UIButton)
     {
@@ -90,16 +50,6 @@ class SingleListViewController: UIViewController {
         {
             manager.AddNewItem(title: title)
         }
-    }
-    
-    func AddItemToItemsList(title: String, itemsId: String) {
-        
-//        let itemDict = Item.Serialize(title: title, done: false)
-//        let itemDbRef = Database.database().reference().child("items/\(itemsId)").childByAutoId()
-//
-//        itemDbRef.setValue(itemDict) { (error, sth) in
-//            //TODO: handle error
-//        }
     }
     
     func RemoveItem(Index: Int) {
@@ -163,10 +113,14 @@ extension SingleListViewController : SingleListManagerDelegate
     {
         tableView.reloadData()
         
-        SVProgressHUD.showSuccess(withStatus: "Awsome!")
-        SVProgressHUD.dismiss(withDelay: 0.6)
+        if (dataLoading)
         {
-            self.UpdateUI(enable: true)
+            SVProgressHUD.showSuccess(withStatus: "Awsome!")
+            SVProgressHUD.dismiss(withDelay: 0.6)
+            {
+                self.UpdateUI(enable: true)
+            }
+            dataLoading = false
         }
     }
     
@@ -193,8 +147,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "singleListTableViewCell")
-     
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell")
         if let itemsCount = listManager?.itemsCount
         {
             if (itemsCount > 0)
@@ -202,6 +155,8 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
                 if let item = listManager?.GetItem(indexPath.row)
                 {
                     cell?.textLabel?.text = item.title
+                    UpdateCell(cell: cell!, done: item.done)
+                    
                     return cell!
                 }
             }
@@ -211,8 +166,25 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         return cell!
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        if let manager = listManager
+        {
+            manager.ReverseDone(index: indexPath.row)
+        }
+    }
     
-//        RemoveItem(Index: indexPath.row)
+    fileprivate func UpdateCell(cell: UITableViewCell, done: Bool)
+    {
+        if (done == true)
+        {
+            cell.accessoryType = .checkmark
+            cell.textLabel?.textColor = UIColor.lightGray
+        }
+        else
+        {
+            cell.accessoryType = .none
+            cell.textLabel?.textColor = UIColor.black
+        }
     }
 }
