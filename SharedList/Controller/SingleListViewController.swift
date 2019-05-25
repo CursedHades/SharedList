@@ -82,17 +82,14 @@ class SingleListViewController: UIViewController {
     }
     
     
-    @IBAction func AddItemPressed(_ sender: UIButton) {
+    @IBAction func AddItemPressed(_ sender: UIButton)
+    {
+        let title = self.newItemTextField.text!
         
-//        guard let _ = list else { fatalError("list not set") }
-//
-//        if (newItemTextField.text?.count == 0) {
-//            print("empty new item text field")
-//            return
-//        }
-//
-//        let itemTitle = self.newItemTextField.text!
-//        self.AddItemToItemsList(title: itemTitle, itemsId: list!.items_id)
+        if let manager = listManager
+        {
+            manager.AddNewItem(title: title)
+        }
     }
     
     func AddItemToItemsList(title: String, itemsId: String) {
