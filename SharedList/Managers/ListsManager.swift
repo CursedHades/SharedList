@@ -31,8 +31,15 @@ class ListsManager {
     fileprivate var observersHandler : ObserversHandler?
     fileprivate var wrapedLists = [DataChangedObserver<List>]()
     
+    fileprivate let authManager : AuthManager
+    
     var listCount : Int {
         get { return wrapedLists.count }
+    }
+    
+    init(authManager: AuthManager)
+    {
+        self.authManager = authManager
     }
     
     func GetList(_ idx : Int) -> List? {
@@ -150,7 +157,7 @@ class ListsManager {
         let userId = Auth.auth().currentUser!.uid
         
         var serializedList = List.Serialize(title: title, owner_id: userId, items_id: newItemsKey)
-        serializedList["users"] = ["\(userId)" : true]
+        serializedList["users"] = ["\(userId)" : authManager.currentUser?.name]
         
         let updateData = ["users/\(userId)/lists/\(newListKey)" : true,
                           "lists/\(newListKey)" : serializedList,

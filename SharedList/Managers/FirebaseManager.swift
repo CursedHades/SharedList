@@ -17,9 +17,9 @@ class FirebaseManager {
     init () {
         FirebaseApp.configure()
         
-        listsManager = ListsManager()
-        invitationManager = InvitationManager(listManager: listsManager)
         authManager = AuthManager()
+        listsManager = ListsManager(authManager: authManager)
+        invitationManager = InvitationManager(listManager: listsManager)
         
         authManager.delegates.addDelegate(listsManager)
         authManager.delegates.addDelegate(invitationManager)

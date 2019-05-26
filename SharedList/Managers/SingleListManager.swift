@@ -108,22 +108,12 @@ class SingleListManager {
                 itemsDbRef.child(itemId).observeSingleEvent(of: .value)
                 { (itemSnapshot) in
                     
-                    let itemDict = itemSnapshot.value! as! [String : Any]
-                    self.AddLoadedItem(id: itemId, data: itemDict)
-                    
                     itemsCounter = itemsCounter - 1
-                    if let del = self.delegate
-                    {
-                        if (itemsCounter == 0)
-                        {
-                            del.DataLoaded()
-                            self.ActivateObservers()
-                        }
-                        else
-                        {
-                            del.NewItemAdded()
-                        }
-                    }
+                    
+                    let itemDict = itemSnapshot.value! as! [String : Any]
+                    let loadingDone = (itemsCounter == 0)
+                    
+                    self.LoadAuthorAndAddItem(id: itemId, data: itemDict, loadingDone: loadingDone)
                 }
             }
         }
@@ -186,19 +176,67 @@ class SingleListManager {
         }
     }
     
-    fileprivate func AddLoadedItem(id: String, data: [String : Any])
+    fileprivate func LoadAuthorAndAddItem(id: String, data: [String : Any], loadingDone: Bool)
     {
-        let newItem = Item.Deserialize(itemsId: list.items_id,
+        let authorId = data[Item.Keys.author.rawValue] as! String
+        let authorInListDbRef = frb_utils.UserInListDbRef(listId: list.id, userId: authorId)
+        
+        authorInListDbRef.observeSingleEvent(of: .value)
+        { (authorSnapshot) in
+            var newData = data
+            newData[Item.Keys.author.rawValue] = authorSnapshot.value as! String
+            
+            let newItemWithObserver = self.PrepareItemWithObserver(id: id, data: newData)
+            
+            self.data.append(newItemWithObserver)
+            
+            if let del = self.delegate
+            {
+                if (loadingDone == true)
+                {
+                    del.DataLoaded()
+                    self.ActivateObservers()
+                }
+                else
+                {
+                    del.NewItemAdded()
+                }
+            }
+        }
+    }
+    
+    fileprivate func PrepareItemWithObserver(id: String, data: [String : Any]) -> ItemWithObserver
+    {
+        let newItem = Item.Deserialize(itemsId: self.list.items_id,
                                        id: id,
                                        data: data)
         
         let observer = ItemWithObserver(item: newItem,
-                                        itemsId: list.items_id)
+                                        itemsId: self.list.items_id)
         observer.delegate = self
         observer.Activate()
         
-        self.data.append(observer)
+        return observer
     }
+    
+//    fileprivate func AddLoadedItem(id: String, data: [String : Any])
+//    {
+//        let authorId = data["author"] as! String
+//        frb_utils.ListDbRef(list.id).child("/users/\(authorId)").observeSingleEvent(of: .value) { (snapshot) in
+//
+//            let newItem = Item.Deserialize(itemsId: self.list.items_id,
+//                                           id: id,
+//                                           data: data)
+//
+//            let observer = ItemWithObserver(item: newItem,
+//                                            itemsId: self.list.items_id)
+//            observer.delegate = self
+//            observer.Activate()
+//
+//            self.data.append(observer)
+//
+//        }
+//    }
     
     fileprivate func ItemsChildAdded(_ itemSnapshot: DataSnapshot)
     {
@@ -209,12 +247,12 @@ class SingleListManager {
         }
         
         let itemDict = itemSnapshot.value! as! [String : Any]
-        AddLoadedItem(id: itemId, data: itemDict)
+        LoadAuthorAndAddItem(id: itemId, data: itemDict, loadingDone: false)
         
-        if let del = delegate
-        {
-            del.NewItemAdded()
-        }
+//        if let del = delegate
+//        {
+//            del.NewItemAdded()
+//        }
     }
     
     fileprivate func ItemsChildRemoved(_ itemSnapshot: DataSnapshot)

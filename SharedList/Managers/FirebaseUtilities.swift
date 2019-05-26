@@ -43,6 +43,14 @@ class frb_utils {
         return DbRef().child(ListPath(id))
     }
     
+    static func ListUsersDbRef(_ id: String) -> DatabaseReference {
+        return DbRef().child(ListUsersPath(id))
+    }
+    
+    static func UserInListDbRef(listId: String, userId: String) -> DatabaseReference {
+        return DbRef().child(UserInListPath(listId: listId, userId: userId))
+    }
+    
     static func ListsTableDbRef() -> DatabaseReference {
         
         return DbRef().child("\(Keys.lists.rawValue)")
@@ -66,6 +74,10 @@ class frb_utils {
         return ("\(Keys.lists.rawValue)/\(id)")
     }
     
+    static func ListUsersPath(_ id : String) -> String {
+        return ("\(Keys.lists.rawValue)/\(id)/\(Keys.users.rawValue)")
+    }
+    
     static func ItemsTablePath(_ id : String) -> String {
         return ("\(Keys.items.rawValue)/\(id)")
     }
@@ -76,5 +88,9 @@ class frb_utils {
     
     static func ItemPath(_ itemsId: String, _ itemId : String) -> String {
         return ItemsInItemsPath(itemsId) + ("/\(itemId)")
+    }
+    
+    static func UserInListPath(listId: String, userId: String) -> String {
+        return ListUsersPath(listId) + ("/\(userId)")
     }
 }
