@@ -69,6 +69,11 @@ class ChangedObserver {
         self.dataChangedCallback = dataChangedCallback
     }
     
+    deinit
+    {
+        Deactivate()
+    }
+    
     func Activate()
     {
         if (active == false)
