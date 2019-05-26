@@ -128,6 +128,10 @@ extension SingleListViewController : SingleListManagerDelegate
     {
         tableView.reloadData()
     }
+    
+    func ItemRemoved() {
+        tableView.reloadData()
+    }
 }
 
 extension SingleListViewController : UITableViewDelegate, UITableViewDataSource

@@ -57,6 +57,7 @@ protocol SingleListManagerDelegate : class {
     
     func DataLoaded()
     func NewItemAdded()
+    func ItemRemoved()
 }
 
 class SingleListManager {
@@ -218,58 +219,37 @@ class SingleListManager {
         
         return observer
     }
-    
-//    fileprivate func AddLoadedItem(id: String, data: [String : Any])
-//    {
-//        let authorId = data["author"] as! String
-//        frb_utils.ListDbRef(list.id).child("/users/\(authorId)").observeSingleEvent(of: .value) { (snapshot) in
-//
-//            let newItem = Item.Deserialize(itemsId: self.list.items_id,
-//                                           id: id,
-//                                           data: data)
-//
-//            let observer = ItemWithObserver(item: newItem,
-//                                            itemsId: self.list.items_id)
-//            observer.delegate = self
-//            observer.Activate()
-//
-//            self.data.append(observer)
-//
-//        }
-//    }
-    
+
     fileprivate func ItemsChildAdded(_ itemSnapshot: DataSnapshot)
     {
         let itemId = itemSnapshot.key
-        if (FindItem(itemId) != nil)
+        if (FindItemIndex(itemId) != nil)
         {
             return
         }
         
         let itemDict = itemSnapshot.value! as! [String : Any]
         LoadAuthorAndAddItem(id: itemId, data: itemDict, loadingDone: false)
-        
-//        if let del = delegate
-//        {
-//            del.NewItemAdded()
-//        }
     }
     
     fileprivate func ItemsChildRemoved(_ itemSnapshot: DataSnapshot)
     {
-        fatalError("not yet implemented")
-    }
-    
-    fileprivate func FindItem(_ id: String) -> Item?
-    {
-        for item in data
+        let itemId = itemSnapshot.key
+        if let itemIndex = FindItemIndex(itemId)
         {
-            if (item.item.id == id)
+            data.remove(at: itemIndex)
+            if let del = delegate
             {
-                return item.item
+                del.ItemRemoved()
             }
         }
-        return nil
+    }
+    
+    fileprivate func FindItemIndex(_ id: String) -> Int?
+    {
+        return data.firstIndex { (itemWithObserver) -> Bool in
+            return (itemWithObserver.item.id == id)
+        }
     }
 }
 
