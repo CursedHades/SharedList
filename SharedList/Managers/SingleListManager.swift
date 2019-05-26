@@ -140,10 +140,14 @@ class SingleListManager {
     {
         let dbRef = Database.database().reference()
         let newItemDbRef = frb_utils.ItemsDbRef(list.items_id).child(Items.Keys.items.rawValue).childByAutoId()
-        let newItemKey = newItemDbRef.key!
         
-        let updateData = ["items/\(list.items_id)/items/\(newItemKey)/done" : false,
-                          "items/\(list.items_id)/items/\(newItemKey)/title" : title] as [String : Any]
+        let newItem = Item(itemsId: list.items_id,
+                           id: newItemDbRef.key!,
+                           title: title,
+                           done: false,
+                           author: "Kociak")
+        
+        let updateData = newItem.Serialize()
         
         dbRef.updateChildValues(updateData)
         { (error, snapshot) in
@@ -157,7 +161,7 @@ class SingleListManager {
     func ReverseDone(index : Int)
     {
         let item = data[index].item
-        let updateData = ["items/\(list.items_id)/items/\(item.id)/done" : !item.done]
+        let updateData = [item.Path(Item.Keys.done) : !item.done]
         
         let dbRef = Database.database().reference()
         dbRef.updateChildValues(updateData)
@@ -182,8 +186,12 @@ class SingleListManager {
     
     fileprivate func AddLoadedItem(id: String, data: [String : Any])
     {
-        let newItem = Item.Deserialize(id: id, data: data)
-        let observer = ItemWithObserver(item: newItem, itemsId: list.items_id)
+        let newItem = Item.Deserialize(itemsId: list.items_id,
+                                       id: id,
+                                       data: data)
+        
+        let observer = ItemWithObserver(item: newItem,
+                                        itemsId: list.items_id)
         observer.delegate = self
         observer.Activate()
         
