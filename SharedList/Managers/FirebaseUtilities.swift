@@ -66,7 +66,15 @@ class frb_utils {
         return ("\(Keys.lists.rawValue)/\(id)")
     }
     
-    static func ItemsPath(_ id : String) -> String {
+    static func ItemsTablePath(_ id : String) -> String {
         return ("\(Keys.items.rawValue)/\(id)")
+    }
+    
+    static func ItemsInItemsPath(_ id : String) -> String {
+        return ItemsTablePath(id) + ("/\(Items.Keys.items.rawValue)")
+    }
+    
+    static func ItemPath(_ itemsId: String, _ itemId : String) -> String {
+        return ItemsInItemsPath(itemsId) + ("/\(itemId)")
     }
 }
