@@ -92,8 +92,10 @@ class SingleListManager {
             
             if (itemsTableSnapshot.exists() == false)
             {
-                if let del = self.delegate {
+                if let del = self.delegate
+                {
                     del.DataLoaded()
+                    self.ActivateObservers()
                 }
                 return
             }
@@ -145,7 +147,7 @@ class SingleListManager {
                            id: newItemDbRef.key!,
                            title: title,
                            done: false,
-                           author: "Kociak")
+                           author: Auth.auth().currentUser!.uid)
         
         let updateData = newItem.Serialize()
         
