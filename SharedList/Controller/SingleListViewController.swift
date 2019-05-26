@@ -172,6 +172,8 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         {
             manager.ReverseDone(index: indexPath.row)
         }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     fileprivate func UpdateCell(cell: UITableViewCell, done: Bool)

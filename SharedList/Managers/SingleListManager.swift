@@ -176,11 +176,6 @@ class SingleListManager {
             obsererversManager.AddObserver(eventType: .childAdded, ItemsChildAdded)
             obsererversManager.AddObserver(eventType: .childRemoved, ItemsChildRemoved)
             
-            for observer in data
-            {
-                observer.Activate()
-            }
-            
             observerActive = true
         }
     }
@@ -190,6 +185,7 @@ class SingleListManager {
         let newItem = Item.Deserialize(id: id, data: data)
         let observer = ItemWithObserver(item: newItem, itemsId: list.items_id)
         observer.delegate = self
+        observer.Activate()
         
         self.data.append(observer)
     }
