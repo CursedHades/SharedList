@@ -155,6 +155,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
                 if let item = listManager?.GetItem(indexPath.row)
                 {
                     cell?.textLabel?.text = item.title
+                    cell?.detailTextLabel?.text = "+: \(item.author)"
                     UpdateCell(cell: cell!, done: item.done)
                     
                     return cell!
@@ -182,11 +183,13 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         {
             cell.accessoryType = .checkmark
             cell.textLabel?.textColor = UIColor.lightGray
+            cell.detailTextLabel?.textColor = UIColor.lightGray
         }
         else
         {
             cell.accessoryType = .none
             cell.textLabel?.textColor = UIColor.black
+            cell.detailTextLabel?.textColor = UIColor.black
         }
     }
 }
