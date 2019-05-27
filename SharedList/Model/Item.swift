@@ -12,11 +12,13 @@ class Item {
         case title = "title"
         case done = "done"
         case author = "author"
+        case done_by = "done_by"
     }
     
     let itemsId : String
     let id : String
     let author : String
+    let doneBy : String
     private(set) var title : String
     private(set) var done : Bool
     
@@ -43,25 +45,26 @@ class Item {
         }
     }
     
-    init(itemsId: String, id:String, title: String, done: Bool, author: String)
+    init(itemsId: String, id:String, title: String, done: Bool, author: String, doneBy: String = "NONE")
     {
         self.itemsId = itemsId
         self.id = id
         self.title = title
         self.done = done
         self.author = author
+        self.doneBy = doneBy
         
         self.frbPrefix = frb_utils.ItemPath(itemsId, id)
     }
     
     func Serialize() -> [String : Any]
     {
-        let prefix = frb_utils.ItemPath(itemsId, id)
         var dict = [String : Any]()
         
         dict[Path(Keys.title)] = title
-        dict[Path(Keys.done)] = false
+        dict[Path(Keys.done)] = done
         dict[Path(Keys.author)] = author
+        dict[Path(Keys.done_by)] = doneBy
         
         return dict
     }
@@ -77,6 +80,7 @@ class Item {
                     id: id,
                     title: data[Keys.title.rawValue] as! String,
                     done: data[Keys.done.rawValue] as! Bool,
-                    author: data[Keys.author.rawValue] as! String)
+                    author: data[Keys.author.rawValue] as! String,
+                    doneBy: data[Keys.done_by.rawValue] as! String)
     }
 }

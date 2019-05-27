@@ -27,6 +27,6 @@ class FirebaseManager {
     
     func PrepareSingleListManager(list: List) -> SingleListManager {
         
-        return SingleListManager(list: list, frbManager: self)
+        return SingleListManager(list: list, authManager: authManager)
     }
 }

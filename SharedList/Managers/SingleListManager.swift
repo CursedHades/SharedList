@@ -70,16 +70,16 @@ class SingleListManager {
     
     let list : List
     
-    fileprivate let frbManager : FirebaseManager
+    fileprivate let authManager : AuthManager
     fileprivate let obsererversManager : ObserversHandler
     fileprivate var observerActive : Bool = false
     fileprivate var data = [ItemWithObserver]()
     
     
-    init(list: List, frbManager: FirebaseManager)
+    init(list: List, authManager: AuthManager)
     {
         self.list = list
-        self.frbManager = frbManager
+        self.authManager = authManager
         
         let itemsDbRef = frb_utils.ItemsDbRef(list.items_id).child(Items.Keys.items.rawValue)
         self.obsererversManager = ObserversHandler(itemsDbRef)
@@ -133,12 +133,13 @@ class SingleListManager {
     {
         let dbRef = Database.database().reference()
         let newItemDbRef = frb_utils.ItemsDbRef(list.items_id).child(Items.Keys.items.rawValue).childByAutoId()
+        let authorId = authManager.currentUser!.id
         
         let newItem = Item(itemsId: list.items_id,
                            id: newItemDbRef.key!,
                            title: title,
                            done: false,
-                           author: Auth.auth().currentUser!.uid)
+                           author: authorId)
         
         let updateData = newItem.Serialize()
         
@@ -154,7 +155,12 @@ class SingleListManager {
     func ReverseDone(index : Int)
     {
         let item = data[index].item
-        let updateData = [item.Path(Item.Keys.done) : !item.done]
+        let newDone = !item.done
+        let doneByValue = newDone ? authManager.currentUser!.id
+                                  : "NONE"
+        
+        let updateData = [item.Path(Item.Keys.done) : newDone,
+                          item.Path(Item.Keys.done_by) : doneByValue] as [String : Any]
         
         let dbRef = Database.database().reference()
         dbRef.updateChildValues(updateData)
