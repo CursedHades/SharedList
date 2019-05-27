@@ -17,57 +17,82 @@ protocol ListsManagerDelegate : class {
     func ListUpdated()
 }
 
-extension List : DataChangedObserverObject {
+class ListWithObserver
+{
+    let list : List
     
-    func Id() -> String {
-        return self.id
+    private let listChangedCallback : () -> Void
+    private var observer : ChangedObserver? = nil
+    
+    init(list : List, listChangedCallback: @escaping () -> Void)
+    {
+        self.list = list
+        self.listChangedCallback = listChangedCallback
+    }
+    
+    func Activate()
+    {
+        if (observer == nil)
+        {
+            let listDbRef = frb_utils.ListDbRef(list.id)
+            
+            observer = ChangedObserver(dbRef: listDbRef, dataChangedCallback: Updated(snapshot:))
+            observer?.Activate()
+        }
+    }
+    
+    private func Updated(snapshot : DataSnapshot)
+    {
+        let listData = [snapshot.key : snapshot.value]
+        self.list.Update(data: listData)
+        
+        self.listChangedCallback()
     }
 }
 
-//class ListWithObserver
-//{
-//    let list : List
-//}
-
-class ListsManager {
-    
+class ListsManager
+{
     weak var delegate : ListsManagerDelegate? = nil
     
-    fileprivate var observersHandler : ObserversHandler?
-    fileprivate var wrapedLists = [DataChangedObserver<List>]()
-    
     fileprivate let authManager : AuthManager
+    fileprivate let obsererversManager : ObserversHandler
+    fileprivate var observerActive : Bool = false
+    
+    fileprivate var data = [ListWithObserver]()
     
     var listCount : Int {
-        get { return wrapedLists.count }
+        get { return data.count }
     }
     
     init(authManager: AuthManager)
     {
         self.authManager = authManager
+        
+        let userListsDbRef = frb_utils.UserListsDbRef()
+        obsererversManager = ObserversHandler(userListsDbRef)
     }
     
-    func GetList(_ idx : Int) -> List? {
-        if (idx < listCount) {
-            return wrapedLists[idx].data
+    func GetList(_ idx : Int) -> List?
+    {
+        if (idx < listCount)
+        {
+            return data[idx].list
         }
         return nil
     }
     
-    fileprivate func InitObserverHandler() {
-        let userListsDbRef = frb_utils.UserListsDbRef()
-        observersHandler = ObserversHandler(userListsDbRef)
-    }
-    
-    func LoadData() {
-        
+    func LoadData()
+    {
         let userListsDbRef = frb_utils.UserListsDbRef()
         userListsDbRef.observeSingleEvent(of: .value)
         { (listsSnapshot) in
             
-            if (listsSnapshot.exists() == false) {
-                if let del = self.delegate {
+            if (listsSnapshot.exists() == false)
+            {
+                if let del = self.delegate
+                {
                     del.DataLoaded()
+                    self.ActivateObservers()
                 }
                 return
             }
@@ -75,84 +100,36 @@ class ListsManager {
             let listsIds = (listsSnapshot.value! as! [String : Any]).keys
             var listsCounter = listsIds.count
 
-            for (listId) in listsIds {
-                
+            for (listId) in listsIds
+            {
                 let listDbRef = frb_utils.ListDbRef(listId)
-                listDbRef.observeSingleEvent(of: .value, with:{ (listSnapshot) in
+                listDbRef.observeSingleEvent(of: .value)
+                { (listSnapshot) in
                     
-                    self.AddLoadedList(id: listId, data: listSnapshot.value as! [String : Any])
+                    let listData = listSnapshot.value! as! [String : Any]
+                    _ = self.AddListWithObserver(id: listId, data: listData)
                     
                     listsCounter = listsCounter - 1
                     
-                    if let del = self.delegate {
-                        if (listsCounter == 0) {
+                    if let del = self.delegate
+                    {
+                        if (listsCounter == 0)
+                        {
                             del.DataLoaded()
+                            self.ActivateObservers()
                         }
-                        else {
+                        else
+                        {
                             del.NewListAdded()
                         }
                     }
-                })
-            }
-        }
-    }
-    
-    func ActivateObservers() {
-        
-        if let _ = observersHandler {
-            InitObserverHandler()
-        }
-        
-        observersHandler!.AddObserver(eventType: .childAdded, ListsKeysChildAdded)
-        observersHandler!.AddObserver(eventType: .childRemoved, ListsKeysChildRemoved)
-        
-        for listObserver in wrapedLists {
-            listObserver.Activate()
-        }
-    }
-    
-    
-    // MARK: - Lists Keys Observers Handlers
-    fileprivate func ListsKeysChildAdded(_ listKeySnapshot: DataSnapshot) {
-        
-        let listId = listKeySnapshot.key
-        if self.ListLoaded(listId) {
-            return
-        }
-        
-        let listDbRef = frb_utils.ListDbRef(listId)
-        listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
-            
-            self.AddLoadedList(id: listId, data: listSnapshot.value as! [String : Any])
-            
-            if let del = self.delegate {
-                del.NewListAdded()
-            }
-        })
-    }
-    
-    fileprivate func ListsKeysChildRemoved(_ listKeySnapshot: DataSnapshot) {
-        
-        for (index, wraper) in self.wrapedLists.enumerated() {
-            
-            if (wraper.data.id == listKeySnapshot.key) {
-                
-                wraper.Deactivate()
-                self.wrapedLists.remove(at: index)
-                
-                if let del = self.delegate {
-                    del.ListRemoved()
                 }
-                return
             }
         }
     }
     
-    // MARK: - Lists Manipulations
-    func AddNewList(title: String) {
-        
-        let dbRef = Database.database().reference()
-        
+    func AddNewList(title: String)
+    {
         let newListRef = frb_utils.ListsTableDbRef().childByAutoId()
         let newListKey = newListRef.key!
         
@@ -168,7 +145,7 @@ class ListsManager {
                           "lists/\(newListKey)" : serializedList,
                           "items/\(newItemsKey)/list_id" : newListKey] as [String : Any]
         
-        dbRef.updateChildValues(updateData)
+        frb_utils.DbRef().updateChildValues(updateData)
         { (error, snapshot) in
             
             if (error != nil) {
@@ -179,26 +156,26 @@ class ListsManager {
     
     func RemoveList(index: Int) {
         
-        if (index < listCount)
-        {
-            let listId = wrapedLists[index].data.id
-            let itemsId = wrapedLists[index].data.items_id
-            let listUsersDbRef = Database.database().reference().child("lists/\(listId)/users")
-            
-            listUsersDbRef.observeSingleEvent(of: .value) { (usersSnapshot) in
-                
-                let usersDict = usersSnapshot.value as! [String : Any]
-                
-                var updateData = ["lists/\(listId)" : NSNull(),
-                                  "items/\(itemsId)" : NSNull()] as [String : Any]
-                
-                for userId in usersDict.keys {
-                    updateData["users/\(userId)/lists/\(listId)"] = NSNull()
-                }
-                
-                Database.database().reference().updateChildValues(updateData)
-            }
-        }
+        //        if (index < listCount)
+        //        {
+        //            let listId = wrapedLists[index].data.id
+        //            let itemsId = wrapedLists[index].data.items_id
+        //            let listUsersDbRef = Database.database().reference().child("lists/\(listId)/users")
+        //
+        //            listUsersDbRef.observeSingleEvent(of: .value) { (usersSnapshot) in
+        //
+        //                let usersDict = usersSnapshot.value as! [String : Any]
+        //
+        //                var updateData = ["lists/\(listId)" : NSNull(),
+        //                                  "items/\(itemsId)" : NSNull()] as [String : Any]
+        //
+        //                for userId in usersDict.keys {
+        //                    updateData["users/\(userId)/lists/\(listId)"] = NSNull()
+        //                }
+        //
+        //                Database.database().reference().updateChildValues(updateData)
+        //            }
+        //        }
     }
     
     func GetListById(_ id: String, completionHandler: @escaping (_ list: List?) -> Void) {
@@ -216,62 +193,81 @@ class ListsManager {
         }
     }
     
-    fileprivate func AddLoadedList(id: String, data: [String : Any]) {
-        
-        let newList = List.Deserialize(id: id, data: data)
-        let observer = DataChangedObserver(newList)
-        observer.delegate = self
-        wrapedLists.append(observer)
-    }
-    
-    fileprivate func ListLoaded(_ id : String) -> Bool {
-        
-        if FindList(id) != nil {
-            return true
+    fileprivate func ActivateObservers()
+    {
+        if (observerActive == false)
+        {
+            obsererversManager.AddObserver(eventType: .childAdded, ListsKeysChildAdded)
+            obsererversManager.AddObserver(eventType: .childRemoved, ListsKeysChildRemoved)
+            
+            observerActive = true
         }
-        return false
     }
     
-    fileprivate func FindList(_ id : String) -> List? {
+    
+    // MARK: - Lists Keys Observers Handlers
+    fileprivate func ListsKeysChildAdded(_ listKeySnapshot: DataSnapshot)
+    {
+        let listId = listKeySnapshot.key
+        if (FindListIndex(listId) != nil)
+        {
+            return
+        }
         
-        for wraper in wrapedLists {
-            if (wraper.data.id == id) {
-                return wraper.data
+        let listDbRef = frb_utils.ListDbRef(listId)
+        listDbRef.observeSingleEvent(of: .value)
+        { (listSnapshot) in
+         
+            let listData = listSnapshot.value as! [String : Any]
+            _ = self.AddListWithObserver(id: listId, data: listData)
+            
+            if let del = self.delegate
+            {
+                del.NewListAdded()
             }
         }
-        return nil
     }
     
-    fileprivate func Cleanup() {
-        
-        observersHandler = nil
-        delegate = nil
-        
-        for listObserver in wrapedLists {
-            listObserver.Deactivate()
+    fileprivate func ListsKeysChildRemoved(_ listKeySnapshot: DataSnapshot)
+    {
+        let listId = listKeySnapshot.key
+        if let listIndex = FindListIndex(listId)
+        {
+            data.remove(at: listIndex)
+            if let del = delegate
+            {
+                del.ListRemoved()
+            }
         }
-        wrapedLists.removeAll()
     }
-}
-
-// MARK: - ListObserverDelegate
-extension ListsManager : DataChangedObserverDelegate {
     
-    func DataUpdated() {
-        if let del = delegate {
+    fileprivate func AddListWithObserver(id: String, data: [String : Any]) -> ListWithObserver
+    {
+        let newList = List.Deserialize(id: id,
+                                       data: data)
+        
+        let observer = ListWithObserver(list: newList,
+                                        listChangedCallback: self.ListChanged)
+        
+        observer.Activate()
+        
+        self.data.append(observer)
+        
+        return observer
+    }
+    
+    fileprivate func ListChanged()
+    {
+        if let del = delegate
+        {
             del.ListUpdated()
         }
     }
-}
-
-// MARK: - AuthManagerDelegate
-extension ListsManager : AuthManagerDelegate {
     
-    func UserLogedOut() {
-        Cleanup()
-    }
-    
-    func UserLogedIn() {
-        InitObserverHandler()
+    fileprivate func FindListIndex(_ id : String) -> Int?
+    {
+        return data.firstIndex { (listWithObserver) -> Bool in
+            return (listWithObserver.list.id == id)
+        }
     }
 }
