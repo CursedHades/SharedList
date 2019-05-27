@@ -11,16 +11,18 @@ class Item {
     enum Keys : String {
         case title = "title"
         case done = "done"
-        case author = "author"
-        case done_by = "done_by"
+        case author_id = "author_id"
+        case done_by_id = "done_by_id"
     }
     
     let itemsId : String
     let id : String
-    let author : String
-    let doneBy : String
+    let authorId : String
+    let doneById : String
     private(set) var title : String
     private(set) var done : Bool
+    private(set) var authorName : String = ""
+    private(set) var doneByName : String = ""
     
     private let frbPrefix : String
     
@@ -45,42 +47,70 @@ class Item {
         }
     }
     
-    init(itemsId: String, id:String, title: String, done: Bool, author: String, doneBy: String = "NONE")
+    func PathForKey(_ key: Keys) -> String
+    {
+        return Item.Path(frbPrefix, key)
+    }
+    
+    func UpdateAuthorName(_ newName : String)
+    {
+        self.authorName = newName
+    }
+    
+    func UpdateDoneByName(_ newName : String)
+    {
+        self.doneByName = newName
+    }
+    
+    fileprivate init(itemsId: String,
+                     id:String,
+                     title: String,
+                     done: Bool,
+                     authorId: String,
+                     doneById: String = "NONE")
     {
         self.itemsId = itemsId
         self.id = id
         self.title = title
         self.done = done
-        self.author = author
-        self.doneBy = doneBy
+        self.authorId = authorId
+        self.doneById = doneById
         
         self.frbPrefix = frb_utils.ItemPath(itemsId, id)
     }
     
-    func Serialize() -> [String : Any]
+    static func Path(_ prefix: String, _ key: Keys) -> String
     {
+        return prefix + "/\(key.rawValue)"
+    }
+    
+    static func Serialize(itemsId: String,
+                          id:String,
+                          title: String,
+                          done: Bool,
+                          authorId: String,
+                          doneById: String = "NONE") -> [String : Any]
+    {
+        let prefix = frb_utils.ItemPath(itemsId, id)
+        
         var dict = [String : Any]()
         
-        dict[Path(Keys.title)] = title
-        dict[Path(Keys.done)] = done
-        dict[Path(Keys.author)] = author
-        dict[Path(Keys.done_by)] = doneBy
+        dict[Path(prefix, Keys.title)] = title
+        dict[Path(prefix, Keys.done)] = done
+        dict[Path(prefix, Keys.author_id)] = authorId
+        dict[Path(prefix, Keys.done_by_id)] = doneById
         
         return dict
     }
     
-    func Path(_ key: Keys) -> String
-    {
-        return frbPrefix + "/\(key.rawValue)"
-    }
-    
-    static func Deserialize(itemsId: String, id: String, data: [String : Any]) -> Item
+    static func Deserialize(itemsId: String,
+                            id: String,
+                            data: [String : Any]) -> Item
     {
         return Item(itemsId: itemsId,
                     id: id,
                     title: data[Keys.title.rawValue] as! String,
                     done: data[Keys.done.rawValue] as! Bool,
-                    author: data[Keys.author.rawValue] as! String,
-                    doneBy: data[Keys.done_by.rawValue] as! String)
+                    authorId: data[Keys.author_id.rawValue] as! String)
     }
 }

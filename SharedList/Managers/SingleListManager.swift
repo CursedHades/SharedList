@@ -112,7 +112,9 @@ class SingleListManager {
                 
                 let itemData = data[itemId] as! [String : Any]
                 let lastItem = itemsCounter == 0
-                self.LoadAuthorAndAddItem(id: itemId, data: itemData, lastItem: lastItem)
+                self.LoadUserNamesAndAddItem(id: itemId,
+                                             data: itemData,
+                                             lastItem: lastItem)
             }
         }
     }
@@ -132,13 +134,12 @@ class SingleListManager {
         let newItemDbRef = frb_utils.ItemsDbRef(list.items_id).child(Items.Keys.items.rawValue).childByAutoId()
         let authorId = authManager.currentUser!.id
         
-        let newItem = Item(itemsId: list.items_id,
-                           id: newItemDbRef.key!,
-                           title: title,
-                           done: false,
-                           author: authorId)
-        
-        let updateData = newItem.Serialize()
+        let updateData = Item.Serialize(itemsId: list.items_id,
+                                        id: newItemDbRef.key!,
+                                        title: title,
+                                        done: false,
+                                        authorId: authorId,
+                                        doneById: "NONE")
         
         dbRef.updateChildValues(updateData)
         { (error, snapshot) in
@@ -156,8 +157,8 @@ class SingleListManager {
         let doneByValue = newDone ? authManager.currentUser!.id
                                   : "NONE"
         
-        let updateData = [item.Path(Item.Keys.done) : newDone,
-                          item.Path(Item.Keys.done_by) : doneByValue] as [String : Any]
+        let updateData = [item.PathForKey(Item.Keys.done) : newDone,
+                          item.PathForKey(Item.Keys.done_by_id) : doneByValue] as [String : Any]
         
         let dbRef = Database.database().reference()
         dbRef.updateChildValues(updateData)
@@ -180,19 +181,23 @@ class SingleListManager {
         }
     }
     
-    fileprivate func LoadAuthorAndAddItem(id: String, data: [String : Any], lastItem: Bool)
+    fileprivate func LoadUserNamesAndAddItem(id: String, data: [String : Any], lastItem: Bool)
     {
-        let authorId = data[Item.Keys.author.rawValue] as! String
-        let authorInListDbRef = frb_utils.UserInListDbRef(listId: list.id, userId: authorId)
-        
-        authorInListDbRef.observeSingleEvent(of: .value)
-        { (authorSnapshot) in
-            var newData = data
-            newData[Item.Keys.author.rawValue] = authorSnapshot.value as! String
+        let usersDbRef = frb_utils.ListUsersDbRef(list.id)
+        usersDbRef.observeSingleEvent(of: .value)
+        { (usersSnapshot) in
             
-            let newItemWithObserver = self.PrepareItemWithObserver(id: id, data: newData)
+            let newItem = self.AddItemWithObserver(id: id, data: data)
             
-            self.data.append(newItemWithObserver)
+            let usersData = usersSnapshot.value! as! [String : Any]
+            if let authorName = usersData[newItem.item.authorId]
+            {
+                newItem.item.UpdateAuthorName(authorName as! String)
+            }
+            else if let doneByName = usersData[newItem.item.doneById]
+            {
+                newItem.item.UpdateDoneByName(doneByName as! String)
+            }
             
             if let del = self.delegate
             {
@@ -209,8 +214,9 @@ class SingleListManager {
         }
     }
     
-    fileprivate func PrepareItemWithObserver(id: String, data: [String : Any]) -> ItemWithObserver
+    fileprivate func AddItemWithObserver(id: String, data: [String : Any]) -> ItemWithObserver
     {
+
         let newItem = Item.Deserialize(itemsId: self.list.items_id,
                                        id: id,
                                        data: data)
@@ -219,6 +225,8 @@ class SingleListManager {
                                         itemsId: self.list.items_id)
         observer.delegate = self
         observer.Activate()
+        
+        self.data.append(observer)
         
         return observer
     }
@@ -232,7 +240,9 @@ class SingleListManager {
         }
         
         let itemDict = itemSnapshot.value! as! [String : Any]
-        LoadAuthorAndAddItem(id: itemId, data: itemDict, lastItem: false)
+        LoadUserNamesAndAddItem(id: itemId,
+                                data: itemDict,
+                                lastItem: false)
     }
     
     fileprivate func ItemsChildRemoved(_ itemSnapshot: DataSnapshot)

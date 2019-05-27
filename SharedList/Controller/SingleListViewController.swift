@@ -160,7 +160,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
                 if let item = listManager?.GetItem(indexPath.row)
                 {
                     cell?.textLabel?.text = item.title
-                    cell?.detailTextLabel?.text = "+: \(item.author)"
+                    cell?.detailTextLabel?.text = "+: \(item.authorName)"
                     UpdateCell(cell: cell!, done: item.done)
                     
                     return cell!
