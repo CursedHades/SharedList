@@ -65,6 +65,10 @@ class frb_utils {
         return ItemsTableDbRef().child(id)
     }
     
+    static func ItemDbRef(_ itemsId: String, _ itemId : String) -> DatabaseReference {
+        return DbRef().child(ItemPath(itemsId, itemId))
+    }
+    
     // MARK: - String Paths Getters
     static func UserPath(_ id : String) -> String {
         return ("\(Keys.users.rawValue)/\(id)")

@@ -169,6 +169,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         }
         
         cell?.textLabel?.text = "Add items"
+        cell?.detailTextLabel?.text = ""
         return cell!
     }
     
