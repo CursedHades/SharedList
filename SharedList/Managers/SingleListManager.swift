@@ -8,22 +8,17 @@
 
 import Firebase
 
-protocol ItemWithObserverDelegate : class
-{
-    func ItemUpdated()
-}
-
 class ItemWithObserver
 {
     let item : Item
     
-    weak var delegate : ItemWithObserverDelegate?
+    private var itemUpdatedCallback : () -> Void
     private var observer : ChangedObserver?
     
-    init (item: Item, delegate: ItemWithObserverDelegate? = nil)
+    init (item: Item, itemUpdatedCallback: @escaping () -> Void)
     {
         self.item = item
-        self.delegate = delegate
+        self.itemUpdatedCallback = itemUpdatedCallback
     }
     
     func Activate()
@@ -31,6 +26,7 @@ class ItemWithObserver
         if (observer == nil)
         {
             let itemDbRef = frb_utils.ItemsDbRef(item.itemsId).child(Items.Keys.items.rawValue).child(item.id)
+            
             observer = ChangedObserver(dbRef: itemDbRef, dataChangedCallback: Updated(snapshot:))
             observer?.Activate()
         }
@@ -41,10 +37,7 @@ class ItemWithObserver
         let itemData = [snapshot.key : snapshot.value]
         self.item.Update(data: itemData)
         
-        if let del = delegate
-        {
-            del.ItemUpdated()
-        }
+        self.itemUpdatedCallback()
     }
 }
 
@@ -233,13 +226,21 @@ class SingleListManager {
                                        data: data)
         
         let observer = ItemWithObserver(item: newItem,
-                                        delegate: self)
+                                        itemUpdatedCallback: self.ItemChanged)
         
         observer.Activate()
         
         self.data.append(observer)
         
         return observer
+    }
+    
+    fileprivate func ItemChanged()
+    {
+        if let del = delegate
+        {
+            del.DataLoaded()
+        }
     }
 
     fileprivate func ItemsChildAdded(_ itemSnapshot: DataSnapshot)
@@ -273,17 +274,6 @@ class SingleListManager {
     {
         return data.firstIndex { (itemWithObserver) -> Bool in
             return (itemWithObserver.item.id == id)
-        }
-    }
-}
-
-extension SingleListManager : ItemWithObserverDelegate
-{
-    func ItemUpdated()
-    {
-        if let del = delegate
-        {
-            del.DataLoaded()
         }
     }
 }

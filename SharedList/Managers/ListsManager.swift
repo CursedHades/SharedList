@@ -24,6 +24,11 @@ extension List : DataChangedObserverObject {
     }
 }
 
+//class ListWithObserver
+//{
+//    let list : List
+//}
+
 class ListsManager {
     
     weak var delegate : ListsManagerDelegate? = nil
