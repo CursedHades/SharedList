@@ -60,6 +60,7 @@ protocol SingleListManagerDelegate : class {
     func ItemRemoved()
 }
 
+
 class SingleListManager {
     
     weak var delegate : SingleListManagerDelegate? = nil
@@ -101,21 +102,17 @@ class SingleListManager {
                 return
             }
             
-            let itemsIds = (itemsTableSnapshot.value! as! [String : Any]).keys
+            let data = (itemsTableSnapshot.value! as! [String : Any])
+            let itemsIds = data.keys
             var itemsCounter = itemsIds.count
             
             for itemId in itemsIds
             {
-                itemsDbRef.child(itemId).observeSingleEvent(of: .value)
-                { (itemSnapshot) in
-                    
-                    itemsCounter = itemsCounter - 1
-                    
-                    let itemDict = itemSnapshot.value! as! [String : Any]
-                    let loadingDone = (itemsCounter == 0)
-                    
-                    self.LoadAuthorAndAddItem(id: itemId, data: itemDict, loadingDone: loadingDone)
-                }
+                itemsCounter = itemsCounter - 1
+                
+                let itemData = data[itemId] as! [String : Any]
+                let lastItem = itemsCounter == 0
+                self.LoadAuthorAndAddItem(id: itemId, data: itemData, lastItem: lastItem)
             }
         }
     }
@@ -183,7 +180,7 @@ class SingleListManager {
         }
     }
     
-    fileprivate func LoadAuthorAndAddItem(id: String, data: [String : Any], loadingDone: Bool)
+    fileprivate func LoadAuthorAndAddItem(id: String, data: [String : Any], lastItem: Bool)
     {
         let authorId = data[Item.Keys.author.rawValue] as! String
         let authorInListDbRef = frb_utils.UserInListDbRef(listId: list.id, userId: authorId)
@@ -199,7 +196,7 @@ class SingleListManager {
             
             if let del = self.delegate
             {
-                if (loadingDone == true)
+                if (lastItem == true)
                 {
                     del.DataLoaded()
                     self.ActivateObservers()
@@ -235,7 +232,7 @@ class SingleListManager {
         }
         
         let itemDict = itemSnapshot.value! as! [String : Any]
-        LoadAuthorAndAddItem(id: itemId, data: itemDict, loadingDone: false)
+        LoadAuthorAndAddItem(id: itemId, data: itemDict, lastItem: false)
     }
     
     fileprivate func ItemsChildRemoved(_ itemSnapshot: DataSnapshot)
