@@ -17,7 +17,7 @@ class frb_utils {
     }
     
     // MARK: - Reference Getters
-    fileprivate static func DbRef() -> DatabaseReference {
+    static func DbRef() -> DatabaseReference {
         
         return Database.database().reference()
     }

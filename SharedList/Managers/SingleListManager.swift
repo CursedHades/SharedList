@@ -12,8 +12,8 @@ class ItemWithObserver
 {
     let item : Item
     
-    private var itemUpdatedCallback : () -> Void
-    private var observer : ChangedObserver?
+    private let itemUpdatedCallback : () -> Void
+    private var observer : ChangedObserver? = nil
     
     init (item: Item, itemUpdatedCallback: @escaping () -> Void)
     {
@@ -32,7 +32,7 @@ class ItemWithObserver
         }
     }
     
-    func Updated(snapshot : DataSnapshot)
+    private func Updated(snapshot : DataSnapshot)
     {
         let itemData = [snapshot.key : snapshot.value]
         self.item.Update(data: itemData)
@@ -119,7 +119,6 @@ class SingleListManager {
     
     func AddNewItem(title : String)
     {
-        let dbRef = Database.database().reference()
         let newItemDbRef = frb_utils.ItemsDbRef(list.items_id).child(Items.Keys.items.rawValue).childByAutoId()
         let authorId = authManager.currentUser!.id
         
@@ -130,7 +129,7 @@ class SingleListManager {
                                         authorId: authorId,
                                         doneById: "NONE")
         
-        dbRef.updateChildValues(updateData)
+        frb_utils.DbRef().updateChildValues(updateData)
         { (error, snapshot) in
             
             if (error != nil) {

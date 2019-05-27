@@ -133,30 +133,25 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
                 return itemsCount
             }
         }
-        
         return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell")
-        if let itemsCount = listManager?.itemsCount
-        {
-            if (itemsCount > 0)
-            {
-                if let item = listManager?.GetItem(indexPath.row)
-                {
-                    cell?.textLabel?.text = item.title
-                    cell?.detailTextLabel?.text = "+: \(item.authorName)"
-                    UpdateCell(cell: cell!, done: item.done)
-                    
-                    return cell!
-                }
-            }
-        }
         
-        cell?.textLabel?.text = "Add items"
-        cell?.detailTextLabel?.text = ""
+        if let item = listManager?.GetItem(indexPath.row)
+        {
+            cell?.textLabel?.text = item.title
+            cell?.detailTextLabel?.text = "+: \(item.authorName)"
+            UpdateCell(cell: cell!, done: item.done)
+        }
+        else
+        {
+            cell?.textLabel?.text = "Add items"
+            cell?.detailTextLabel?.text = ""
+        }
+
         return cell!
     }
     
