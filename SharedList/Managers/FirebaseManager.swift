@@ -10,19 +10,23 @@ import Firebase
 
 class FirebaseManager {
     
-    let listManager : ListManager
+    let listsManager : ListsManager
     let invitationManager : InvitationManager
     let authManager : AuthManager
     
     init () {
         FirebaseApp.configure()
         
-        listManager = ListManager()
-        invitationManager = InvitationManager(listManager: listManager)
         authManager = AuthManager()
+        listsManager = ListsManager(authManager: authManager)
+        invitationManager = InvitationManager(listManager: listsManager)
         
-        authManager.delegates.addDelegate(listManager)
+        authManager.delegates.addDelegate(listsManager)
         authManager.delegates.addDelegate(invitationManager)
-        authManager.TryAutoLogIn()
+    }
+    
+    func PrepareSingleListManager(list: List) -> SingleListManager {
+        
+        return SingleListManager(list: list, authManager: authManager)
     }
 }

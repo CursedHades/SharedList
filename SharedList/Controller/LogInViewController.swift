@@ -45,12 +45,17 @@ class LogInViewController: UIViewController {
 
 extension LogInViewController : AuthManagerDelegate {
     
-    func UserLoginFinished(error: Error?) {
+    func UserLogedIn() {
         
         SVProgressHUD.dismiss()
         firebaseManager?.authManager.delegates.removeDelegate(self)
-        if error == nil {
-            self.performSegue(withIdentifier: "goToLists", sender: self)
-        }
+        
+        self.performSegue(withIdentifier: "goToLists", sender: self)
+    }
+    
+    func UserLogInFailed(error: Error?) {
+        
+        SVProgressHUD.dismiss()
+        firebaseManager?.authManager.delegates.removeDelegate(self)
     }
 }

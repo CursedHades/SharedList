@@ -58,14 +58,17 @@ class ViewController: UIViewController {
 
 extension ViewController : AuthManagerDelegate {
     
-    func UserAutoLoginFinished(loggedIn: Bool) {
+    func UserLogedIn() {
+        
         EnableUI()
-        
         frbManager?.authManager.delegates.removeDelegate(self)
+        performSegue(withIdentifier: "goToLists", sender: self)
+    }
+    
+    func UserLogInFailed(error: Error?) {
         
-        if (loggedIn) {
-            performSegue(withIdentifier: "goToLists", sender: self)
-        }
+        EnableUI()
+        frbManager?.authManager.delegates.removeDelegate(self)
     }
 }
 

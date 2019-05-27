@@ -1,5 +1,5 @@
 //
-//  ListManager.swift
+//  ListsManager.swift
 //  SharedList
 //
 //  Created by Lukasz on 18/03/2019.
@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-protocol ListManagerDelegate : class {
+protocol ListsManagerDelegate : class {
     
     func DataLoaded()
     func NewListAdded()
@@ -17,63 +17,41 @@ protocol ListManagerDelegate : class {
     func ListUpdated()
 }
 
-protocol ListObserverDelegate : class {
+extension List : DataChangedObserverObject {
     
-    func ListUpdated()
-}
-
-class ListChangedObserver {
-    
-    let list : List
-    weak var delegate : ListObserverDelegate?
-    
-    private var active = false
-    
-    init(_ list : List) {
-        self.list = list
-    }
-    
-    func Activate() {
-        if (active == false) {
-            frb_utils.ListDbRef(list.id).observe(.childChanged, with: self.UpdateCallback)
-            active = true
-        }
-    }
-    
-    func Deactivate() {
-        if (active) {
-            frb_utils.ListDbRef(list.id).removeAllObservers()
-            active = false
-        }
-    }
-    
-    private func UpdateCallback(_ childSnap: DataSnapshot) {
-        let DataDict = [childSnap.key : childSnap.value]
-        self.list.Update(data: DataDict)
-        
-        if let del = self.delegate {
-            del.ListUpdated()
-        }
+    func Id() -> String {
+        return self.id
     }
 }
 
-class ListManager {
+class ListsManager {
     
-    weak var delegate : ListManagerDelegate? = nil
+    weak var delegate : ListsManagerDelegate? = nil
     
-    fileprivate var observers = [DataEventType: DatabaseHandle?]()
+    fileprivate var observersHandler : ObserversHandler?
+    fileprivate var wrapedLists = [DataChangedObserver<List>]()
     
-    fileprivate var wrapedLists = [ListChangedObserver]()
+    fileprivate let authManager : AuthManager
     
     var listCount : Int {
         get { return wrapedLists.count }
     }
     
+    init(authManager: AuthManager)
+    {
+        self.authManager = authManager
+    }
+    
     func GetList(_ idx : Int) -> List? {
         if (idx < listCount) {
-            return wrapedLists[idx].list
+            return wrapedLists[idx].data
         }
         return nil
+    }
+    
+    fileprivate func InitObserverHandler() {
+        let userListsDbRef = frb_utils.UserListsDbRef()
+        observersHandler = ObserversHandler(userListsDbRef)
     }
     
     func LoadData() {
@@ -114,90 +92,72 @@ class ListManager {
         }
     }
     
-    func ActivateObservers()
-    {
-        if (observers[.childAdded] == nil) {
-            
-            let userListsDbRef = frb_utils.UserListsDbRef()
-            observers[.childAdded] = userListsDbRef.observe(.childAdded)
-            { (listKeySnapshot) in
-                
-                let listId = listKeySnapshot.key
-                if self.ListLoaded(listId) {
-                    return
-                }
-                
-                let listDbRef = frb_utils.ListDbRef(listId)
-                listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
-
-                    self.AddLoadedList(id: listId, data: listSnapshot.value as! [String : Any])
-                    
-                    if let del = self.delegate {
-                        del.NewListAdded()
-                    }
-                })
-            }
+    func ActivateObservers() {
+        
+        if let _ = observersHandler {
+            InitObserverHandler()
         }
         
-        if (observers[.childRemoved] == nil) {
-            
-            let listsKeyDbRef = frb_utils.UserListsDbRef()
-            observers[.childRemoved] = listsKeyDbRef.observe(.childRemoved)
-            { (listKeySnapshot) in
-                
-                for (index, wraper) in self.wrapedLists.enumerated() {
-                    
-                    if (wraper.list.id == listKeySnapshot.key) {
-                        
-                        wraper.Deactivate()
-                        self.wrapedLists.remove(at: index)
-                        
-                        if let del = self.delegate {
-                            del.ListRemoved()
-                        }
-                        return
-                    }
-                }
-            }
-        }
+        observersHandler!.AddObserver(eventType: .childAdded, ListsKeysChildAdded)
+        observersHandler!.AddObserver(eventType: .childRemoved, ListsKeysChildRemoved)
         
         for listObserver in wrapedLists {
             listObserver.Activate()
         }
     }
     
-    fileprivate func DeactivateObservers(userId: String)
-    {
-        let listsKeyDbRef = frb_utils.UserDbRef(userId)
-        listsKeyDbRef.removeAllObservers()
-        observers.removeAll()
+    
+    // MARK: - Lists Keys Observers Handlers
+    fileprivate func ListsKeysChildAdded(_ listKeySnapshot: DataSnapshot) {
         
-        for listObserver in wrapedLists {
-            listObserver.Deactivate()
+        let listId = listKeySnapshot.key
+        if self.ListLoaded(listId) {
+            return
+        }
+        
+        let listDbRef = frb_utils.ListDbRef(listId)
+        listDbRef.observeSingleEvent(of: .value, with: { (listSnapshot) in
+            
+            self.AddLoadedList(id: listId, data: listSnapshot.value as! [String : Any])
+            
+            if let del = self.delegate {
+                del.NewListAdded()
+            }
+        })
+    }
+    
+    fileprivate func ListsKeysChildRemoved(_ listKeySnapshot: DataSnapshot) {
+        
+        for (index, wraper) in self.wrapedLists.enumerated() {
+            
+            if (wraper.data.id == listKeySnapshot.key) {
+                
+                wraper.Deactivate()
+                self.wrapedLists.remove(at: index)
+                
+                if let del = self.delegate {
+                    del.ListRemoved()
+                }
+                return
+            }
         }
     }
     
-    fileprivate func AddLoadedList(id: String, data: [String : Any]) {
-        let newList = List.Deserialize(id: id, data: data)
-        let observer = ListChangedObserver(newList)
-        observer.delegate = self
-        wrapedLists.append(observer)
-    }
-    
+    // MARK: - Lists Manipulations
     func AddNewList(title: String) {
         
         let dbRef = Database.database().reference()
         
-        let newListRef = frb_utils.ListsDbRef().childByAutoId()
+        let newListRef = frb_utils.ListsTableDbRef().childByAutoId()
         let newListKey = newListRef.key!
         
-        let newItemsRef = frb_utils.ItemsDbRef().childByAutoId()
+        let newItemsRef = frb_utils.ItemsTableDbRef().childByAutoId()
         let newItemsKey = newItemsRef.key!
         
         let userId = Auth.auth().currentUser!.uid
         
         var serializedList = List.Serialize(title: title, owner_id: userId, items_id: newItemsKey)
-        serializedList["users"] = ["\(userId)" : true]
+        serializedList["users"] = ["\(userId)" : authManager.currentUser?.name]
         
         let updateData = ["users/\(userId)/lists/\(newListKey)" : true,
                           "lists/\(newListKey)" : serializedList,
@@ -216,8 +176,8 @@ class ListManager {
         
         if (index < listCount)
         {
-            let listId = wrapedLists[index].list.id
-            let itemsId = wrapedLists[index].list.items_id
+            let listId = wrapedLists[index].data.id
+            let itemsId = wrapedLists[index].data.items_id
             let listUsersDbRef = Database.database().reference().child("lists/\(listId)/users")
             
             listUsersDbRef.observeSingleEvent(of: .value) { (usersSnapshot) in
@@ -251,6 +211,14 @@ class ListManager {
         }
     }
     
+    fileprivate func AddLoadedList(id: String, data: [String : Any]) {
+        
+        let newList = List.Deserialize(id: id, data: data)
+        let observer = DataChangedObserver(newList)
+        observer.delegate = self
+        wrapedLists.append(observer)
+    }
+    
     fileprivate func ListLoaded(_ id : String) -> Bool {
         
         if FindList(id) != nil {
@@ -262,34 +230,43 @@ class ListManager {
     fileprivate func FindList(_ id : String) -> List? {
         
         for wraper in wrapedLists {
-            if (wraper.list.id == id) {
-                return wraper.list
+            if (wraper.data.id == id) {
+                return wraper.data
             }
         }
         return nil
     }
     
-    fileprivate func Cleanup(userId: String) {
+    fileprivate func Cleanup() {
         
-        DeactivateObservers(userId: userId)
-        wrapedLists.removeAll()
-        
+        observersHandler = nil
         delegate = nil
+        
+        for listObserver in wrapedLists {
+            listObserver.Deactivate()
+        }
+        wrapedLists.removeAll()
     }
 }
 
-extension ListManager : ListObserverDelegate {
+// MARK: - ListObserverDelegate
+extension ListsManager : DataChangedObserverDelegate {
     
-    func ListUpdated() {
+    func DataUpdated() {
         if let del = delegate {
             del.ListUpdated()
         }
     }
 }
 
-extension ListManager : AuthManagerDelegate {
+// MARK: - AuthManagerDelegate
+extension ListsManager : AuthManagerDelegate {
     
-    func UserLogedOut(userId: String) {
-        Cleanup(userId: userId)
+    func UserLogedOut() {
+        Cleanup()
+    }
+    
+    func UserLogedIn() {
+        InitObserverHandler()
     }
 }
