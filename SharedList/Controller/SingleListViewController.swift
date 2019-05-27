@@ -52,19 +52,6 @@ class SingleListViewController: UIViewController {
         }
     }
     
-    func RemoveItem(Index: Int) {
-        
-//        let item = items[Index]
-//
-//        let itemRef = Database.database().reference().child("items/\(list!.items_id)/\(item.id)")
-//
-//        itemRef.removeValue { (error, snapshot) in
-//            if (error != nil) {
-//                print(("Item removing failed with error: \(error!)"))
-//            }
-//        }
-    }
-    
     @IBAction func ShareButtonPressed(_ sender: UIButton) {
 
 //        let title = "title"

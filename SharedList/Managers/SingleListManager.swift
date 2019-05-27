@@ -18,25 +18,21 @@ class ItemWithObserver
     let item : Item
     
     weak var delegate : ItemWithObserverDelegate?
-    
-    private let itemsId : String
     private var observer : ChangedObserver?
-    private var active : Bool = false
     
-    init (item: Item, itemsId: String)
+    init (item: Item, delegate: ItemWithObserverDelegate? = nil)
     {
         self.item = item
-        self.itemsId = itemsId
+        self.delegate = delegate
     }
     
     func Activate()
     {
-        if (active == false)
+        if (observer == nil)
         {
-            let itemDbRef = frb_utils.ItemsDbRef(itemsId).child(Items.Keys.items.rawValue).child(item.id)
+            let itemDbRef = frb_utils.ItemsDbRef(item.itemsId).child(Items.Keys.items.rawValue).child(item.id)
             observer = ChangedObserver(dbRef: itemDbRef, dataChangedCallback: Updated(snapshot:))
             observer?.Activate()
-            active = true
         }
     }
     
@@ -232,14 +228,13 @@ class SingleListManager {
     
     fileprivate func AddItemWithObserver(id: String, data: [String : Any]) -> ItemWithObserver
     {
-
         let newItem = Item.Deserialize(itemsId: self.list.items_id,
                                        id: id,
                                        data: data)
         
         let observer = ItemWithObserver(item: newItem,
-                                        itemsId: self.list.items_id)
-        observer.delegate = self
+                                        delegate: self)
+        
         observer.Activate()
         
         self.data.append(observer)
