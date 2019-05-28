@@ -154,28 +154,28 @@ class ListsManager
         }
     }
     
-    func RemoveList(index: Int) {
-        
-        //        if (index < listCount)
-        //        {
-        //            let listId = wrapedLists[index].data.id
-        //            let itemsId = wrapedLists[index].data.items_id
-        //            let listUsersDbRef = Database.database().reference().child("lists/\(listId)/users")
-        //
-        //            listUsersDbRef.observeSingleEvent(of: .value) { (usersSnapshot) in
-        //
-        //                let usersDict = usersSnapshot.value as! [String : Any]
-        //
-        //                var updateData = ["lists/\(listId)" : NSNull(),
-        //                                  "items/\(itemsId)" : NSNull()] as [String : Any]
-        //
-        //                for userId in usersDict.keys {
-        //                    updateData["users/\(userId)/lists/\(listId)"] = NSNull()
-        //                }
-        //
-        //                Database.database().reference().updateChildValues(updateData)
-        //            }
-        //        }
+    func RemoveList(index: Int)
+    {
+        if (index < listCount)
+        {
+            let list = data[index].list
+            let listUsersDbRef = frb_utils.ListUsersDbRef(list.id)
+
+            listUsersDbRef.observeSingleEvent(of: .value) { (usersSnapshot) in
+
+                let usersDict = usersSnapshot.value as! [String : Any]
+
+                var updateData = ["lists/\(list.id)" : NSNull(),
+                                  "items/\(list.items_id)" : NSNull()] as [String : Any]
+
+                for userId in usersDict.keys
+                {
+                    updateData["users/\(userId)/lists/\(list.id)"] = NSNull()
+                }
+                
+                frb_utils.DbRef().updateChildValues(updateData)
+            }
+        }
     }
     
     func GetListById(_ id: String, completionHandler: @escaping (_ list: List?) -> Void) {
