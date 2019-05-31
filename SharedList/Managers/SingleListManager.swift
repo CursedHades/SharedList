@@ -8,47 +8,36 @@
 
 import Firebase
 
-protocol ItemWithObserverDelegate : class
-{
-    func ItemUpdated()
-}
-
 class ItemWithObserver
 {
     let item : Item
     
-    weak var delegate : ItemWithObserverDelegate?
+    private let itemUpdatedCallback : () -> Void
+    private var observer : ChangedObserver? = nil
     
-    private let itemsId : String
-    private var observer : ChangedObserver?
-    private var active : Bool = false
-    
-    init (item: Item, itemsId: String)
+    init (item: Item, itemUpdatedCallback: @escaping () -> Void)
     {
         self.item = item
-        self.itemsId = itemsId
+        self.itemUpdatedCallback = itemUpdatedCallback
     }
     
     func Activate()
     {
-        if (active == false)
+        if (observer == nil)
         {
-            let itemDbRef = frb_utils.ItemsDbRef(itemsId).child(Items.Keys.items.rawValue).child(item.id)
+            let itemDbRef = frb_utils.ItemsDbRef(item.itemsId).child(Items.Keys.items.rawValue).child(item.id)
+            
             observer = ChangedObserver(dbRef: itemDbRef, dataChangedCallback: Updated(snapshot:))
             observer?.Activate()
-            active = true
         }
     }
     
-    func Updated(snapshot : DataSnapshot)
+    private func Updated(snapshot : DataSnapshot)
     {
         let itemData = [snapshot.key : snapshot.value]
         self.item.Update(data: itemData)
         
-        if let del = delegate
-        {
-            del.ItemUpdated()
-        }
+        self.itemUpdatedCallback()
     }
 }
 
@@ -130,18 +119,17 @@ class SingleListManager {
     
     func AddNewItem(title : String)
     {
-        let dbRef = Database.database().reference()
         let newItemDbRef = frb_utils.ItemsDbRef(list.items_id).child(Items.Keys.items.rawValue).childByAutoId()
         let authorId = authManager.currentUser!.id
         
         let updateData = Item.Serialize(itemsId: list.items_id,
                                         id: newItemDbRef.key!,
                                         title: title,
-                                        done: false,
+                                        checked: false,
                                         authorId: authorId,
                                         doneById: "NONE")
         
-        dbRef.updateChildValues(updateData)
+        frb_utils.DbRef().updateChildValues(updateData)
         { (error, snapshot) in
             
             if (error != nil) {
@@ -150,15 +138,31 @@ class SingleListManager {
         }
     }
     
-    func ReverseDone(index : Int)
+    func RemoveItem(index: Int)
     {
         let item = data[index].item
-        let newDone = !item.done
-        let doneByValue = newDone ? authManager.currentUser!.id
-                                  : "NONE"
+        let dbRef = frb_utils.ItemDbRef(item.itemsId, item.id)
         
-        let updateData = [item.PathForKey(Item.Keys.done) : newDone,
-                          item.PathForKey(Item.Keys.done_by_id) : doneByValue] as [String : Any]
+        dbRef.removeValue()
+        { (error, ref) in
+
+            if (error != nil)
+            {
+                print("Item removal failed with error: \(error!)")
+            }
+        }
+        
+    }
+    
+    func ReverseChecked(index : Int)
+    {
+        let item = data[index].item
+        let newChecked = !item.checked
+        let checkedByValue = newChecked ? authManager.currentUser!.id
+                                        : "NONE"
+        
+        let updateData = [item.PathForKey(Item.Keys.checked) : newChecked,
+                          item.PathForKey(Item.Keys.checked_by_id) : checkedByValue] as [String : Any]
         
         let dbRef = Database.database().reference()
         dbRef.updateChildValues(updateData)
@@ -194,9 +198,9 @@ class SingleListManager {
             {
                 newItem.item.UpdateAuthorName(authorName as! String)
             }
-            else if let doneByName = usersData[newItem.item.doneById]
+            else if let checkedByName = usersData[newItem.item.checkedById]
             {
-                newItem.item.UpdateDoneByName(doneByName as! String)
+                newItem.item.UpdateCheckedByName(checkedByName as! String)
             }
             
             if let del = self.delegate
@@ -216,19 +220,26 @@ class SingleListManager {
     
     fileprivate func AddItemWithObserver(id: String, data: [String : Any]) -> ItemWithObserver
     {
-
         let newItem = Item.Deserialize(itemsId: self.list.items_id,
                                        id: id,
                                        data: data)
         
         let observer = ItemWithObserver(item: newItem,
-                                        itemsId: self.list.items_id)
-        observer.delegate = self
+                                        itemUpdatedCallback: self.ItemChanged)
+        
         observer.Activate()
         
         self.data.append(observer)
         
         return observer
+    }
+    
+    fileprivate func ItemChanged()
+    {
+        if let del = delegate
+        {
+            del.DataLoaded()
+        }
     }
 
     fileprivate func ItemsChildAdded(_ itemSnapshot: DataSnapshot)
@@ -262,17 +273,6 @@ class SingleListManager {
     {
         return data.firstIndex { (itemWithObserver) -> Bool in
             return (itemWithObserver.item.id == id)
-        }
-    }
-}
-
-extension SingleListManager : ItemWithObserverDelegate
-{
-    func ItemUpdated()
-    {
-        if let del = delegate
-        {
-            del.DataLoaded()
         }
     }
 }

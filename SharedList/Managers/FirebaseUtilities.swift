@@ -17,7 +17,7 @@ class frb_utils {
     }
     
     // MARK: - Reference Getters
-    fileprivate static func DbRef() -> DatabaseReference {
+    static func DbRef() -> DatabaseReference {
         
         return Database.database().reference()
     }
@@ -63,6 +63,10 @@ class frb_utils {
     
     static func ItemsDbRef(_ id: String) -> DatabaseReference {
         return ItemsTableDbRef().child(id)
+    }
+    
+    static func ItemDbRef(_ itemsId: String, _ itemId : String) -> DatabaseReference {
+        return DbRef().child(ItemPath(itemsId, itemId))
     }
     
     // MARK: - String Paths Getters

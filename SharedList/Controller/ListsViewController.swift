@@ -22,23 +22,35 @@ class ListsViewController: UIViewController {
     fileprivate let loadingGuard = TimeoutGuard()
     fileprivate var loadingInProgress = false
     
-    fileprivate var listsManager : ListsManager?
-    fileprivate var invitationManager : InvitationManager?
-    var frbManager : FirebaseManager? {
-        didSet {
-            listsManager = frbManager?.listsManager
-            listsManager?.delegate = self
-            
-            invitationManager = frbManager?.invitationManager
-            invitationManager?.delegates.addDelegate(self)
-            invitationManager?.LoadData()
-            invitationManager?.ActivateObservers()
+    var frbManager : FirebaseManager?
+    {
+        didSet
+        {
+            listsManager2 = frbManager?.PrepareListsManager()
+            listsManager2?.delegate = self
         }
     }
+  
+    fileprivate var listsManager2 : ListsManager?
+    
+//    fileprivate var listsManager : ListsManager?
+    fileprivate var invitationManager : InvitationManager?
+//    var frbManager : FirebaseManager? {
+//        didSet {
+//            listsManager = frbManager?.listsManager
+//            listsManager?.delegate = self
+//
+//            invitationManager = frbManager?.invitationManager
+//            invitationManager?.delegates.addDelegate(self)
+//            invitationManager?.LoadData()
+//            invitationManager?.ActivateObservers()
+//        }
+//    }
     
     //*********************************************************************
     // MARK: - Functions
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
 
         tableView.delegate = self
@@ -54,7 +66,7 @@ class ListsViewController: UIViewController {
         }
         else {
             let listTitle = listTitleTextField.text!
-            listsManager!.AddNewList(title: listTitle)
+            listsManager2!.AddNewList(title: listTitle)
         }
     }
     
@@ -68,8 +80,8 @@ class ListsViewController: UIViewController {
         self.navigationController?.popToRootViewController(animated: true)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
         if (segue.identifier == "goToSingleList")
         {
             guard let listIndex = selectedListIndex else { fatalError("No list was selected") }
@@ -77,16 +89,14 @@ class ListsViewController: UIViewController {
             selectedListIndex = nil
             
             let singleListVC = segue.destination as! SingleListViewController
-            singleListVC.listManager = frbManager?.PrepareSingleListManager(list: listsManager!.GetList(listIndex)!)
-//            singleListVC.list = listsManager!.GetList(listIndex)
-//            singleListVC.frbManager = frbManager
+            singleListVC.listManager = frbManager?.PrepareSingleListManager(list: listsManager2!.GetList(listIndex)!)
         }
         
-        if (segue.identifier == "goToInvitations")
-        {
-            let invitationVC = segue.destination as! InvitationsViewController
-            invitationVC.frbManager = frbManager
-        }
+//        if (segue.identifier == "goToInvitations")
+//        {
+//            let invitationVC = segue.destination as! InvitationsViewController
+//            invitationVC.frbManager = frbManager
+//        }
     }
     
     fileprivate func InitiateDataLoad() {
@@ -95,7 +105,7 @@ class ListsViewController: UIViewController {
         UpdateUI()
         SVProgressHUD.show(withStatus: "Loading data...")
         
-        listsManager?.LoadData()
+        listsManager2?.LoadData()
         
         loadingGuard.delegate = self
         loadingGuard.Activate()
@@ -158,33 +168,38 @@ class ListsViewController: UIViewController {
 
 //*********************************************************************
 // MARK: - Table View extension
-extension ListsViewController : UITableViewDelegate, UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if listsManager!.listCount != 0 {
-            return listsManager!.listCount
+extension ListsViewController : UITableViewDelegate, UITableViewDataSource
+{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        if let itemsCount = listsManager2?.listCount
+        {
+            if (itemsCount > 0)
+            {
+                return itemsCount
+            }
         }
-        else {
-            return 1
-        }
+        return 1
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
         
-        if listsManager!.listCount != 0 {
-            cell.textLabel?.text = listsManager!.GetList(indexPath.row)!.title
+        if let list = listsManager2?.GetList(indexPath.row)
+        {
+            cell.textLabel?.text = list.title
         }
-        else {
+        else
+        {
             cell.textLabel?.text = "Add new list"
         }
         
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
         
 //        listManager?.RemoveList(index: indexPath.row)
         
@@ -218,7 +233,6 @@ extension ListsViewController : ListsManagerDelegate {
     func DataLoaded() {
         
         tableView.reloadData()
-        listsManager?.ActivateObservers()
         
         loadingGuard.Deactivate()
         DismisDataLoad(success: true)

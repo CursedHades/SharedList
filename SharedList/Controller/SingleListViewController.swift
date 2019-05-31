@@ -12,11 +12,8 @@ import SVProgressHUD
 
 class SingleListViewController: UIViewController {
     
-    @IBOutlet var newItemTextField: UITextField!
     @IBOutlet var tableView: UITableView!
-    
-    @IBOutlet var addItemButton: UIButton!
-    @IBOutlet var shareButton: UIButton!
+    @IBOutlet var newItemNameTextField: UITextField!
     
     var listManager : SingleListManager?
     {
@@ -36,73 +33,35 @@ class SingleListViewController: UIViewController {
 
         self.title = listManager?.list.title
         
+        newItemNameTextField.keyboardType = .default
+        newItemNameTextField.returnKeyType = .done
+        newItemNameTextField.delegate = self
+        
         listManager?.LoadData()
         SVProgressHUD.show(withStatus: "Loading data...")
         UpdateUI(enable: false)
         dataLoading = true
     }
     
-    @IBAction func AddItemPressed(_ sender: UIButton)
-    {
-        let title = self.newItemTextField.text!
-        
-        if let manager = listManager
-        {
-            manager.AddNewItem(title: title)
-        }
-    }
-    
-    func RemoveItem(Index: Int) {
-        
-//        let item = items[Index]
-//
-//        let itemRef = Database.database().reference().child("items/\(list!.items_id)/\(item.id)")
-//
-//        itemRef.removeValue { (error, snapshot) in
-//            if (error != nil) {
-//                print(("Item removing failed with error: \(error!)"))
-//            }
-//        }
-    }
-    
-    @IBAction func ShareButtonPressed(_ sender: UIButton) {
-
-//        let title = "title"
-//        let message = "message"
-//
-//        let popup = PopupDialog(title: title, message: message)
-//
-//        let cancelButton = CancelButton(title: "cancel") {}
-//
-//        let shareButton = DefaultButton(title: "share") {
-//            self.frbManager?.invitationManager.SendInvitation(destinationUserEmail: "1@2.com",
-//                                                              listId: self.list!.id,
-//                                                              message: "message")
-//        }
-//
-//        popup.addButtons([shareButton, cancelButton])
-//
-//        self.present(popup, animated: true, completion: nil)
-    }
-    
-    
     fileprivate func UpdateUI(enable: Bool)
     {
         if (enable)
         {
-            newItemTextField.isEnabled = true
-            addItemButton.isEnabled = true
-            shareButton.isEnabled = true
-            
+            newItemNameTextField.isEnabled = true
             tableView.allowsSelection = true
         }
         else
         {
-            newItemTextField.isEnabled = false
-            addItemButton.isEnabled = false
-            shareButton.isEnabled = false
-            
+            newItemNameTextField.isEnabled = false
             tableView.allowsSelection = false
+        }
+    }
+    
+    fileprivate func AddItem(title: String)
+    {
+        if let manager = listManager
+        {
+            manager.AddNewItem(title: title)
         }
     }
 }
@@ -146,45 +105,61 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
                 return itemsCount
             }
         }
-        
         return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell")
-        if let itemsCount = listManager?.itemsCount
-        {
-            if (itemsCount > 0)
-            {
-                if let item = listManager?.GetItem(indexPath.row)
-                {
-                    cell?.textLabel?.text = item.title
-                    cell?.detailTextLabel?.text = "+: \(item.authorName)"
-                    UpdateCell(cell: cell!, done: item.done)
-                    
-                    return cell!
-                }
-            }
-        }
         
-        cell?.textLabel?.text = "Add items"
+        if let item = listManager?.GetItem(indexPath.row)
+        {
+            cell?.textLabel?.text = item.title
+            cell?.detailTextLabel?.text = "+: \(item.authorName)"
+            UpdateCell(cell: cell!, checked: item.checked)
+        }
+        else
+        {
+            cell?.textLabel?.text = "Add items"
+            cell?.detailTextLabel?.text = ""
+        }
+
         return cell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        if let manager = listManager
+        if let item = listManager?.GetItem(indexPath.row)
         {
-            manager.ReverseDone(index: indexPath.row)
+            if item.checked == true
+            {
+                // TODO: show popup if you really wanna change done property
+                let title = item.title
+                let message = "Do you want to ucheck it?"
+                let popup = PopupDialog(title: title, message: message, buttonAlignment: .horizontal)
+                
+                let buttonYes = DefaultButton(title: "Yes")
+                {
+                    self.listManager?.ReverseChecked(index: indexPath.row)
+                }
+                let buttonCancel = CancelButton(title: "No") {
+                    
+                }
+                popup.addButtons([buttonCancel, buttonYes])
+                self.present(popup, animated: true, completion: nil)
+            }
+            else
+            {
+                listManager?.ReverseChecked(index: indexPath.row)
+            }
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    fileprivate func UpdateCell(cell: UITableViewCell, done: Bool)
+    fileprivate func UpdateCell(cell: UITableViewCell, checked: Bool)
     {
-        if (done == true)
+        if (checked == true)
         {
             cell.accessoryType = .checkmark
             cell.textLabel?.textColor = UIColor.lightGray
@@ -196,5 +171,30 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
             cell.textLabel?.textColor = UIColor.black
             cell.detailTextLabel?.textColor = UIColor.black
         }
+    }
+}
+
+extension SingleListViewController : UITextFieldDelegate
+{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+        if let newItem = CorrectInput(textField.text)
+        {
+            self.AddItem(title: newItem)
+            self.view.endEditing(true)
+            textField.text = ""
+            return true
+        }
+        return false
+    }
+    
+    private func CorrectInput(_ itemName : String?) -> String?
+    {
+        if let str = itemName
+        {
+            let newStr = str.trimmingCharacters(in: .whitespacesAndNewlines)
+            return (newStr != "" ? newStr : nil)
+        }
+        return nil
     }
 }

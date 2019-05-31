@@ -16,7 +16,7 @@ class InvitationsViewController: UIViewController {
     var frbManager : FirebaseManager? = nil {
         
         didSet {
-            invitationManager = frbManager?.invitationManager
+//            invitationManager = frbManager?.invitationManager
             invitationManager?.delegates.addDelegate(self)
         }
     }
