@@ -129,9 +129,29 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        if let manager = listManager
+        if let item = listManager?.GetItem(indexPath.row)
         {
-            manager.ReverseDone(index: indexPath.row)
+            if item.done == true
+            {
+                // TODO: show popup if you really wanna change done property
+                let title = item.title
+                let message = "Do you want to ucheck it?"
+                let popup = PopupDialog(title: title, message: message, buttonAlignment: .horizontal)
+                
+                let buttonYes = DefaultButton(title: "Yes")
+                {
+                    self.listManager?.ReverseDone(index: indexPath.row)
+                }
+                let buttonCancel = CancelButton(title: "No") {
+                    
+                }
+                popup.addButtons([buttonCancel, buttonYes])
+                self.present(popup, animated: true, completion: nil)
+            }
+            else
+            {
+                listManager?.ReverseDone(index: indexPath.row)
+            }
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
