@@ -12,11 +12,8 @@ import SVProgressHUD
 
 class SingleListViewController: UIViewController {
     
-    @IBOutlet var newItemTextField: UITextField!
     @IBOutlet var tableView: UITableView!
-    
-    @IBOutlet var addItemButton: UIButton!
-    @IBOutlet var shareButton: UIButton!
+    @IBOutlet var newItemNameTextField: UITextField!
     
     var listManager : SingleListManager?
     {
@@ -36,60 +33,35 @@ class SingleListViewController: UIViewController {
 
         self.title = listManager?.list.title
         
+        newItemNameTextField.keyboardType = .default
+        newItemNameTextField.returnKeyType = .done
+        newItemNameTextField.delegate = self
+        
         listManager?.LoadData()
         SVProgressHUD.show(withStatus: "Loading data...")
         UpdateUI(enable: false)
         dataLoading = true
     }
     
-    @IBAction func AddItemPressed(_ sender: UIButton)
-    {
-        let title = self.newItemTextField.text!
-        
-        if let manager = listManager
-        {
-            manager.AddNewItem(title: title)
-        }
-    }
-    
-    @IBAction func ShareButtonPressed(_ sender: UIButton) {
-
-//        let title = "title"
-//        let message = "message"
-//
-//        let popup = PopupDialog(title: title, message: message)
-//
-//        let cancelButton = CancelButton(title: "cancel") {}
-//
-//        let shareButton = DefaultButton(title: "share") {
-//            self.frbManager?.invitationManager.SendInvitation(destinationUserEmail: "1@2.com",
-//                                                              listId: self.list!.id,
-//                                                              message: "message")
-//        }
-//
-//        popup.addButtons([shareButton, cancelButton])
-//
-//        self.present(popup, animated: true, completion: nil)
-    }
-    
-    
     fileprivate func UpdateUI(enable: Bool)
     {
         if (enable)
         {
-            newItemTextField.isEnabled = true
-            addItemButton.isEnabled = true
-            shareButton.isEnabled = true
-            
+            newItemNameTextField.isEnabled = true
             tableView.allowsSelection = true
         }
         else
         {
-            newItemTextField.isEnabled = false
-            addItemButton.isEnabled = false
-            shareButton.isEnabled = false
-            
+            newItemNameTextField.isEnabled = false
             tableView.allowsSelection = false
+        }
+    }
+    
+    fileprivate func AddItem(title: String)
+    {
+        if let manager = listManager
+        {
+            manager.AddNewItem(title: title)
         }
     }
 }
@@ -179,5 +151,30 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
             cell.textLabel?.textColor = UIColor.black
             cell.detailTextLabel?.textColor = UIColor.black
         }
+    }
+}
+
+extension SingleListViewController : UITextFieldDelegate
+{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+        if let newItem = CorrectInput(textField.text)
+        {
+            self.AddItem(title: newItem)
+            self.view.endEditing(true)
+            textField.text = ""
+            return true
+        }
+        return false
+    }
+    
+    private func CorrectInput(_ itemName : String?) -> String?
+    {
+        if let str = itemName
+        {
+            let newStr = str.trimmingCharacters(in: .whitespacesAndNewlines)
+            return (newStr != "" ? newStr : nil)
+        }
+        return nil
     }
 }
