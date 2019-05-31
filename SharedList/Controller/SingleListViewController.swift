@@ -116,7 +116,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         {
             cell?.textLabel?.text = item.title
             cell?.detailTextLabel?.text = "+: \(item.authorName)"
-            UpdateCell(cell: cell!, done: item.done)
+            UpdateCell(cell: cell!, checked: item.checked)
         }
         else
         {
@@ -131,7 +131,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
     {
         if let item = listManager?.GetItem(indexPath.row)
         {
-            if item.done == true
+            if item.checked == true
             {
                 // TODO: show popup if you really wanna change done property
                 let title = item.title
@@ -140,7 +140,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
                 
                 let buttonYes = DefaultButton(title: "Yes")
                 {
-                    self.listManager?.ReverseDone(index: indexPath.row)
+                    self.listManager?.ReverseChecked(index: indexPath.row)
                 }
                 let buttonCancel = CancelButton(title: "No") {
                     
@@ -150,16 +150,16 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
             }
             else
             {
-                listManager?.ReverseDone(index: indexPath.row)
+                listManager?.ReverseChecked(index: indexPath.row)
             }
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    fileprivate func UpdateCell(cell: UITableViewCell, done: Bool)
+    fileprivate func UpdateCell(cell: UITableViewCell, checked: Bool)
     {
-        if (done == true)
+        if (checked == true)
         {
             cell.accessoryType = .checkmark
             cell.textLabel?.textColor = UIColor.lightGray

@@ -10,19 +10,19 @@ class Item {
     
     enum Keys : String {
         case title = "title"
-        case done = "done"
+        case checked = "checked"
         case author_id = "author_id"
-        case done_by_id = "done_by_id"
+        case checked_by_id = "checked_by_id"
     }
     
     let itemsId : String
     let id : String
     let authorId : String
-    let doneById : String
+    let checkedById : String
     private(set) var title : String
-    private(set) var done : Bool
+    private(set) var checked : Bool
     private(set) var authorName : String = ""
-    private(set) var doneByName : String = ""
+    private(set) var checkedByName : String = ""
     
     private let frbPrefix : String
     
@@ -37,11 +37,11 @@ class Item {
                     title = newTitle
                 }
             }
-            else if key == Keys.done.rawValue
+            else if key == Keys.checked.rawValue
             {
                 if let newDone = data[key] as? Bool
                 {
-                    done = newDone
+                    checked = newDone
                 }
             }
         }
@@ -57,24 +57,24 @@ class Item {
         self.authorName = newName
     }
     
-    func UpdateDoneByName(_ newName : String)
+    func UpdateCheckedByName(_ newName : String)
     {
-        self.doneByName = newName
+        self.checkedByName = newName
     }
     
     fileprivate init(itemsId: String,
                      id:String,
                      title: String,
-                     done: Bool,
+                     checked: Bool,
                      authorId: String,
-                     doneById: String = "NONE")
+                     checkedById: String = "NONE")
     {
         self.itemsId = itemsId
         self.id = id
         self.title = title
-        self.done = done
+        self.checked = checked
         self.authorId = authorId
-        self.doneById = doneById
+        self.checkedById = checkedById
         
         self.frbPrefix = frb_utils.ItemPath(itemsId, id)
     }
@@ -87,7 +87,7 @@ class Item {
     static func Serialize(itemsId: String,
                           id:String,
                           title: String,
-                          done: Bool,
+                          checked: Bool,
                           authorId: String,
                           doneById: String = "NONE") -> [String : Any]
     {
@@ -96,9 +96,9 @@ class Item {
         var dict = [String : Any]()
         
         dict[Path(prefix, Keys.title)] = title
-        dict[Path(prefix, Keys.done)] = done
+        dict[Path(prefix, Keys.checked)] = checked
         dict[Path(prefix, Keys.author_id)] = authorId
-        dict[Path(prefix, Keys.done_by_id)] = doneById
+        dict[Path(prefix, Keys.checked_by_id)] = doneById
         
         return dict
     }
@@ -110,7 +110,7 @@ class Item {
         return Item(itemsId: itemsId,
                     id: id,
                     title: data[Keys.title.rawValue] as! String,
-                    done: data[Keys.done.rawValue] as! Bool,
+                    checked: data[Keys.checked.rawValue] as! Bool,
                     authorId: data[Keys.author_id.rawValue] as! String)
     }
 }

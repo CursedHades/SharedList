@@ -125,7 +125,7 @@ class SingleListManager {
         let updateData = Item.Serialize(itemsId: list.items_id,
                                         id: newItemDbRef.key!,
                                         title: title,
-                                        done: false,
+                                        checked: false,
                                         authorId: authorId,
                                         doneById: "NONE")
         
@@ -154,15 +154,15 @@ class SingleListManager {
         
     }
     
-    func ReverseDone(index : Int)
+    func ReverseChecked(index : Int)
     {
         let item = data[index].item
-        let newDone = !item.done
-        let doneByValue = newDone ? authManager.currentUser!.id
-                                  : "NONE"
+        let newChecked = !item.checked
+        let checkedByValue = newChecked ? authManager.currentUser!.id
+                                        : "NONE"
         
-        let updateData = [item.PathForKey(Item.Keys.done) : newDone,
-                          item.PathForKey(Item.Keys.done_by_id) : doneByValue] as [String : Any]
+        let updateData = [item.PathForKey(Item.Keys.checked) : newChecked,
+                          item.PathForKey(Item.Keys.checked_by_id) : checkedByValue] as [String : Any]
         
         let dbRef = Database.database().reference()
         dbRef.updateChildValues(updateData)
@@ -198,9 +198,9 @@ class SingleListManager {
             {
                 newItem.item.UpdateAuthorName(authorName as! String)
             }
-            else if let doneByName = usersData[newItem.item.doneById]
+            else if let checkedByName = usersData[newItem.item.checkedById]
             {
-                newItem.item.UpdateDoneByName(doneByName as! String)
+                newItem.item.UpdateCheckedByName(checkedByName as! String)
             }
             
             if let del = self.delegate
