@@ -18,7 +18,7 @@ class Item {
     let itemsId : String
     let id : String
     let authorId : String
-    let checkedById : String
+    private(set) var checkedById : String
     private(set) var title : String
     private(set) var checked : Bool
     private(set) var authorName : String = ""
@@ -42,6 +42,13 @@ class Item {
                 if let newDone = data[key] as? Bool
                 {
                     checked = newDone
+                }
+            }
+            else if key == Keys.checked_by_id.rawValue
+            {
+                if let newCheckedById = data[key] as? String
+                {
+                    checkedById = newCheckedById
                 }
             }
         }
@@ -111,6 +118,7 @@ class Item {
                     id: id,
                     title: data[Keys.title.rawValue] as! String,
                     checked: data[Keys.checked.rawValue] as! Bool,
-                    authorId: data[Keys.author_id.rawValue] as! String)
+                    authorId: data[Keys.author_id.rawValue] as! String,
+                    checkedById: data[Keys.checked_by_id.rawValue] as! String)
     }
 }
