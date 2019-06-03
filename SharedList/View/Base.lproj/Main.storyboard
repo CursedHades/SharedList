@@ -269,8 +269,15 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FiN-BE-PDD">
+                                        <rect key="frame" x="331" y="13" width="22" height="22"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <action selector="DetailsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="tzT-Xl-b5O"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="TlE-ez-lPe"/>
                                 </constraints>
@@ -317,11 +324,13 @@
                             <constraint firstAttribute="trailing" secondItem="TfV-GQ-CZx" secondAttribute="trailing" id="ecU-Zz-X3p"/>
                             <constraint firstItem="TfV-GQ-CZx" firstAttribute="leading" secondItem="mTU-Wb-leU" secondAttribute="leading" id="fAP-Xc-MKI"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="muA-Wp-1Xb"/>
                     </view>
                     <navigationItem key="navigationItem" title="Single List" id="s0J-hc-FIC">
                         <barButtonItem key="rightBarButtonItem" systemItem="edit" id="PAf-LP-9FI"/>
                     </navigationItem>
                     <connections>
+                        <outlet property="detailButton" destination="FiN-BE-PDD" id="jYH-jc-vKY"/>
                         <outlet property="newItemNameTextField" destination="WDc-dK-tiv" id="q0u-7U-bjG"/>
                         <outlet property="tableView" destination="nbD-BP-Qez" id="Zbq-uP-k4X"/>
                     </connections>
