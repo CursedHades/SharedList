@@ -43,6 +43,18 @@ class SingleListViewController: UIViewController {
         SVProgressHUD.show(withStatus: "Loading data...")
         UpdateUI(enable: false)
         dataLoading = true
+        
+        let tapper = UITapGestureRecognizer(target: self, action: Selector(("DismissKeyboard")))
+        tapper.delegate = self
+        view.addGestureRecognizer(tapper)
+    }
+    
+    @objc fileprivate func DismissKeyboard()
+    {
+        if (self.newItemNameTextField.isFirstResponder)
+        {
+            view.endEditing(true)
+        }
     }
     
     fileprivate func UpdateUI(enable: Bool)
@@ -229,5 +241,13 @@ extension SingleListViewController : UITextFieldDelegate
             return (newStr != "" ? newStr : nil)
         }
         return nil
+    }
+}
+
+extension SingleListViewController : UIGestureRecognizerDelegate
+{
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
+    {
+        return self.newItemNameTextField.isFirstResponder
     }
 }
