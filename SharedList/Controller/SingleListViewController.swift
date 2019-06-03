@@ -14,6 +14,7 @@ class SingleListViewController: UIViewController {
     
     @IBOutlet var tableView: UITableView!
     @IBOutlet var newItemNameTextField: UITextField!
+    @IBOutlet var detailButton: UIButton!
     
     var listManager : SingleListManager?
     {
@@ -24,6 +25,7 @@ class SingleListViewController: UIViewController {
     }
     
     fileprivate var dataLoading : Bool = false
+    fileprivate var dispalDetails : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +43,18 @@ class SingleListViewController: UIViewController {
         SVProgressHUD.show(withStatus: "Loading data...")
         UpdateUI(enable: false)
         dataLoading = true
+        
+        let tapper = UITapGestureRecognizer(target: self, action: Selector(("DismissKeyboard")))
+        tapper.delegate = self
+        view.addGestureRecognizer(tapper)
+    }
+    
+    @objc fileprivate func DismissKeyboard()
+    {
+        if (self.newItemNameTextField.isFirstResponder)
+        {
+            view.endEditing(true)
+        }
     }
     
     fileprivate func UpdateUI(enable: Bool)
@@ -63,6 +77,12 @@ class SingleListViewController: UIViewController {
         {
             manager.AddNewItem(title: title)
         }
+    }
+    
+    @IBAction func DetailsButtonPressed(_ sender: Any)
+    {
+        self.dispalDetails = !self.dispalDetails
+        tableView.reloadData()
     }
 }
 
@@ -115,8 +135,8 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         if let item = listManager?.GetItem(indexPath.row)
         {
             cell?.textLabel?.text = item.title
-            cell?.detailTextLabel?.text = "+: \(item.authorName)"
-            UpdateCell(cell: cell!, checked: item.checked)
+            cell?.detailTextLabel?.text = PrepareDetailedText(item: item)
+            UpdateCellFontColor(cell: cell!, checked: item.checked)
         }
         else
         {
@@ -157,7 +177,22 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    fileprivate func UpdateCell(cell: UITableViewCell, checked: Bool)
+    fileprivate func PrepareDetailedText(item: Item) -> String
+    {
+        if (dispalDetails == false)
+        {
+            return ""
+        }
+        
+        var text = "add: \(item.authorName)"
+        if (item.checked == true)
+        {
+            text += " | check: \(item.checkedByName)"
+        }
+        return text
+    }
+    
+    fileprivate func UpdateCellFontColor(cell: UITableViewCell, checked: Bool)
     {
         if (checked == true)
         {
@@ -176,6 +211,16 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
 
 extension SingleListViewController : UITextFieldDelegate
 {
+    func textFieldDidBeginEditing(_ textField: UITextField)
+    {
+        self.detailButton.isHidden = true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField)
+    {
+        self.detailButton.isHidden = false
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         if let newItem = CorrectInput(textField.text)
@@ -196,5 +241,13 @@ extension SingleListViewController : UITextFieldDelegate
             return (newStr != "" ? newStr : nil)
         }
         return nil
+    }
+}
+
+extension SingleListViewController : UIGestureRecognizerDelegate
+{
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
+    {
+        return self.newItemNameTextField.isFirstResponder
     }
 }

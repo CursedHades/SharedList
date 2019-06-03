@@ -12,10 +12,10 @@ class ItemWithObserver
 {
     let item : Item
     
-    private let itemUpdatedCallback : () -> Void
+    private let itemUpdatedCallback : (Item) -> Void
     private var observer : ChangedObserver? = nil
     
-    init (item: Item, itemUpdatedCallback: @escaping () -> Void)
+    init (item: Item, itemUpdatedCallback: @escaping (Item) -> Void)
     {
         self.item = item
         self.itemUpdatedCallback = itemUpdatedCallback
@@ -37,7 +37,7 @@ class ItemWithObserver
         let itemData = [snapshot.key : snapshot.value]
         self.item.Update(data: itemData)
         
-        self.itemUpdatedCallback()
+        self.itemUpdatedCallback(self.item)
     }
 }
 
@@ -101,9 +101,9 @@ class SingleListManager {
                 
                 let itemData = data[itemId] as! [String : Any]
                 let lastItem = itemsCounter == 0
-                self.LoadUserNamesAndAddItem(id: itemId,
-                                             data: itemData,
-                                             lastItem: lastItem)
+                self.AddLoadedItem(id: itemId,
+                                   data: itemData,
+                                   lastItem: lastItem)
             }
         }
     }
@@ -185,24 +185,12 @@ class SingleListManager {
         }
     }
     
-    fileprivate func LoadUserNamesAndAddItem(id: String, data: [String : Any], lastItem: Bool)
+    fileprivate func AddLoadedItem(id: String, data: [String : Any], lastItem: Bool)
     {
-        let usersDbRef = frb_utils.ListUsersDbRef(list.id)
-        usersDbRef.observeSingleEvent(of: .value)
-        { (usersSnapshot) in
-            
-            let newItem = self.AddItemWithObserver(id: id, data: data)
-            
-            let usersData = usersSnapshot.value! as! [String : Any]
-            if let authorName = usersData[newItem.item.authorId]
-            {
-                newItem.item.UpdateAuthorName(authorName as! String)
-            }
-            else if let checkedByName = usersData[newItem.item.checkedById]
-            {
-                newItem.item.UpdateCheckedByName(checkedByName as! String)
-            }
-            
+        let newItem = self.AddItemWithObserver(id: id, data: data)
+        
+        LoadUserNames(item: newItem.item)
+        {
             if let del = self.delegate
             {
                 if (lastItem == true)
@@ -215,6 +203,26 @@ class SingleListManager {
                     del.NewItemAdded()
                 }
             }
+        }
+    }
+    
+    fileprivate func LoadUserNames(item: Item, completion:(()-> Void)?)
+    {
+        let usersDbRef = frb_utils.ListUsersDbRef(list.id)
+        usersDbRef.observeSingleEvent(of: .value)
+        { (usersSnapshot) in
+            
+            let usersData = usersSnapshot.value! as! [String : Any]
+            if let authorName = usersData[item.authorId]
+            {
+                item.UpdateAuthorName(authorName as! String)
+            }
+            if let checkedByName = usersData[item.checkedById]
+            {
+                item.UpdateCheckedByName(checkedByName as! String)
+            }
+            
+            completion?()
         }
     }
     
@@ -234,11 +242,14 @@ class SingleListManager {
         return observer
     }
     
-    fileprivate func ItemChanged()
+    fileprivate func ItemChanged(item: Item)
     {
-        if let del = delegate
+        LoadUserNames(item: item)
         {
-            del.DataLoaded()
+            if let del = self.delegate
+            {
+                del.DataLoaded()
+            }
         }
     }
 
@@ -251,9 +262,9 @@ class SingleListManager {
         }
         
         let itemDict = itemSnapshot.value! as! [String : Any]
-        LoadUserNamesAndAddItem(id: itemId,
-                                data: itemDict,
-                                lastItem: false)
+        AddLoadedItem(id: itemId,
+                      data: itemDict,
+                      lastItem: false)
     }
     
     fileprivate func ItemsChildRemoved(_ itemSnapshot: DataSnapshot)
