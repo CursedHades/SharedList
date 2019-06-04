@@ -112,7 +112,8 @@ extension SingleListViewController : SingleListManagerDelegate
         if (awaitenNotifations > 0)
         {
             awaitenNotifations = awaitenNotifations - 1
-            ShowPopupItemSucessfullyAdded()
+            self.ShowPopupItemSucessfullyAdded()
+            self.ScrollToBottom()
         }
     }
     
@@ -201,6 +202,11 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    {
+        return 44
+    }
+    
     fileprivate func PrepareDetailedText(item: Item) -> String
     {
         if (dispalDetails == false)
@@ -229,6 +235,19 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
             cell.accessoryType = .none
             cell.textLabel?.textColor = UIColor.black
             cell.detailTextLabel?.textColor = UIColor.black
+        }
+    }
+    
+    fileprivate func ScrollToBottom()
+    {
+        DispatchQueue.main.async {
+            if let man = self.listManager
+            {
+                let itemsCount = man.itemsCount
+                let indexPath = IndexPath(row: itemsCount-1, section: 0)
+                
+                self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            }
         }
     }
 }
