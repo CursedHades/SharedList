@@ -44,8 +44,9 @@ class ItemWithObserver
 
 protocol SingleListManagerDelegate : class {
     
-    func DataLoaded()
-    func NewItemAdded()
+    func ItemLoaded()
+    func AllItemsLoaded()
+    func ItemChanged()
     func ItemRemoved()
 }
 
@@ -85,7 +86,7 @@ class SingleListManager {
             {
                 if let del = self.delegate
                 {
-                    del.DataLoaded()
+                    del.AllItemsLoaded()
                     self.ActivateObservers()
                 }
                 return
@@ -101,9 +102,23 @@ class SingleListManager {
                 
                 let itemData = data[itemId] as! [String : Any]
                 let lastItem = itemsCounter == 0
+                
                 self.AddLoadedItem(id: itemId,
-                                   data: itemData,
-                                   lastItem: lastItem)
+                                   data: itemData)
+                {
+                    if let del = self.delegate
+                    {
+                        if (lastItem == true)
+                        {
+                            del.AllItemsLoaded()
+                            self.ActivateObservers()
+                        }
+                        else
+                        {
+                            del.ItemLoaded()
+                        }
+                    }
+                }
             }
         }
     }
@@ -185,24 +200,13 @@ class SingleListManager {
         }
     }
     
-    fileprivate func AddLoadedItem(id: String, data: [String : Any], lastItem: Bool)
+    fileprivate func AddLoadedItem(id: String, data: [String : Any], completion:(()->Void)?)
     {
         let newItem = self.AddItemWithObserver(id: id, data: data)
         
         LoadUserNames(item: newItem.item)
         {
-            if let del = self.delegate
-            {
-                if (lastItem == true)
-                {
-                    del.DataLoaded()
-                    self.ActivateObservers()
-                }
-                else
-                {
-                    del.NewItemAdded()
-                }
-            }
+            completion?()
         }
     }
     
@@ -248,7 +252,7 @@ class SingleListManager {
         {
             if let del = self.delegate
             {
-                del.DataLoaded()
+                del.ItemChanged()
             }
         }
     }
@@ -262,9 +266,14 @@ class SingleListManager {
         }
         
         let itemDict = itemSnapshot.value! as! [String : Any]
-        AddLoadedItem(id: itemId,
-                      data: itemDict,
-                      lastItem: false)
+        
+        AddLoadedItem(id: itemId, data: itemDict)
+        {
+            if let del = self.delegate
+            {
+                del.ItemLoaded()
+            }
+        }
     }
     
     fileprivate func ItemsChildRemoved(_ itemSnapshot: DataSnapshot)

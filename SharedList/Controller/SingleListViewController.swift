@@ -27,6 +27,8 @@ class SingleListViewController: UIViewController {
     fileprivate var dataLoading : Bool = false
     fileprivate var dispalDetails : Bool = false
     
+    fileprivate var awaitenNotifations : Int = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -44,7 +46,7 @@ class SingleListViewController: UIViewController {
         UpdateUI(enable: false)
         dataLoading = true
         
-        let tapper = UITapGestureRecognizer(target: self, action: Selector(("DismissKeyboard")))
+        let tapper = UITapGestureRecognizer(target: self, action: #selector(SingleListViewController.DismissKeyboard))
         tapper.delegate = self
         view.addGestureRecognizer(tapper)
     }
@@ -75,6 +77,7 @@ class SingleListViewController: UIViewController {
     {
         if let manager = listManager
         {
+            awaitenNotifations = awaitenNotifations + 1
             manager.AddNewItem(title: title)
         }
     }
@@ -88,7 +91,7 @@ class SingleListViewController: UIViewController {
 
 extension SingleListViewController : SingleListManagerDelegate
 {
-    func DataLoaded()
+    func AllItemsLoaded()
     {
         tableView.reloadData()
         
@@ -103,6 +106,21 @@ extension SingleListViewController : SingleListManagerDelegate
         }
     }
     
+    func ItemLoaded()
+    {
+        tableView.reloadData()
+        if (awaitenNotifations > 0)
+        {
+            awaitenNotifations = awaitenNotifations - 1
+            ShowPopupItemSucessfullyAdded()
+        }
+    }
+    
+    func ItemChanged()
+    {
+       tableView.reloadData()
+    }
+    
     func NewItemAdded()
     {
         tableView.reloadData()
@@ -111,6 +129,12 @@ extension SingleListViewController : SingleListManagerDelegate
     func ItemRemoved()
     {
         tableView.reloadData()
+    }
+    
+    fileprivate func ShowPopupItemSucessfullyAdded()
+    {
+        SVProgressHUD.showSuccess(withStatus: "New item added.")
+        SVProgressHUD.dismiss(withDelay: 0.6)
     }
 }
 
@@ -226,10 +250,11 @@ extension SingleListViewController : UITextFieldDelegate
         if let newItem = CorrectInput(textField.text)
         {
             self.AddItem(title: newItem)
-            self.view.endEditing(true)
             textField.text = ""
-            return true
+            return false
         }
+        
+        ShowIncorrectInputPopup()
         return false
     }
     
@@ -241,6 +266,18 @@ extension SingleListViewController : UITextFieldDelegate
             return (newStr != "" ? newStr : nil)
         }
         return nil
+    }
+    
+    fileprivate func ShowIncorrectInputPopup()
+    {
+        let popup = PopupDialog(title: "Invalid item name",
+                                message: nil)
+        
+        let button = DefaultButton(title: "close") {}
+        
+        popup.addButton(button)
+        
+        self.present(popup, animated: true)
     }
 }
 
