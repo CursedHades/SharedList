@@ -66,6 +66,9 @@ class SingleListManager {
     fileprivate var observerActive : Bool = false
     fileprivate var data = [ItemWithObserver]()
     
+    fileprivate var loadingData : Bool = false
+    fileprivate var itemPrefetchCount : Int = 0
+    
     
     init(list: List, authManager: AuthManager)
     {
@@ -78,6 +81,8 @@ class SingleListManager {
     
     func LoadData()
     {
+        loadingData = true
+        
         let itemsDbRef = frb_utils.ItemsDbRef(list.items_id).child(Items.Keys.items.rawValue)
         itemsDbRef.observeSingleEvent(of: .value)
         { (itemsTableSnapshot) in
@@ -88,38 +93,13 @@ class SingleListManager {
                 {
                     del.AllItemsLoaded()
                     self.ActivateObservers()
+                    self.loadingData = false
                 }
                 return
             }
             
-            let data = (itemsTableSnapshot.value! as! [String : Any])
-            let itemsIds = data.keys
-            var itemsCounter = itemsIds.count
-            
-            for itemId in itemsIds
-            {
-                itemsCounter = itemsCounter - 1
-                
-                let itemData = data[itemId] as! [String : Any]
-                let lastItem = itemsCounter == 0
-                
-                self.AddLoadedItem(id: itemId,
-                                   data: itemData)
-                {
-                    if let del = self.delegate
-                    {
-                        if (lastItem == true)
-                        {
-                            del.AllItemsLoaded()
-                            self.ActivateObservers()
-                        }
-                        else
-                        {
-                            del.ItemLoaded()
-                        }
-                    }
-                }
-            }
+            self.itemPrefetchCount = Int(itemsTableSnapshot.childrenCount)
+            self.ActivateObservers()
         }
     }
     
@@ -272,6 +252,17 @@ class SingleListManager {
             if let del = self.delegate
             {
                 del.ItemLoaded()
+                
+                if self.loadingData == true
+                {
+                    self.itemPrefetchCount = self.itemPrefetchCount - 1
+                    if self.itemPrefetchCount == 0
+                    {
+                        self.loadingData = false
+                        del.AllItemsLoaded()
+                    }
+                }
+                
             }
         }
     }
