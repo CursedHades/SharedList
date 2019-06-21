@@ -9,6 +9,7 @@
 import UIKit
 import PopupDialog
 import SVProgressHUD
+import SwipeCellKit
 
 class SingleListViewController: UIViewController {
     
@@ -85,7 +86,18 @@ class SingleListViewController: UIViewController {
     @IBAction func DetailsButtonPressed(_ sender: Any)
     {
         self.dispalDetails = !self.dispalDetails
+        
+        tableView.setEditing(self.dispalDetails, animated: true)
         tableView.reloadData()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        if segue.identifier == "GoToListEditSeque"
+        {
+            let editVC = segue.destination as! ListEditViewController
+            editVC.listManager = listManager
+        }
     }
 }
 
@@ -206,7 +218,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
     {
         return 44
     }
-    
+
     fileprivate func PrepareDetailedText(item: Item) -> String
     {
         if (dispalDetails == false)

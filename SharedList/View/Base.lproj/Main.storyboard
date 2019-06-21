@@ -327,7 +327,11 @@
                         <viewLayoutGuide key="safeArea" id="muA-Wp-1Xb"/>
                     </view>
                     <navigationItem key="navigationItem" title="Single List" id="s0J-hc-FIC">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="PAf-LP-9FI"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="PAf-LP-9FI">
+                            <connections>
+                                <segue destination="Cxo-v5-Z6y" kind="show" identifier="GoToListEditSeque" id="VAG-CZ-Xne"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="detailButton" destination="FiN-BE-PDD" id="jYH-jc-vKY"/>
@@ -338,6 +342,34 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zkX-so-X2y" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3557.5999999999999" y="-564.46776611694156"/>
+        </scene>
+        <!--List Edit-->
+        <scene sceneID="WC6-a3-fwH">
+            <objects>
+                <viewController title="List Edit" id="Cxo-v5-Z6y" customClass="ListEditViewController" customModule="SharedList" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="kL8-f8-UhG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BlW-6o-eg3">
+                                <rect key="frame" x="16" y="318" width="343" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Share"/>
+                                <connections>
+                                    <action selector="ShareButtonPressed:" destination="Cxo-v5-Z6y" eventType="touchUpInside" id="7vC-Q8-adh"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="c8b-fm-GF1"/>
+                    </view>
+                    <connections>
+                        <outlet property="shareButton" destination="BlW-6o-eg3" id="NnC-qr-2Mh"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wJv-FY-KNb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4416.8000000000002" y="-564.46776611694156"/>
         </scene>
         <!--Invitations-->
         <scene sceneID="h8I-To-hke">
