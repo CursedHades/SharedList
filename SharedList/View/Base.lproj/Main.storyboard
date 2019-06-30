@@ -258,32 +258,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TfV-GQ-CZx" userLabel="Bottom Items View">
-                                <rect key="frame" x="0.0" y="617" width="375" height="50"/>
-                                <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New item" textAlignment="natural" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="WDc-dK-tiv" userLabel="New Item Name Text Field">
-                                        <rect key="frame" x="8" y="10" width="300" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FiN-BE-PDD">
-                                        <rect key="frame" x="331" y="13" width="22" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <action selector="DetailsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="tzT-Xl-b5O"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="TlE-ez-lPe"/>
-                                </constraints>
-                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nbD-BP-Qez">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="617"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ItemCell" textLabel="VAk-7g-kGv" detailTextLabel="eeD-cM-Y8c" style="IBUITableViewCellStyleSubtitle" id="Y3I-19-agV">
@@ -312,17 +288,43 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zAN-6t-i73">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="0UQ-Fs-3An"/>
+                                    <constraint firstAttribute="width" constant="375" id="DIQ-gP-Goe"/>
+                                </constraints>
+                                <items>
+                                    <barButtonItem style="plain" id="ePU-Wd-gWl">
+                                        <textField key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New item" textAlignment="natural" minimumFontSize="14" id="WDc-dK-tiv" userLabel="New Item Name Text Field">
+                                            <rect key="frame" x="16" y="7" width="302" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" id="9ji-G7-ST6">
+                                        <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" id="FiN-BE-PDD">
+                                            <rect key="frame" x="337" y="11" width="22" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <connections>
+                                                <action selector="DetailsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="tzT-Xl-b5O"/>
+                                            </connections>
+                                        </button>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="TfV-GQ-CZx" firstAttribute="top" secondItem="nbD-BP-Qez" secondAttribute="bottom" id="BSa-06-baF"/>
+                            <constraint firstAttribute="bottom" secondItem="zAN-6t-i73" secondAttribute="bottom" id="SAP-zA-WLU" customClass="KeyboardLayoutConstraint" customModule="SharedList" customModuleProvider="target"/>
                             <constraint firstItem="nbD-BP-Qez" firstAttribute="leading" secondItem="mTU-Wb-leU" secondAttribute="leading" id="TTf-qr-LJ6"/>
                             <constraint firstAttribute="trailing" secondItem="nbD-BP-Qez" secondAttribute="trailing" id="Y84-HR-2Sw"/>
-                            <constraint firstAttribute="bottom" secondItem="TfV-GQ-CZx" secondAttribute="bottom" id="Y9g-UI-tUo" customClass="KeyboardLayoutConstraint" customModule="SharedList" customModuleProvider="target"/>
-                            <constraint firstItem="TfV-GQ-CZx" firstAttribute="top" secondItem="nbD-BP-Qez" secondAttribute="bottom" id="aKK-2S-fkk"/>
+                            <constraint firstItem="zAN-6t-i73" firstAttribute="leading" secondItem="muA-Wp-1Xb" secondAttribute="leading" id="cor-49-mp3"/>
                             <constraint firstItem="nbD-BP-Qez" firstAttribute="top" secondItem="mTU-Wb-leU" secondAttribute="top" id="ePX-zo-cpP"/>
-                            <constraint firstAttribute="trailing" secondItem="TfV-GQ-CZx" secondAttribute="trailing" id="ecU-Zz-X3p"/>
-                            <constraint firstItem="TfV-GQ-CZx" firstAttribute="leading" secondItem="mTU-Wb-leU" secondAttribute="leading" id="fAP-Xc-MKI"/>
+                            <constraint firstItem="zAN-6t-i73" firstAttribute="top" secondItem="nbD-BP-Qez" secondAttribute="bottom" id="heN-jq-xfW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="muA-Wp-1Xb"/>
                     </view>
