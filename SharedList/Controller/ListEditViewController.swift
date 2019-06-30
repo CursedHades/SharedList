@@ -25,8 +25,29 @@ class ListEditViewController: UIViewController {
     @IBAction func ShareButtonPressed(_ sender: Any)
     {
         let popup = ShareListViewController.PreparePopup { (email) in
-            print("email to send :\(email)")
+            self.TryToSend(email: email)
         }
+        self.present(popup, animated: true)
+    }
+    
+    fileprivate func TryToSend(email: String?)
+    {
+        if (email == nil || email! == "")
+        {
+            self.ShowInvalidEmailPopup()
+            return
+        }
+        
+    }
+    
+    fileprivate func ShowInvalidEmailPopup()
+    {
+        let popup = PopupDialog(title: "Invalid email address.", message: nil)
+        let cancelButton = CancelButton(title: "Cancel")
+        {}
+        
+        popup.addButton(cancelButton)
+        
         self.present(popup, animated: true)
     }
 }

@@ -44,7 +44,7 @@
 		056A402CC157056C2FD6A153 /* Pods-SharedList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.release.xcconfig"; sourceTree = "<group>"; };
 		149806525C5E9CFE227BC804 /* Pods_SharedList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
-		B21C3D45225A5EE400723702 /* ObserversHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserversHandler.swift; sourceTree = "<group>"; };
+		B21C3D45225A5EE400723702 /* ObserversHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObserversHandler.swift; path = ../Managers/ObserversHandler.swift; sourceTree = "<group>"; };
 		B2227B4122B8241B0001BED5 /* ShareListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareListViewController.swift; sourceTree = "<group>"; };
 		B2227B4222B8241B0001BED5 /* ShareListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ShareListViewController.xib; path = ../Controller/ShareListViewController.xib; sourceTree = "<group>"; };
 		B26A275622511C9E00091C43 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -56,7 +56,7 @@
 		B2A29AFD222491FA00698D05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B2A29B00222491FA00698D05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B2A29B02222491FA00698D05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B2A7266A224D6E610087B46B /* FirebaseUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtilities.swift; sourceTree = "<group>"; };
+		B2A7266A224D6E610087B46B /* FirebaseUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FirebaseUtilities.swift; path = ../Managers/FirebaseUtilities.swift; sourceTree = "<group>"; };
 		B2ADCA1722B7FBB6004F7576 /* ListEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListEditViewController.swift; sourceTree = "<group>"; };
 		B2B35E1D222C1ED7000EC2B2 /* SingleListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleListViewController.swift; sourceTree = "<group>"; };
 		B2B35E1F222DBB17000EC2B2 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
@@ -142,6 +142,8 @@
 		B2C06E81224945830074C43E /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				B21C3D45225A5EE400723702 /* ObserversHandler.swift */,
+				B2A7266A224D6E610087B46B /* FirebaseUtilities.swift */,
 				B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */,
 				B2C06E822249459B0074C43E /* TimeoutGuard.swift */,
 				B2C7161D22972C770047E2A2 /* FrbChangedObserver.swift */,
@@ -192,9 +194,7 @@
 				B2D9A66122404F2000576591 /* ListsManager.swift */,
 				B2B35E21222EEF5A000EC2B2 /* FirebaseManager.swift */,
 				B2D9A6662247D76A00576591 /* ProposalManger.swift */,
-				B2A7266A224D6E610087B46B /* FirebaseUtilities.swift */,
 				B26A275822511D0C00091C43 /* AuthManager.swift */,
-				B21C3D45225A5EE400723702 /* ObserversHandler.swift */,
 				B2C7161B2295DE3D0047E2A2 /* SingleListManager.swift */,
 			);
 			path = Managers;

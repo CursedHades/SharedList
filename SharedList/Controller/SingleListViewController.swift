@@ -9,7 +9,6 @@
 import UIKit
 import PopupDialog
 import SVProgressHUD
-import SwipeCellKit
 
 class SingleListViewController: UIViewController {
     

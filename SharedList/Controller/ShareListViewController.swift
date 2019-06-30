@@ -12,7 +12,7 @@ import PopupDialog
 class ShareListViewController: UIViewController
 {
     @IBOutlet var emailTextField: UITextField!
-    var willDismissCallback : ((String) -> Void)?
+    var willDismissCallback : ((String?) -> Void)?
     
     override func viewDidLoad()
     {
@@ -29,22 +29,7 @@ class ShareListViewController: UIViewController
         emailTextField.becomeFirstResponder()
     }
     
-    fileprivate func TryToSend(textField: UITextField)
-    {
-        if let email = textField.text
-        {
-            if email == ""
-            {
-                ShowInvalidEmailPopup()
-            }
-        }
-        else
-        {
-            ShowInvalidEmailPopup()
-        }
-    }
-    
-    fileprivate func DismissWithCallback(email: String)
+    fileprivate func DismissWithCallback(email: String?)
     {
         self.view.endEditing(true)
         self.dismiss(animated: true, completion: nil)
@@ -55,27 +40,14 @@ class ShareListViewController: UIViewController
         }
     }
     
-    fileprivate func ShowInvalidEmailPopup()
-    {
-        let popup = PopupDialog(title: "Invalid email address.", message: nil)
-        let cancelButton = CancelButton(title: "Cancel")
-        {
-            self.DismissWithCallback(email: "")
-        }
-        
-        popup.addButton(cancelButton)
-        
-        self.present(popup, animated: true)
-    }
-    
-    static func PreparePopup(WillDismissCallback: @escaping (String) -> Void) -> PopupDialog
+    static func PreparePopup(WillDismissCallback: @escaping (String?) -> Void) -> PopupDialog
     {
         let vc = ShareListViewController()
         vc.willDismissCallback = WillDismissCallback
         let popup = PopupDialog(viewController: vc)
         let sendButton = DefaultButton(title: "Send invitation")
         {
-            vc.TryToSend(textField: vc.emailTextField)
+            vc.DismissWithCallback(email: vc.emailTextField.text)
         }
         let cancelButton = CancelButton(title: "Cancel")
         {
@@ -92,7 +64,7 @@ extension ShareListViewController : UITextFieldDelegate
 {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
-        self.TryToSend(textField: textField)
+        DismissWithCallback(email: textField.text)
         return true
     }
 }
