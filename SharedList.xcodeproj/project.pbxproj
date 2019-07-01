@@ -10,6 +10,7 @@
 		26D1A9ADC6E1B7F5F8D9D1B8 /* Pods_SharedList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149806525C5E9CFE227BC804 /* Pods_SharedList.framework */; };
 		B21419F122A1A08300EFC13F /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */; };
 		B21C3D46225A5EE400723702 /* ObserversHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21C3D45225A5EE400723702 /* ObserversHandler.swift */; };
+		B220207122C91FFD00721A1C /* InvitationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B220207022C91FFD00721A1C /* InvitationManager.swift */; };
 		B2227B4322B8241B0001BED5 /* ShareListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2227B4122B8241B0001BED5 /* ShareListViewController.swift */; };
 		B2227B4422B8241B0001BED5 /* ShareListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2227B4222B8241B0001BED5 /* ShareListViewController.xib */; };
 		B26A275722511C9E00091C43 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275622511C9E00091C43 /* User.swift */; };
@@ -34,7 +35,6 @@
 		B2C7161E22972C770047E2A2 /* FrbChangedObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C7161D22972C770047E2A2 /* FrbChangedObserver.swift */; };
 		B2C71620229735D00047E2A2 /* Items.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C7161F229735D00047E2A2 /* Items.swift */; };
 		B2D9A66222404F2000576591 /* ListsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A66122404F2000576591 /* ListsManager.swift */; };
-		B2D9A6672247D76A00576591 /* ProposalManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A6662247D76A00576591 /* ProposalManger.swift */; };
 		B2D9A6692247D91400576591 /* Invitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A6682247D91400576591 /* Invitation.swift */; };
 		B2D9A66B2248230300576591 /* InvitationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A66A2248230300576591 /* InvitationsViewController.swift */; };
 /* End PBXBuildFile section */
@@ -45,6 +45,7 @@
 		149806525C5E9CFE227BC804 /* Pods_SharedList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
 		B21C3D45225A5EE400723702 /* ObserversHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObserversHandler.swift; path = ../Managers/ObserversHandler.swift; sourceTree = "<group>"; };
+		B220207022C91FFD00721A1C /* InvitationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationManager.swift; sourceTree = "<group>"; };
 		B2227B4122B8241B0001BED5 /* ShareListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareListViewController.swift; sourceTree = "<group>"; };
 		B2227B4222B8241B0001BED5 /* ShareListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ShareListViewController.xib; path = ../Controller/ShareListViewController.xib; sourceTree = "<group>"; };
 		B26A275622511C9E00091C43 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -71,7 +72,6 @@
 		B2C7161D22972C770047E2A2 /* FrbChangedObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrbChangedObserver.swift; sourceTree = "<group>"; };
 		B2C7161F229735D00047E2A2 /* Items.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Items.swift; sourceTree = "<group>"; };
 		B2D9A66122404F2000576591 /* ListsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsManager.swift; sourceTree = "<group>"; };
-		B2D9A6662247D76A00576591 /* ProposalManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProposalManger.swift; sourceTree = "<group>"; };
 		B2D9A6682247D91400576591 /* Invitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invitation.swift; sourceTree = "<group>"; };
 		B2D9A66A2248230300576591 /* InvitationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -193,9 +193,9 @@
 			children = (
 				B2D9A66122404F2000576591 /* ListsManager.swift */,
 				B2B35E21222EEF5A000EC2B2 /* FirebaseManager.swift */,
-				B2D9A6662247D76A00576591 /* ProposalManger.swift */,
 				B26A275822511D0C00091C43 /* AuthManager.swift */,
 				B2C7161B2295DE3D0047E2A2 /* SingleListManager.swift */,
+				B220207022C91FFD00721A1C /* InvitationManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -338,9 +338,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B220207122C91FFD00721A1C /* InvitationManager.swift in Sources */,
 				B2C3D610222BD34D005321BB /* LogInViewController.swift in Sources */,
 				B2D9A66B2248230300576591 /* InvitationsViewController.swift in Sources */,
-				B2D9A6672247D76A00576591 /* ProposalManger.swift in Sources */,
 				B2C3D60E222BD343005321BB /* RegisterViewController.swift in Sources */,
 				B26A275722511C9E00091C43 /* User.swift in Sources */,
 				B21C3D46225A5EE400723702 /* ObserversHandler.swift in Sources */,

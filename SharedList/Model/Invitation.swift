@@ -12,26 +12,21 @@ class Invitation {
     
     enum Keys : String {
         case user_email = "user"
-        case message = "message"
     }
     
     let list_id : String
     let user_email : String
-    let message : String
     
-    init(listId: String, userEmail: String, message: String)
+    init(listId: String, userEmail: String)
     {
         self.list_id = listId
         self.user_email = userEmail
-        self.message = message
     }
     
     static func Deserialize(listId: String, data: [String : String]) -> Invitation? {
         
         if let userEmail = data[Keys.user_email.rawValue] {
-            if let message = data[Keys.message.rawValue] {
-                return Invitation(listId: listId, userEmail: userEmail, message: message)
-            }
+            return Invitation(listId: listId, userEmail: userEmail)
         }
         
         return nil

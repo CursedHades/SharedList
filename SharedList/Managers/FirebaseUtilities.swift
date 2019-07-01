@@ -10,10 +10,11 @@ import Firebase
 
 class frb_utils {
     
-    fileprivate enum Keys : String {
+    enum Keys : String {
         case users = "users"
         case lists = "lists"
         case items = "items"
+        case invitations = "invitations"
     }
     
     // MARK: - Reference Getters
@@ -38,6 +39,11 @@ class frb_utils {
         return UserDbRef().child("\(Keys.lists.rawValue)")
     }
     
+    static func UserInvitationsDbRef(_ id: String) -> DatabaseReference {
+        
+        return UserDbRef(id).child("\(Keys.invitations.rawValue)")
+    }
+    
     static func ListDbRef(_ id: String) -> DatabaseReference {
         
         return DbRef().child(ListPath(id))
@@ -59,6 +65,10 @@ class frb_utils {
     static func ItemsTableDbRef() -> DatabaseReference {
         
         return DbRef().child("\(Keys.items.rawValue)")
+    }
+    
+    static func UsersTableDbRef() -> DatabaseReference {
+        return DbRef().child("\(Keys.users.rawValue)")
     }
     
     static func ItemsDbRef(_ id: String) -> DatabaseReference {

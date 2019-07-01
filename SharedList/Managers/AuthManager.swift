@@ -97,6 +97,7 @@ class AuthManager {
         Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
             
             if (error != nil) {
+                print (error)
                 self.delegates.invokeDelegates({ (delegate) in
                     delegate.UserLogInFailed(error: error)
                 })

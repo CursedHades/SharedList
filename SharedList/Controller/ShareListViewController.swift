@@ -19,14 +19,16 @@ class ShareListViewController: UIViewController
         super.viewDidLoad()
         
         emailTextField.delegate = self
-        emailTextField.keyboardType = .default
+        emailTextField.keyboardType = .emailAddress
         emailTextField.returnKeyType = .send
+        
+        emailTextField.becomeFirstResponder()
     }
     
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
-        emailTextField.becomeFirstResponder()
+        
     }
     
     fileprivate func DismissWithCallback(email: String?)
@@ -51,7 +53,6 @@ class ShareListViewController: UIViewController
         }
         let cancelButton = CancelButton(title: "Cancel")
         {
-            vc.DismissWithCallback(email: "")
         }
         
         popup.addButtons([sendButton, cancelButton])

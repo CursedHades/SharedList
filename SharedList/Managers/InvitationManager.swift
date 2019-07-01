@@ -1,15 +1,13 @@
 //
-//  InvitationManger.swift
+//  InvitationManager.swift
 //  SharedList
 //
-//  Created by Lukasz on 24/03/2019.
+//  Created by Lukasz on 30/06/2019.
 //  Copyright © 2019 Lukasz. All rights reserved.
 //
 
-import Foundation
 import Firebase
 import MulticastDelegateSwift
-
 
 protocol InvitationManagerDelegate : class {
     func InvitationAdded()
@@ -19,6 +17,55 @@ protocol InvitationManagerDelegate : class {
 extension InvitationManagerDelegate {
     func InvitationRemoved() {}
 }
+
+protocol ShareListManagerDelegate : class {
+    func InvitationSent()
+}
+
+
+class ShareListManager {
+    
+    weak var delegate : ShareListManagerDelegate?
+    
+    func Share(destUserEmail: String, listId: String)
+    {
+        let query = frb_utils.UsersTableDbRef().queryOrdered(byChild: User.Keys.email.rawValue).queryEqual(toValue: destUserEmail)
+        
+        query.observeSingleEvent(of: .value)
+        { (snapshot) in
+            
+            if !snapshot.exists()
+            {
+                self.NotifyDelegate()
+                return
+            }
+            
+            let snapshotDict = snapshot.value as! [String : Any]
+            let destUserId = snapshotDict.keys.first
+            
+            let invitationDbRef = frb_utils.UserInvitationsDbRef(destUserId!).child("/\(listId)")
+            
+            let myEmail = Auth.auth().currentUser?.email
+            
+            let dataDict = [Invitation.Keys.user_email.rawValue : myEmail!]
+            
+            invitationDbRef.setValue(dataDict)
+            { (error, dfRef) in
+                self.NotifyDelegate()
+            }
+        }
+    }
+    
+    fileprivate func NotifyDelegate()
+    {
+        if let del = self.delegate
+        {
+            del.InvitationSent()
+        }
+    }
+}
+
+
 
 class InvitationManager {
     
@@ -116,30 +163,6 @@ class InvitationManager {
         }
     }
     
-    // MARK: - Invitation Manipulations
-    func SendInvitation(destinationUserEmail: String, listId: String, message: String) {
-        
-        let dbRef = Database.database().reference().root
-        
-        let query = dbRef.child("users").queryOrdered(byChild: "email").queryEqual(toValue: destinationUserEmail)
-        
-        query.observeSingleEvent(of: .value)
-        { (snapshot) in
-            
-            let snapshotDict = snapshot.value as! [String : Any]
-            let destinationUserId = snapshotDict.keys.first
-            
-            let invitationDbRef = dbRef.child("users/\(destinationUserId!)/invitations/\(listId)")
-            
-            let myEmail = Auth.auth().currentUser?.email
-            
-            let dataDict = [Invitation.Keys.user_email.rawValue : myEmail!,
-                            Invitation.Keys.message.rawValue : message]
-            
-            invitationDbRef.setValue(dataDict)
-        }
-    }
-    
     func AcceptInvitation(_ invitation: Invitation) {
         
         let userId = Auth.auth().currentUser?.uid
@@ -180,7 +203,7 @@ class InvitationManager {
     fileprivate func Cleanup() {
         
         observersHandler = nil
-
+        
         invitations.removeAll()
     }
 }

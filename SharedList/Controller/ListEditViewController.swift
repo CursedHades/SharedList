@@ -14,10 +14,13 @@ class ListEditViewController: UIViewController {
     @IBOutlet var shareButton: UIButton!
     
     var listManager : SingleListManager?
+    let shareManager = ShareListManager()
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        shareManager.delegate = self
         
         title = listManager?.list.title
     }
@@ -38,16 +41,31 @@ class ListEditViewController: UIViewController {
             return
         }
         
+        shareManager.Share(destUserEmail: email!, listId: listManager!.list.id)
     }
     
-    fileprivate func ShowInvalidEmailPopup()
+    fileprivate func ShowPopupWithMessage(_ message: String, cancelButton: String)
     {
-        let popup = PopupDialog(title: "Invalid email address.", message: nil)
-        let cancelButton = CancelButton(title: "Cancel")
+        let popup = PopupDialog(title: message, message: nil)
+        let cancelButton = CancelButton(title: cancelButton)
         {}
         
         popup.addButton(cancelButton)
         
         self.present(popup, animated: true)
+    }
+    
+    fileprivate func ShowInvalidEmailPopup()
+    {
+        ShowPopupWithMessage("Invalid email address.",
+                             cancelButton: "Cancel")
+    }
+}
+
+extension ListEditViewController : ShareListManagerDelegate
+{
+    func InvitationSent()
+    {
+        ShowPopupWithMessage("Invitation sent.", cancelButton: "OK")
     }
 }

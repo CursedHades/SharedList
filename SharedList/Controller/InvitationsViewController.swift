@@ -74,23 +74,23 @@ extension InvitationsViewController : UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let invitation = invitationManager!.invitations[indexPath.row]
-        
-        let title = invitation.user_email
-        let message = invitation.message
-        
-        let popup = PopupDialog(title: title, message: message)
-        
-        let acceptButton = DefaultButton(title: "Accept") {
-            self.invitationManager?.AcceptInvitation(invitation)
-        }
-        let discardButton = DefaultButton(title: "Discard") {
-            self.invitationManager?.RemoveInvitation(invitation)
-        }
-        
-        popup.addButtons([acceptButton, discardButton])
-        popup.buttonAlignment = .horizontal
-        
-        self.present(popup, animated: true, completion: nil)
+//        let invitation = invitationManager!.invitations[indexPath.row]
+//
+//        let title = invitation.user_email
+//        let message = invitation.message
+//
+//        let popup = PopupDialog(title: title, message: message)
+//
+//        let acceptButton = DefaultButton(title: "Accept") {
+//            self.invitationManager?.AcceptInvitation(invitation)
+//        }
+//        let discardButton = DefaultButton(title: "Discard") {
+//            self.invitationManager?.RemoveInvitation(invitation)
+//        }
+//
+//        popup.addButtons([acceptButton, discardButton])
+//        popup.buttonAlignment = .horizontal
+//
+//        self.present(popup, animated: true, completion: nil)
     }
 }
