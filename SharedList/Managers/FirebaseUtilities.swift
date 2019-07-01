@@ -79,6 +79,10 @@ class frb_utils {
         return DbRef().child(ItemPath(itemsId, itemId))
     }
     
+    static func InvitationsTableDbRef() -> DatabaseReference {
+        return DbRef().child(Keys.invitations.rawValue)
+    }
+    
     // MARK: - String Paths Getters
     static func UserPath(_ id : String) -> String {
         return ("\(Keys.users.rawValue)/\(id)")
@@ -106,5 +110,21 @@ class frb_utils {
     
     static func UserInListPath(listId: String, userId: String) -> String {
         return ListUsersPath(listId) + ("/\(userId)")
+    }
+    
+    static func InvitationsTablePath() -> String {
+        return ("\(Keys.invitations.rawValue)")
+    }
+    
+    static func InvitationPath(_ id: String) -> String {
+        return InvitationsTablePath() + ("/\(id)")
+    }
+    
+    static func UserInvitationsPath(_ id: String) -> String {
+        return UserPath(id) + ("/\(Keys.invitations.rawValue)")
+    }
+    
+    static func InvitationInUserPath(_ invitationId: String, _ userId: String) -> String {
+        return UserInvitationsPath(userId) + ("/\(invitationId)")
     }
 }
