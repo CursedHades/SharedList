@@ -178,18 +178,32 @@ class ListsManager
         }
     }
     
-    func GetListById(_ id: String, completionHandler: @escaping (_ list: List?) -> Void) {
-        
+    func GetListById(_ id: String, completionHandler: @escaping (_ list: List?) -> Void)
+    {
         let listDbRef = frb_utils.ListDbRef(id)
-        listDbRef.observeSingleEvent(of: .value) { (listSnapshot) in
+        listDbRef.observeSingleEvent(of: .value)
+        { (listSnapshot) in
             
-            if let listData = listSnapshot.value as? [String : String] {
+            if let listData = listSnapshot.value as? [String : Any]
+            {
                 let list = List.Deserialize(id: id, data: listData)
                 completionHandler(list)
             }
             else {
                 completionHandler(nil)
             }
+        }
+    }
+    
+    func AddCurrentUserToList(list: List, completion: @escaping() -> Void)
+    {
+        let userId = authManager.currentUser!.id
+        let updateData = [frb_utils.UserInListPath(listId: list.id, userId: userId) : authManager.currentUser!.name,
+                          frb_utils.ListInUserListsPath(userId: userId, listId: list.id) : true] as [String : Any]
+        
+        frb_utils.DbRef().updateChildValues(updateData)
+        { (error, dbRef) in
+            completion()
         }
     }
     

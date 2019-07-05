@@ -17,22 +17,26 @@ class Invitation {
         case sender_user_id = "sender_user_id"
     }
     
+    let id : String
     let list_id : String
-    let user_email : String
+    let sender_user_id : String
     
-    init(listId: String, userEmail: String)
+    var list : List? = nil
+    
+    init(id: String,
+         listId: String,
+         senderUserId: String)
     {
+        self.id = id
         self.list_id = listId
-        self.user_email = userEmail
+        self.sender_user_id = senderUserId
     }
     
-    static func Deserialize(listId: String, data: [String : String]) -> Invitation? {
-        
-        if let userEmail = data[Keys.user_email.rawValue] {
-            return Invitation(listId: listId, userEmail: userEmail)
-        }
-        
-        return nil
+    static func Deserialize(id: String, data: [String : Any]) -> Invitation
+    {
+        return Invitation(id: id,
+                          listId: data[Keys.list_id.rawValue] as! String,
+                          senderUserId: data[Keys.sender_user_id.rawValue] as! String)
     }
     
     static func Path(_ prefix: String, _ key: Keys) -> String

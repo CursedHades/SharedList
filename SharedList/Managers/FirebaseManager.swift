@@ -28,4 +28,9 @@ class FirebaseManager
     {
         return ListsManager(authManager: authManager)
     }
+    
+    func PrepareInvitationManager(listsManager: ListsManager) -> InvitationManager
+    {
+        return InvitationManager(listsManager: listsManager)
+    }
 }

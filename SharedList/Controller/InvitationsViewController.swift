@@ -13,84 +13,108 @@ class InvitationsViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
     
-    var frbManager : FirebaseManager? = nil {
-        
+    var invManager : InvitationManager? = nil {
         didSet {
-//            invitationManager = frbManager?.invitationManager
-            invitationManager?.delegates.addDelegate(self)
+            invManager?.delegates.addDelegate(self)
         }
     }
     
-    fileprivate var invitationManager : InvitationManager? = nil
-    
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "invitationCell")
-        
-        
     }
 }
 
-extension InvitationsViewController : InvitationManagerDelegate {
-    
-    func InvitationAdded() {
+extension InvitationsViewController : InvitationManagerDelegate
+{
+    func UserAddedToList()
+    {
         tableView.reloadData()
     }
     
-    func InvitationRemoved() {
+    func InvitationAdded()
+    {
+        tableView.reloadData()
+    }
+    
+    func InvitationRemoved()
+    {
         tableView.reloadData()
     }
 }
 
-extension InvitationsViewController : UITableViewDelegate, UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return invitationManager!.invitations.count
+extension InvitationsViewController : UITableViewDelegate, UITableViewDataSource
+{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        return invManager!.invitations.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let invitation = invManager!.invitations[indexPath.row]
         
-        let invitation = invitationManager!.invitations[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "InvitationCell")
+        cell?.textLabel?.text = "loading..."
+        cell?.detailTextLabel?.text = "loading..."
         
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "invitationCell")
-        cell.textLabel!.text = "title: loading..."
-        cell.detailTextLabel!.text = "owner: \(invitation.user_email)"
-        
-        invitationManager?.GetListNameForInvitation(invitation, CompletionHandler: { (returnedTitle) in
-            if let title = returnedTitle {
-                cell.textLabel!.text = "Title: \(title)"
-            } else {
-                cell.textLabel!.text = "List no longer exist."
-                cell.detailTextLabel!.text = "Removing invitation..."
+        invManager?.GetListForInvitation(index: indexPath.row, CompletionHandler: { (invitedList) in
+            if let list = invitedList
+            {
+                cell?.textLabel?.text = "List: \(list.title)"
+                if let userName = list.users?[invitation.sender_user_id]
+                {
+                    cell?.detailTextLabel?.text = "\(userName) invited you."
+                }
+                else
+                {
+                    cell?.detailTextLabel?.text = ""
+                }
+            }
+            else
+            {
+                cell?.textLabel?.text = "List no longer exist."
+                cell?.detailTextLabel?.text = "Removing invitation..."
             }
         })
         
-        return cell
+        return cell!
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let popup = PrepareInvitationPopup(index: indexPath.row)
+        self.present(popup, animated: true, completion: nil)
+    }
+    
+    fileprivate func PrepareInvitationPopup(index: Int) -> PopupDialog
+    {
+        let invitation = invManager!.invitations[index]
         
-//        let invitation = invitationManager!.invitations[indexPath.row]
-//
-//        let title = invitation.user_email
-//        let message = invitation.message
-//
-//        let popup = PopupDialog(title: title, message: message)
-//
-//        let acceptButton = DefaultButton(title: "Accept") {
-//            self.invitationManager?.AcceptInvitation(invitation)
-//        }
-//        let discardButton = DefaultButton(title: "Discard") {
-//            self.invitationManager?.RemoveInvitation(invitation)
-//        }
-//
-//        popup.addButtons([acceptButton, discardButton])
-//        popup.buttonAlignment = .horizontal
-//
-//        self.present(popup, animated: true, completion: nil)
+        let title = invitation.list?.title
+        let message = invitation.list?.users?[invitation.sender_user_id]
+        
+        let popup = PopupDialog(title: title, message: message)
+        
+        let acceptButton = DefaultButton(title: "Accept")
+        {
+            self.invManager?.AcceptInvitation(at: index)
+        }
+        let cancelButton = CancelButton(title: "Cancel")
+        {
+            
+        }
+        let discardButton = DestructiveButton(title: "Discard")
+        {
+            self.invManager?.RemoveInvitation(at: index)
+        }
+        
+        popup.addButtons([acceptButton, cancelButton, discardButton])
+        popup.buttonAlignment = .vertical
+        
+        return popup
     }
 }

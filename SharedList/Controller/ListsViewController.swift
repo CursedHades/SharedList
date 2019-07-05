@@ -26,26 +26,16 @@ class ListsViewController: UIViewController {
     {
         didSet
         {
-            listsManager2 = frbManager?.PrepareListsManager()
-            listsManager2?.delegate = self
+            listsManager = frbManager?.PrepareListsManager()
+            listsManager?.delegate = self
+            
+            invitationManager = frbManager?.PrepareInvitationManager(listsManager: listsManager!)
+            invitationManager?.delegates.addDelegate(self)
         }
     }
   
-    fileprivate var listsManager2 : ListsManager?
-    
-//    fileprivate var listsManager : ListsManager?
+    fileprivate var listsManager : ListsManager?
     fileprivate var invitationManager : InvitationManager?
-//    var frbManager : FirebaseManager? {
-//        didSet {
-//            listsManager = frbManager?.listsManager
-//            listsManager?.delegate = self
-//
-//            invitationManager = frbManager?.invitationManager
-//            invitationManager?.delegates.addDelegate(self)
-//            invitationManager?.LoadData()
-//            invitationManager?.ActivateObservers()
-//        }
-//    }
     
     //*********************************************************************
     // MARK: - Functions
@@ -66,7 +56,7 @@ class ListsViewController: UIViewController {
         }
         else {
             let listTitle = listTitleTextField.text!
-            listsManager2!.AddNewList(title: listTitle)
+            listsManager!.AddNewList(title: listTitle)
         }
     }
     
@@ -89,14 +79,14 @@ class ListsViewController: UIViewController {
             selectedListIndex = nil
             
             let singleListVC = segue.destination as! SingleListViewController
-            singleListVC.listManager = frbManager?.PrepareSingleListManager(list: listsManager2!.GetList(listIndex)!)
+            singleListVC.listManager = frbManager?.PrepareSingleListManager(list: listsManager!.GetList(listIndex)!)
         }
         
-//        if (segue.identifier == "goToInvitations")
-//        {
-//            let invitationVC = segue.destination as! InvitationsViewController
-//            invitationVC.frbManager = frbManager
-//        }
+        if (segue.identifier == "goToInvitations")
+        {
+            let invitationVC = segue.destination as! InvitationsViewController
+            invitationVC.invManager = invitationManager
+        }
     }
     
     fileprivate func InitiateDataLoad() {
@@ -105,7 +95,7 @@ class ListsViewController: UIViewController {
         UpdateUI()
         SVProgressHUD.show(withStatus: "Loading data...")
         
-        listsManager2?.LoadData()
+        listsManager?.LoadData()
         
         loadingGuard.delegate = self
         loadingGuard.Activate()
@@ -156,11 +146,15 @@ class ListsViewController: UIViewController {
         UpdateInvitationEnable()
     }
     
-    fileprivate func UpdateInvitationEnable() {
-        if (!loadingInProgress && invitationManager?.invitations.count != 0) {
-            invitationsButton.isEnabled = true
+    fileprivate func UpdateInvitationEnable()
+    {
+        if let invManager = invitationManager
+        {
+            let enable = (!loadingInProgress && invManager.HasInvitation())
+            invitationsButton.isEnabled = enable
         }
-        else {
+        else
+        {
             invitationsButton.isEnabled = false
         }
     }
@@ -172,7 +166,7 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        if let itemsCount = listsManager2?.listCount
+        if let itemsCount = listsManager?.listCount
         {
             if (itemsCount > 0)
             {
@@ -186,7 +180,7 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
         
-        if let list = listsManager2?.GetList(indexPath.row)
+        if let list = listsManager?.GetList(indexPath.row)
         {
             cell.textLabel?.text = list.title
         }
@@ -241,7 +235,11 @@ extension ListsViewController : ListsManagerDelegate {
 
 //*********************************************************************
 // MARK: - Invitation Manager extension
-extension ListsViewController : InvitationManagerDelegate {
+extension ListsViewController : InvitationManagerDelegate
+{
+    func UserAddedToList() {
+        
+    }
     
     func InvitationAdded() {
         UpdateInvitationEnable()

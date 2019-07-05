@@ -9,19 +9,9 @@
 import Firebase
 import MulticastDelegateSwift
 
-protocol InvitationManagerDelegate : class {
-    func InvitationAdded()
-    func InvitationRemoved()
-}
-
-extension InvitationManagerDelegate {
-    func InvitationRemoved() {}
-}
-
 protocol ShareListManagerDelegate : class {
     func InvitationSent()
 }
-
 
 class ShareListManager {
     
@@ -33,7 +23,6 @@ class ShareListManager {
         
         query.observeSingleEvent(of: .value)
         { (snapshot) in
-            
             if !snapshot.exists()
             {
                 self.NotifyDelegate()
@@ -41,18 +30,32 @@ class ShareListManager {
             }
             
             let snapshotDict = snapshot.value as! [String : Any]
-            let destUserId = snapshotDict.keys.first
+            let destUserId = snapshotDict.keys.first!
+            let currentUserId = Auth.auth().currentUser!.uid
             
-            let invitationDbRef = frb_utils.UserInvitationsDbRef(destUserId!).child("/\(listId)")
+            let newInvitationKey = frb_utils.InvitationsTableDbRef().childByAutoId().key!
+            var updateData = Invitation.Serialize(id:newInvitationKey,
+                                                  listId: listId,
+                                                  destUserId: destUserId,
+                                                  senderUserId: currentUserId)
             
-            let myEmail = Auth.auth().currentUser?.email
+            updateData[frb_utils.InvitationInUserPath(newInvitationKey, destUserId)] = true
             
-            let dataDict = [Invitation.Keys.user_email.rawValue : myEmail!]
-            
-            invitationDbRef.setValue(dataDict)
-            { (error, dfRef) in
+            frb_utils.DbRef().updateChildValues(updateData)
+            { (error, snapshot) in
                 self.NotifyDelegate()
             }
+        }
+    }
+    
+    func Remove(userId: String, invitationId: String, completion: @escaping () -> Void)
+    {
+        let updateData = [frb_utils.InvitationPath(invitationId): NSNull(),
+                          frb_utils.InvitationInUserPath(invitationId, userId): NSNull() ] as [String : Any]
+        
+        frb_utils.DbRef().updateChildValues(updateData)
+        { (error, snapshot) in
+            completion()
         }
     }
     
@@ -67,83 +70,57 @@ class ShareListManager {
 
 
 
+
+
+
+
+protocol InvitationManagerDelegate : class {
+    func InvitationAdded()
+    func InvitationRemoved()
+    func UserAddedToList()
+}
+
 class InvitationManager {
     
     let delegates = MulticastDelegate<InvitationManagerDelegate>()
     
     var invitations = [Invitation]()
     
-    fileprivate var observersHandler : ObserversHandler?
+    fileprivate let observersHandler : ObserversHandler
+    fileprivate var observerActive : Bool = false
+    fileprivate let listsManager : ListsManager
     
-    fileprivate let listManager : ListsManager
-    
-    init(listManager: ListsManager) {
-        self.listManager = listManager
-    }
-    
-    fileprivate func InitObserverHandler() {
-        let userId = Auth.auth().currentUser!.uid
-        let userInvitationsDbRef = Database.database().reference().child("users/\(userId)/invitations")
-        observersHandler = ObserversHandler(userInvitationsDbRef)
-    }
-    
-    func LoadData() {
+    init(listsManager: ListsManager)
+    {
+        self.listsManager = listsManager
         
         let userId = Auth.auth().currentUser!.uid
-        let userPorposalsDbRef = Database.database().reference().child("users/\(userId)/invitations")
+        let invitationsDbRef = frb_utils.UserInvitationsDbRef(userId)
+        self.observersHandler = ObserversHandler(invitationsDbRef)
         
-        let query = userPorposalsDbRef.queryOrderedByKey()
-        
-        query.observeSingleEvent(of: .value) { (invitationsSnapshot) in
-            
-            if let invitationsDict = invitationsSnapshot.value as? [String : Any] {
-                for (listId , userData) in invitationsDict {
-                    
-                    if let dataDict = userData as? [String : String] {
-                        if let invitation = Invitation.Deserialize(listId: listId, data: dataDict) {
-                            self.invitations.append(invitation)
-                        }
-                    }
-                }
-                
-                self.delegates.invokeDelegates({ (delegate) in
-                    delegate.InvitationAdded()
-                })
-            }
-        }
+        ActivateObservers()
     }
     
-    func ActivateObservers() {
-        
-        if observersHandler == nil {
-            InitObserverHandler()
+    func HasInvitation() -> Bool
+    {
+        return !invitations.isEmpty
+    }
+    
+    func ActivateObservers()
+    {
+        if (observerActive == false)
+        {
+            observerActive = true
+            observersHandler.AddObserver(eventType: .childAdded, InvitationsChildAdded)
+            observersHandler.AddObserver(eventType: .childRemoved, InvitationsChildRemoved)
         }
-        
-        observersHandler!.AddObserver(eventType: .childAdded, InvitationsChildAdded)
-        observersHandler!.AddObserver(eventType: .childRemoved, InvitationsChildRemoved)
     }
     
     // MARK: - Invitations Observers Handlers
-    fileprivate func InvitationsChildAdded(_ invitationSnapshot: DataSnapshot) {
-        
-        let listId = invitationSnapshot.key
-        
-        for invitation in self.invitations {
-            if (invitation.list_id == listId) {
-                return
-            }
-        }
-        
-        let dataDict = invitationSnapshot.value as! [String : String]
-        
-        if let invitation = Invitation.Deserialize(listId: listId, data: dataDict) {
-            
-            self.invitations.append(invitation)
-            
-            self.delegates.invokeDelegates({ (delegate) in
-                delegate.InvitationAdded()
-            })
-        }
+    fileprivate func InvitationsChildAdded(_ invitationSnapshot: DataSnapshot)
+    {
+        let invitationId = invitationSnapshot.key
+        self.LoadInvitation(id: invitationId)
     }
     
     fileprivate func InvitationsChildRemoved(_ invitationSnapshot: DataSnapshot) {
@@ -163,55 +140,74 @@ class InvitationManager {
         }
     }
     
-    func AcceptInvitation(_ invitation: Invitation) {
-        
-        let userId = Auth.auth().currentUser?.uid
-        let listId = invitation.list_id
-        
-        let data = ["users/\(userId!)/lists/\(listId)" : true]
-        
-        Database.database().reference().updateChildValues(data) { (error, _) in
-            self.RemoveInvitation(invitation)
+    fileprivate func LoadInvitation(id: String)
+    {
+        let invitationDbRef = frb_utils.InvitationDbRef(id)
+        invitationDbRef.observeSingleEvent(of: .value)
+        { (invitationSnapshot) in
+            if let invitationDict = invitationSnapshot.value as? [String : Any]
+            {
+                let newInvitation = Invitation.Deserialize(id: id,
+                                                           data: invitationDict)
+                self.invitations.append(newInvitation)
+                
+                self.delegates.invokeDelegates()
+                    { (delegate) in
+                        delegate.InvitationAdded()
+                }
+            }
         }
     }
     
-    func RemoveInvitation(_ invitation: Invitation) {
-        
+    func RemoveInvitation(at index: Int)
+    {
+        let invitation = invitations[index]
         let userId = Auth.auth().currentUser?.uid
-        let invitationId = invitation.list_id
         
-        let updateData = ["users/\(userId!)/invitations/\(invitationId)": NSNull()]
+        self.invitations.remove(at: index)
         
-        Database.database().reference().updateChildValues(updateData)
+        ShareListManager().Remove(userId: userId!,
+                                  invitationId: invitation.id)
+        {
+            self.delegates.invokeDelegates()
+            { (delegate) in
+                delegate.InvitationRemoved()
+            }
+        }
     }
     
-    func GetListNameForInvitation(_ invitation: Invitation, CompletionHandler: @escaping (_ name: String?) -> Void) {
-        
-        listManager.GetListById(invitation.list_id) { (returnedList) in
-            
-            if let list = returnedList {
-                CompletionHandler(list.title)
+    func AcceptInvitation(at index: Int)
+    {
+        if let list = invitations[index].list
+        {
+            listsManager.AddCurrentUserToList(list: list)
+            {
+                self.RemoveInvitation(at: index)
+                
+                self.delegates.invokeDelegates()
+                { (delegate) in
+                    delegate.UserAddedToList()
+                }
             }
-            else {
+        }
+    }
+    
+    func GetListForInvitation(index: Int, CompletionHandler: @escaping (_ list: List?) -> Void)
+    {
+        let invitation = invitations[index]
+        listsManager.GetListById(invitation.list_id)
+        { (returnedList) in
+            if let list = returnedList
+            {
+                invitation.list = list
+                CompletionHandler(list)
+            }
+            else
+            {
                 // List does not exist anymore, remove invitation
                 CompletionHandler(nil)
-                self.RemoveInvitation(invitation)
+                self.RemoveInvitation(at: index)
             }
         }
-    }
-    
-    fileprivate func Cleanup() {
-        
-        observersHandler = nil
-        
-        invitations.removeAll()
-    }
-}
-
-// MARK : - AuthManagerDelegate
-extension InvitationManager : AuthManagerDelegate {
-    
-    func UserLogedOut() {
-        Cleanup()
     }
 }

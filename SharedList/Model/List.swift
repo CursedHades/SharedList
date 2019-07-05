@@ -18,6 +18,7 @@ class List {
     private(set) var title : String
     let owner_id : String
     let items_id : String
+    var users : [String : String]?
     
     fileprivate init(id: String, title: String, ownerId: String, itemsId: String) {
         self.id = id
@@ -55,9 +56,13 @@ class List {
     
     static func Deserialize(id: String, data: [String : Any]) -> List {
         
-        return List(id: id,
-                    title: data[Keys.title.rawValue] as! String,
-                    ownerId: data[Keys.owner_id.rawValue] as! String,
-                    itemsId: data[Keys.items_id.rawValue] as! String)
+        let newList = List(id: id,
+                           title: data[Keys.title.rawValue] as! String,
+                           ownerId: data[Keys.owner_id.rawValue] as! String,
+                           itemsId: data[Keys.items_id.rawValue] as! String)
+        
+        newList.users = data["users"] as? [String : String]
+        
+        return newList
     }
 }
