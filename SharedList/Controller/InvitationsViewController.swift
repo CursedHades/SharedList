@@ -61,7 +61,8 @@ extension InvitationsViewController : UITableViewDelegate, UITableViewDataSource
         cell?.textLabel?.text = "loading..."
         cell?.detailTextLabel?.text = "loading..."
         
-        invManager?.GetListForInvitation(index: indexPath.row, CompletionHandler: { (invitedList) in
+        invManager?.GetListForInvitation(index: indexPath.row)
+        { (invitedList) in
             if let list = invitedList
             {
                 cell?.textLabel?.text = "List: \(list.title)"
@@ -79,7 +80,7 @@ extension InvitationsViewController : UITableViewDelegate, UITableViewDataSource
                 cell?.textLabel?.text = "List no longer exist."
                 cell?.detailTextLabel?.text = "Removing invitation..."
             }
-        })
+        }
         
         return cell!
     }

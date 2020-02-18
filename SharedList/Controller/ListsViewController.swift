@@ -46,6 +46,8 @@ class ListsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
+        vc_utils.SetupKeyboard(textField: listTitleTextField)
+        
         InitiateDataLoad()
     }
 

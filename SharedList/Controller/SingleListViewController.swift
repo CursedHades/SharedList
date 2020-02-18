@@ -37,8 +37,7 @@ class SingleListViewController: UIViewController {
 
         self.title = listManager?.list.title
         
-        newItemNameTextField.keyboardType = .default
-        newItemNameTextField.returnKeyType = .done
+        vc_utils.SetupKeyboard(textField: newItemNameTextField)
         newItemNameTextField.delegate = self
         
         listManager?.LoadData()

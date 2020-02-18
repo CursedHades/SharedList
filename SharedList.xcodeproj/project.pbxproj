@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,6 +15,7 @@
 		B2227B4422B8241B0001BED5 /* ShareListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2227B4222B8241B0001BED5 /* ShareListViewController.xib */; };
 		B26A275722511C9E00091C43 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275622511C9E00091C43 /* User.swift */; };
 		B26A275922511D0C00091C43 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275822511D0C00091C43 /* AuthManager.swift */; };
+		B28AA0E022DFA362006C3237 /* ViewControllersCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */; };
 		B2A29AF7222491F800698D05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A29AF6222491F800698D05 /* AppDelegate.swift */; };
 		B2A29AF9222491F800698D05 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A29AF8222491F800698D05 /* ViewController.swift */; };
 		B2A29AFC222491F800698D05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2A29AFA222491F800698D05 /* Main.storyboard */; };
@@ -50,6 +51,7 @@
 		B2227B4222B8241B0001BED5 /* ShareListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ShareListViewController.xib; path = ../Controller/ShareListViewController.xib; sourceTree = "<group>"; };
 		B26A275622511C9E00091C43 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B26A275822511D0C00091C43 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllersCommon.swift; sourceTree = "<group>"; };
 		B2A29AF3222491F800698D05 /* SharedList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SharedList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A29AF6222491F800698D05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B2A29AF8222491F800698D05 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
