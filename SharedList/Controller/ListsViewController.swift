@@ -191,6 +191,15 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
             cell.textLabel?.text = "Add new list"
         }
         
+        if (self.traitCollection.userInterfaceStyle == .dark)
+        {
+            cell.imageView?.image = UIImage(named: "list_dark.png")
+        }
+        else
+        {
+            cell.imageView?.image = UIImage(named: "list_light.png")
+        }
+        
         return cell
     }
     

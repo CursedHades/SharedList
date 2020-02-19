@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		26D1A9ADC6E1B7F5F8D9D1B8 /* Pods_SharedList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149806525C5E9CFE227BC804 /* Pods_SharedList.framework */; };
 		B21419F122A1A08300EFC13F /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */; };
 		B21C3D46225A5EE400723702 /* ObserversHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21C3D45225A5EE400723702 /* ObserversHandler.swift */; };
 		B220207122C91FFD00721A1C /* InvitationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B220207022C91FFD00721A1C /* InvitationManager.swift */; };
@@ -38,12 +37,12 @@
 		B2D9A66222404F2000576591 /* ListsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A66122404F2000576591 /* ListsManager.swift */; };
 		B2D9A6692247D91400576591 /* Invitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A6682247D91400576591 /* Invitation.swift */; };
 		B2D9A66B2248230300576591 /* InvitationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9A66A2248230300576591 /* InvitationsViewController.swift */; };
+		D38C9C17E910373543BCCB9E /* libPods-SharedList.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DEBA94ECABBD3A3EA6EDCF9D /* libPods-SharedList.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		01555E8B0F1869532C63765B /* Pods-SharedList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.debug.xcconfig"; sourceTree = "<group>"; };
 		056A402CC157056C2FD6A153 /* Pods-SharedList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.release.xcconfig"; sourceTree = "<group>"; };
-		149806525C5E9CFE227BC804 /* Pods_SharedList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
 		B21C3D45225A5EE400723702 /* ObserversHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObserversHandler.swift; path = ../Managers/ObserversHandler.swift; sourceTree = "<group>"; };
 		B220207022C91FFD00721A1C /* InvitationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationManager.swift; sourceTree = "<group>"; };
@@ -76,6 +75,7 @@
 		B2D9A66122404F2000576591 /* ListsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsManager.swift; sourceTree = "<group>"; };
 		B2D9A6682247D91400576591 /* Invitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invitation.swift; sourceTree = "<group>"; };
 		B2D9A66A2248230300576591 /* InvitationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationsViewController.swift; sourceTree = "<group>"; };
+		DEBA94ECABBD3A3EA6EDCF9D /* libPods-SharedList.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SharedList.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26D1A9ADC6E1B7F5F8D9D1B8 /* Pods_SharedList.framework in Frameworks */,
+				D38C9C17E910373543BCCB9E /* libPods-SharedList.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,7 +93,7 @@
 		00325882394860275448BEFB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				149806525C5E9CFE227BC804 /* Pods_SharedList.framework */,
+				DEBA94ECABBD3A3EA6EDCF9D /* libPods-SharedList.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -164,6 +164,7 @@
 				B2D9A66A2248230300576591 /* InvitationsViewController.swift */,
 				B2ADCA1722B7FBB6004F7576 /* ListEditViewController.swift */,
 				B2227B4122B8241B0001BED5 /* ShareListViewController.swift */,
+				B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -213,7 +214,7 @@
 				B2A29AEF222491F800698D05 /* Sources */,
 				B2A29AF0222491F800698D05 /* Frameworks */,
 				B2A29AF1222491F800698D05 /* Resources */,
-				7571F698BA20697A5184CF64 /* [CP] Embed Pods Frameworks */,
+				9B4E43BEB03296E9678810C8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -295,42 +296,21 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7571F698BA20697A5184CF64 /* [CP] Embed Pods Frameworks */ = {
+		9B4E43BEB03296E9678810C8 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SharedList/Pods-SharedList-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-SharedList/Pods-SharedList-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
-				"${BUILT_PRODUCTS_DIR}/DynamicBlurView/DynamicBlurView.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/MulticastDelegateSwift/MulticastDelegateSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/PopupDialog/PopupDialog.framework",
-				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DynamicBlurView.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MulticastDelegateSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PopupDialog.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-SharedList/Pods-SharedList-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SharedList/Pods-SharedList-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SharedList/Pods-SharedList-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -354,6 +334,7 @@
 				B2C7161C2295DE3D0047E2A2 /* SingleListManager.swift in Sources */,
 				B2A29AF7222491F800698D05 /* AppDelegate.swift in Sources */,
 				B2B35E20222DBB17000EC2B2 /* Item.swift in Sources */,
+				B28AA0E022DFA362006C3237 /* ViewControllersCommon.swift in Sources */,
 				B2227B4322B8241B0001BED5 /* ShareListViewController.swift in Sources */,
 				B2C06E832249459B0074C43E /* TimeoutGuard.swift in Sources */,
 				B2A7266B224D6E610087B46B /* FirebaseUtilities.swift in Sources */,
@@ -520,7 +501,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.AW.SharedList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -539,7 +520,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.AW.SharedList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
