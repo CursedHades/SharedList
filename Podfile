@@ -3,14 +3,15 @@ platform :ios, '9.0'
 
 target 'SharedList' do
     # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
-    use_frameworks!
+    # use_frameworks!
+    use_modular_headers!
 
     # Pods for SharedList
     pod 'Firebase'
     pod 'Firebase/Auth'
     pod 'Firebase/Database'
     pod 'SVProgressHUD'
-    pod 'ChameleonFramework'
+#   pod 'ChameleonFramework'
     pod 'MulticastDelegateSwift'
     pod 'PopupDialog', '~> 0.9'
 end
