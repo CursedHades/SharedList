@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B209C80823FF3A8E00312AC0 /* ColourUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B209C80723FF3A8E00312AC0 /* ColourUtilities.swift */; };
 		B21419F122A1A08300EFC13F /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */; };
 		B21C3D46225A5EE400723702 /* ObserversHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21C3D45225A5EE400723702 /* ObserversHandler.swift */; };
 		B220207122C91FFD00721A1C /* InvitationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B220207022C91FFD00721A1C /* InvitationManager.swift */; };
@@ -14,6 +15,8 @@
 		B2227B4422B8241B0001BED5 /* ShareListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2227B4222B8241B0001BED5 /* ShareListViewController.xib */; };
 		B26A275722511C9E00091C43 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275622511C9E00091C43 /* User.swift */; };
 		B26A275922511D0C00091C43 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275822511D0C00091C43 /* AuthManager.swift */; };
+		B288A06223FDD0C600DEAB3C /* AddListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B288A06023FDD0C600DEAB3C /* AddListViewController.swift */; };
+		B288A06323FDD0C600DEAB3C /* AddListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B288A06123FDD0C600DEAB3C /* AddListViewController.xib */; };
 		B28AA0E022DFA362006C3237 /* ViewControllersCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */; };
 		B2A29AF7222491F800698D05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A29AF6222491F800698D05 /* AppDelegate.swift */; };
 		B2A29AF9222491F800698D05 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A29AF8222491F800698D05 /* ViewController.swift */; };
@@ -43,6 +46,7 @@
 /* Begin PBXFileReference section */
 		01555E8B0F1869532C63765B /* Pods-SharedList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.debug.xcconfig"; sourceTree = "<group>"; };
 		056A402CC157056C2FD6A153 /* Pods-SharedList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.release.xcconfig"; sourceTree = "<group>"; };
+		B209C80723FF3A8E00312AC0 /* ColourUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColourUtilities.swift; sourceTree = "<group>"; };
 		B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
 		B21C3D45225A5EE400723702 /* ObserversHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObserversHandler.swift; path = ../Managers/ObserversHandler.swift; sourceTree = "<group>"; };
 		B220207022C91FFD00721A1C /* InvitationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationManager.swift; sourceTree = "<group>"; };
@@ -50,6 +54,8 @@
 		B2227B4222B8241B0001BED5 /* ShareListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ShareListViewController.xib; path = ../Controller/ShareListViewController.xib; sourceTree = "<group>"; };
 		B26A275622511C9E00091C43 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B26A275822511D0C00091C43 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		B288A06023FDD0C600DEAB3C /* AddListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListViewController.swift; sourceTree = "<group>"; };
+		B288A06123FDD0C600DEAB3C /* AddListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddListViewController.xib; sourceTree = "<group>"; };
 		B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllersCommon.swift; sourceTree = "<group>"; };
 		B2A29AF3222491F800698D05 /* SharedList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SharedList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A29AF6222491F800698D05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -149,6 +155,7 @@
 				B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */,
 				B2C06E822249459B0074C43E /* TimeoutGuard.swift */,
 				B2C7161D22972C770047E2A2 /* FrbChangedObserver.swift */,
+				B209C80723FF3A8E00312AC0 /* ColourUtilities.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -165,6 +172,7 @@
 				B2ADCA1722B7FBB6004F7576 /* ListEditViewController.swift */,
 				B2227B4122B8241B0001BED5 /* ShareListViewController.swift */,
 				B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */,
+				B288A06023FDD0C600DEAB3C /* AddListViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -172,6 +180,7 @@
 		B2C3D60C222BD327005321BB /* View */ = {
 			isa = PBXGroup;
 			children = (
+				B288A06123FDD0C600DEAB3C /* AddListViewController.xib */,
 				B2227B4222B8241B0001BED5 /* ShareListViewController.xib */,
 				B2A29AFA222491F800698D05 /* Main.storyboard */,
 				B2A29AFF222491FA00698D05 /* LaunchScreen.storyboard */,
@@ -265,6 +274,7 @@
 			files = (
 				B2A29B01222491FA00698D05 /* LaunchScreen.storyboard in Resources */,
 				B2C3D614222BD59E005321BB /* GoogleService-Info.plist in Resources */,
+				B288A06323FDD0C600DEAB3C /* AddListViewController.xib in Resources */,
 				B2227B4422B8241B0001BED5 /* ShareListViewController.xib in Resources */,
 				B2A29AFE222491FA00698D05 /* Assets.xcassets in Resources */,
 				B2A29AFC222491F800698D05 /* Main.storyboard in Resources */,
@@ -320,6 +330,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B288A06223FDD0C600DEAB3C /* AddListViewController.swift in Sources */,
 				B220207122C91FFD00721A1C /* InvitationManager.swift in Sources */,
 				B2C3D610222BD34D005321BB /* LogInViewController.swift in Sources */,
 				B2D9A66B2248230300576591 /* InvitationsViewController.swift in Sources */,
@@ -330,6 +341,7 @@
 				B2A29AF9222491F800698D05 /* ViewController.swift in Sources */,
 				B2ADCA1822B7FBB6004F7576 /* ListEditViewController.swift in Sources */,
 				B26A275922511D0C00091C43 /* AuthManager.swift in Sources */,
+				B209C80823FF3A8E00312AC0 /* ColourUtilities.swift in Sources */,
 				B2B35E22222EEF5A000EC2B2 /* FirebaseManager.swift in Sources */,
 				B2C7161C2295DE3D0047E2A2 /* SingleListManager.swift in Sources */,
 				B2A29AF7222491F800698D05 /* AppDelegate.swift in Sources */,

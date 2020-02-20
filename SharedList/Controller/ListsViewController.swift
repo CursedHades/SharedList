@@ -53,13 +53,10 @@ class ListsViewController: UIViewController {
 
     @IBAction func AddListPressed(_ sender: Any) {
         
-        if (listTitleTextField.text?.count == 0) {
-            print("cannot add list with empty name")
+        let popup = AddListViewController.PreparePopup { (listTitle) in
+            self.listsManager!.AddNewList(title: listTitle!)
         }
-        else {
-            let listTitle = listTitleTextField.text!
-            listsManager!.AddNewList(title: listTitle)
-        }
+        self.present(popup, animated: true)
     }
     
     @IBAction func InvitationsPressed(_ sender: UIButton) {
@@ -191,14 +188,7 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
             cell.textLabel?.text = "Add new list"
         }
         
-        if (self.traitCollection.userInterfaceStyle == .dark)
-        {
-            cell.imageView?.image = UIImage(named: "list_dark.png")
-        }
-        else
-        {
-            cell.imageView?.image = UIImage(named: "list_light.png")
-        }
+        cell.imageView?.image = colour_utils.GetListImage(self.traitCollection)
         
         return cell
     }
