@@ -11,7 +11,6 @@ import SVProgressHUD
 
 class ListsViewController: UIViewController {
 
-    @IBOutlet var listTitleTextField: UITextField!
     @IBOutlet var tableView: UITableView!
     
     @IBOutlet var addListButton: UIButton!
@@ -46,14 +45,12 @@ class ListsViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        vc_utils.SetupKeyboard(textField: listTitleTextField)
-        
         InitiateDataLoad()
     }
 
     @IBAction func AddListPressed(_ sender: Any) {
         
-        let popup = AddListViewController.PreparePopup { (listTitle) in
+        let popup = AddListViewController.PreparePopup(traitCollection: self.traitCollection) { (listTitle) in
             self.listsManager!.AddNewList(title: listTitle!)
         }
         self.present(popup, animated: true)
@@ -130,7 +127,6 @@ class ListsViewController: UIViewController {
     }
     
     fileprivate func DisableUI() {
-        listTitleTextField.isEnabled = false
         tableView.allowsSelection = false
         tableView.isScrollEnabled = false
         addListButton.isEnabled = false
@@ -138,7 +134,6 @@ class ListsViewController: UIViewController {
     }
     
     fileprivate func EnableUI() {
-        listTitleTextField.isEnabled = true
         tableView.allowsSelection = true
         tableView.isScrollEnabled = true
         addListButton.isEnabled = true

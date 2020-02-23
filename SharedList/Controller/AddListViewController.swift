@@ -46,16 +46,16 @@ class AddListViewController: UIViewController {
             }
         }
         
-        static func PreparePopup(WillDismissCallback: @escaping (String?) -> Void) -> PopupDialog
+    static func PreparePopup(traitCollection: UITraitCollection, WillDismissCallback: @escaping (String?) -> Void) -> PopupDialog
         {
             let vc = AddListViewController()
             vc.willDismissCallback = WillDismissCallback
             let popup = PopupDialog(viewController: vc)
-            let sendButton = DefaultButton(title: "Add")
+            let sendButton = popup_utils.GetDefaultButton(traitCollection: traitCollection, title: "Add")
             {
                 vc.DismissWithCallback(email: vc.listTitleTextField.text)
             }
-            let cancelButton = CancelButton(title: "Cancel")
+            let cancelButton = popup_utils.GetCancelButton(traitCollection: traitCollection, title: "Cancel")
             {
             }
             
