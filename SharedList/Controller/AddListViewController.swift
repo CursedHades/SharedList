@@ -16,60 +16,58 @@ class AddListViewController: UIViewController {
     
     var willDismissCallback : ((String?) -> Void)?
         
-        override func viewDidLoad()
-        {
-            super.viewDidLoad()
-            
-            listImageView.image = colour_utils.GetListImage(self.traitCollection)
-            
-            listTitleTextField.delegate = self
-            listTitleTextField.keyboardType = .emailAddress
-            listTitleTextField.returnKeyType = .send
-            
-            listTitleTextField.becomeFirstResponder()
-        }
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
         
-        override func viewDidAppear(_ animated: Bool)
-        {
-            super.viewDidAppear(animated)
-            
-        }
+        listImageView.image = colour_utils.GetListImage(self.traitCollection)
         
-        fileprivate func DismissWithCallback(email: String?)
+        listTitleTextField.delegate = self
+        listTitleTextField.keyboardType = .default
+        listTitleTextField.returnKeyType = .done
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        listTitleTextField.becomeFirstResponder()
+    }
+        
+    fileprivate func DismissWithCallback(email: String?)
+    {
+        self.view.endEditing(true)
+        self.dismiss(animated: true, completion: nil)
+        
+        if let callback = willDismissCallback
         {
-            self.view.endEditing(true)
-            self.dismiss(animated: true, completion: nil)
-            
-            if let callback = willDismissCallback
-            {
-                callback(email)
-            }
+            callback(email)
         }
+    }
         
     static func PreparePopup(traitCollection: UITraitCollection, WillDismissCallback: @escaping (String?) -> Void) -> PopupDialog
-        {
-            let vc = AddListViewController()
-            vc.willDismissCallback = WillDismissCallback
-            let popup = PopupDialog(viewController: vc)
-            let sendButton = popup_utils.GetDefaultButton(traitCollection: traitCollection, title: "Add")
-            {
-                vc.DismissWithCallback(email: vc.listTitleTextField.text)
-            }
-            let cancelButton = popup_utils.GetCancelButton(traitCollection: traitCollection, title: "Cancel")
-            {
-            }
-            
-            popup.addButtons([sendButton, cancelButton])
-            
-            return popup
-        }
-    }
-
-    extension AddListViewController : UITextFieldDelegate
     {
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool
+        let vc = AddListViewController()
+        vc.willDismissCallback = WillDismissCallback
+        let popup = PopupDialog(viewController: vc)
+        let sendButton = popup_utils.GetDefaultButton(traitCollection: traitCollection, title: "Add")
         {
-            DismissWithCallback(email: textField.text)
-            return true
+            vc.DismissWithCallback(email: vc.listTitleTextField.text)
         }
+        let cancelButton = popup_utils.GetCancelButton(traitCollection: traitCollection, title: "Cancel")
+        {
+        }
+        
+        popup.addButtons([sendButton, cancelButton])
+        
+        return popup
     }
+}
+
+extension AddListViewController : UITextFieldDelegate
+{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+        DismissWithCallback(email: textField.text)
+        return true
+    }
+}

@@ -12,6 +12,15 @@ import PopupDialog
 
 class colour_utils {
     
+    static func GetBottomBarColour() ->UIColor
+    {
+        if #available(iOS 13.0, *) {
+            return UIColor.systemGray5
+        } else {
+            return UIColor.systemGray
+        }
+    }
+    
     static func GetListImage(_ traitCollection: UITraitCollection) -> UIImage?
     {
         if (traitCollection.userInterfaceStyle == .dark)
@@ -21,6 +30,18 @@ class colour_utils {
         else
         {
             return UIImage(named: "list_light.png")
+        }
+    }
+    
+    static func GetAddListImage(_ traitCollection: UITraitCollection) -> UIImage?
+    {
+        if (traitCollection.userInterfaceStyle == .dark)
+        {
+            return UIImage(named: "add_dark.png")
+        }
+        else
+        {
+            return UIImage(named: "add_light.png")
         }
     }
     

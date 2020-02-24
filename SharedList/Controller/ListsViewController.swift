@@ -13,6 +13,8 @@ class ListsViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
     
+    @IBOutlet var bottomBarVIew: UIView!
+    
     @IBOutlet var addListButton: UIButton!
     @IBOutlet var invitationsButton: UIButton!
     
@@ -100,6 +102,10 @@ class ListsViewController: UIViewController {
     //*********************************************************************
     // MARK: - UI management
     fileprivate func UpdateUI() {
+        
+        addListButton.setImage(colour_utils.GetAddListImage(self.traitCollection), for: .normal)
+        
+        bottomBarVIew.backgroundColor = colour_utils.GetBottomBarColour()
         
         if loadingInProgress {
             DisableUI()
