@@ -275,7 +275,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nbD-BP-Qez">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="563"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ItemCell" textLabel="VAk-7g-kGv" detailTextLabel="eeD-cM-Y8c" style="IBUITableViewCellStyleSubtitle" id="Y3I-19-agV">
@@ -304,42 +304,40 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zAN-6t-i73">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UTY-bd-Zkq" userLabel="Bottom bar">
+                                <rect key="frame" x="0.0" y="607" width="375" height="60"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New item" textAlignment="natural" minimumFontSize="14" id="LO1-X7-elS" userLabel="New Item Name Text Field">
+                                        <rect key="frame" x="36" y="13" width="302" height="34"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" id="q63-Cz-u6h">
+                                        <rect key="frame" x="342" y="18" width="25" height="24"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <action selector="DetailsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="lCq-ff-POg"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="0UQ-Fs-3An"/>
-                                    <constraint firstAttribute="width" constant="375" id="DIQ-gP-Goe"/>
+                                    <constraint firstAttribute="height" constant="60" id="DnP-SX-2WB"/>
+                                    <constraint firstAttribute="width" constant="375" id="q6W-nv-8pE"/>
                                 </constraints>
-                                <items>
-                                    <barButtonItem style="plain" id="ePU-Wd-gWl">
-                                        <textField key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New item" textAlignment="natural" minimumFontSize="14" id="WDc-dK-tiv" userLabel="New Item Name Text Field">
-                                            <rect key="frame" x="16" y="5" width="302" height="34"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                            <textInputTraits key="textInputTraits"/>
-                                        </textField>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" id="9ji-G7-ST6">
-                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" id="FiN-BE-PDD">
-                                            <rect key="frame" x="334" y="10" width="25" height="24"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <connections>
-                                                <action selector="DetailsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="tzT-Xl-b5O"/>
-                                            </connections>
-                                        </button>
-                                    </barButtonItem>
-                                </items>
-                            </toolbar>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="zAN-6t-i73" secondAttribute="bottom" id="SAP-zA-WLU" customClass="KeyboardLayoutConstraint" customModule="SharedList" customModuleProvider="target"/>
+                            <constraint firstItem="UTY-bd-Zkq" firstAttribute="leading" secondItem="muA-Wp-1Xb" secondAttribute="leading" id="GlD-JZ-6dU"/>
                             <constraint firstItem="nbD-BP-Qez" firstAttribute="leading" secondItem="mTU-Wb-leU" secondAttribute="leading" id="TTf-qr-LJ6"/>
                             <constraint firstAttribute="trailing" secondItem="nbD-BP-Qez" secondAttribute="trailing" id="Y84-HR-2Sw"/>
-                            <constraint firstItem="zAN-6t-i73" firstAttribute="leading" secondItem="muA-Wp-1Xb" secondAttribute="leading" id="cor-49-mp3"/>
-                            <constraint firstItem="nbD-BP-Qez" firstAttribute="top" secondItem="mTU-Wb-leU" secondAttribute="top" id="ePX-zo-cpP"/>
-                            <constraint firstItem="zAN-6t-i73" firstAttribute="top" secondItem="nbD-BP-Qez" secondAttribute="bottom" id="heN-jq-xfW"/>
+                            <constraint firstItem="nbD-BP-Qez" firstAttribute="top" secondItem="mTU-Wb-leU" secondAttribute="top" constant="44" id="ePX-zo-cpP"/>
+                            <constraint firstItem="UTY-bd-Zkq" firstAttribute="trailing" secondItem="muA-Wp-1Xb" secondAttribute="trailing" id="tB9-9B-bvO"/>
+                            <constraint firstItem="UTY-bd-Zkq" firstAttribute="top" secondItem="nbD-BP-Qez" secondAttribute="bottom" id="vFG-52-k9Y"/>
+                            <constraint firstAttribute="bottom" secondItem="UTY-bd-Zkq" secondAttribute="bottom" id="zeg-5T-fuH" customClass="KeyboardLayoutConstraint" customModule="SharedList" customModuleProvider="target"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="muA-Wp-1Xb"/>
                     </view>
@@ -351,8 +349,9 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="detailButton" destination="FiN-BE-PDD" id="jYH-jc-vKY"/>
-                        <outlet property="newItemNameTextField" destination="WDc-dK-tiv" id="q0u-7U-bjG"/>
+                        <outlet property="bottomBarView" destination="UTY-bd-Zkq" id="QKM-LF-3Pe"/>
+                        <outlet property="detailButton" destination="q63-Cz-u6h" id="vlw-Ry-Ce5"/>
+                        <outlet property="newItemNameTextField" destination="LO1-X7-elS" id="fxF-X1-Xtv"/>
                         <outlet property="tableView" destination="nbD-BP-Qez" id="Zbq-uP-k4X"/>
                     </connections>
                 </viewController>
@@ -446,6 +445,6 @@
         <image name="list_light" width="225" height="225"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="1od-oS-7Hz"/>
+        <segue reference="5hz-mS-hGt"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -21,6 +21,34 @@ class colour_utils {
         }
     }
     
+    static func GetCheckedFontColour() -> UIColor
+    {
+        if #available(iOS 13.0, *) {
+            return UIColor.systemGray4
+        } else {
+            return UIColor.systemGray
+        }
+    }
+    
+    static func GetBasicFontColour(_ traitCollection: UITraitCollection) -> UIColor
+    {
+        if #available(iOS 13.0, *)
+        {
+            return UIColor.label
+        }
+        else
+        {
+            if (traitCollection.userInterfaceStyle == .dark)
+            {
+                return UIColor.white
+            }
+            else
+            {
+                return UIColor.black
+            }
+        }
+    }
+    
     static func GetListImage(_ traitCollection: UITraitCollection) -> UIImage?
     {
         if (traitCollection.userInterfaceStyle == .dark)

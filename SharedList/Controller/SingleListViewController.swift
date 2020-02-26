@@ -15,6 +15,7 @@ class SingleListViewController: UIViewController {
     @IBOutlet var tableView: UITableView!
     @IBOutlet var newItemNameTextField: UITextField!
     @IBOutlet var detailButton: UIButton!
+    @IBOutlet var bottomBarView: UIView!
     
     var listManager : SingleListManager?
     {
@@ -60,6 +61,8 @@ class SingleListViewController: UIViewController {
     
     fileprivate func UpdateUI(enable: Bool)
     {
+        bottomBarView.backgroundColor = colour_utils.GetBottomBarColour()
+        
         if (enable)
         {
             newItemNameTextField.isEnabled = true
@@ -237,14 +240,14 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         if (checked == true)
         {
             cell.accessoryType = .checkmark
-            cell.textLabel?.textColor = UIColor.lightGray
-            cell.detailTextLabel?.textColor = UIColor.lightGray
+            cell.textLabel?.textColor = colour_utils.GetCheckedFontColour()
+            cell.detailTextLabel?.textColor = colour_utils.GetCheckedFontColour()
         }
         else
         {
             cell.accessoryType = .none
-            cell.textLabel?.textColor = UIColor.black
-            cell.detailTextLabel?.textColor = UIColor.black
+            cell.textLabel?.textColor = colour_utils.GetBasicFontColour(self.traitCollection)
+            cell.detailTextLabel?.textColor = colour_utils.GetBasicFontColour(self.traitCollection)
         }
     }
     
