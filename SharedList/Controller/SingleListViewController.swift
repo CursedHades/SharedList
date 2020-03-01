@@ -15,7 +15,14 @@ class SingleListViewController: UIViewController {
     @IBOutlet var tableView: UITableView!
     @IBOutlet var newItemNameTextField: UITextField!
     @IBOutlet var detailButton: UIButton!
-    @IBOutlet var bottomBarView: UIView!
+    
+    @IBOutlet var bottomBarContainer: UIView!
+    @IBOutlet var newItemInputContainer: UIView!
+    @IBOutlet var bottomMenuContainer: UIView!
+    
+    @IBOutlet var addItemButton: UIButton!
+    
+    fileprivate var bottomMenuVisible: Bool = true
     
     var listManager : SingleListManager?
     {
@@ -30,7 +37,8 @@ class SingleListViewController: UIViewController {
     
     fileprivate var awaitenNotifations : Int = 0
     
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
 
         tableView.delegate = self
@@ -46,9 +54,15 @@ class SingleListViewController: UIViewController {
         UpdateUI(enable: false)
         dataLoading = true
         
-        let tapper = UITapGestureRecognizer(target: self, action: #selector(SingleListViewController.DismissKeyboard))
+        let tapper = UITapGestureRecognizer(target: self,
+                                            action: #selector(SingleListViewController.DismissKeyboard))
         tapper.delegate = self
         view.addGestureRecognizer(tapper)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(SingleListViewController.KeyboardDismissed),
+                                               name: UIResponder.keyboardDidHideNotification,
+                                               object: nil)
     }
     
     @objc fileprivate func DismissKeyboard()
@@ -59,20 +73,42 @@ class SingleListViewController: UIViewController {
         }
     }
     
+    @objc fileprivate func KeyboardDismissed()
+    {
+        SwitchBottomContainer(duration: 0.1)
+    }
+    
     fileprivate func UpdateUI(enable: Bool)
     {
-        bottomBarView.backgroundColor = colour_utils.GetBottomBarColour()
+        bottomBarContainer.backgroundColor = colour_utils.GetBottomBarColour()
+        colour_utils.SetSfSymbolButton(addItemButton, self.traitCollection)
         
         if (enable)
         {
             newItemNameTextField.isEnabled = true
             tableView.allowsSelection = true
+            addItemButton.isEnabled = true
         }
         else
         {
             newItemNameTextField.isEnabled = false
             tableView.allowsSelection = false
+            addItemButton.isEnabled = false
         }
+    }
+    
+    fileprivate func SwitchBottomContainer(duration: TimeInterval)
+    {
+        let currentView = bottomMenuVisible ? bottomMenuContainer : newItemInputContainer
+        let viewToGo = bottomMenuVisible ? newItemInputContainer : bottomMenuContainer
+        
+        bottomMenuVisible = !bottomMenuVisible
+        
+        UIView.transition(from: currentView!,
+                          to: viewToGo!,
+                          duration: duration,
+                          options: [.transitionCrossDissolve, .showHideTransitionViews],
+                          completion: nil)
     }
     
     fileprivate func AddItem(title: String)
@@ -90,6 +126,12 @@ class SingleListViewController: UIViewController {
         
         tableView.setEditing(self.dispalDetails, animated: true)
         tableView.reloadData()
+    }
+    
+    @IBAction func AddItemButtonPressed(_ sender: Any)
+    {
+        SwitchBottomContainer(duration: 0.2)
+        newItemNameTextField.becomeFirstResponder()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -283,10 +325,10 @@ extension SingleListViewController : UITextFieldDelegate
         {
             self.AddItem(title: newItem)
             textField.text = ""
-            return false
+            return true
         }
         
-        ShowIncorrectInputPopup()
+        self.DismissKeyboard()
         return false
     }
     
@@ -298,18 +340,6 @@ extension SingleListViewController : UITextFieldDelegate
             return (newStr != "" ? newStr : nil)
         }
         return nil
-    }
-    
-    fileprivate func ShowIncorrectInputPopup()
-    {
-        let popup = PopupDialog(title: "Invalid item name",
-                                message: nil)
-        
-        let button = DefaultButton(title: "close") {}
-        
-        popup.addButton(button)
-        
-        self.present(popup, animated: true)
     }
 }
 

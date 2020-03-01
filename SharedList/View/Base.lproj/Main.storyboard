@@ -213,9 +213,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wps-g3-YTy">
-                                        <rect key="frame" x="163.5" y="8" width="48" height="44"/>
+                                        <rect key="frame" x="163.5" y="8" width="44" height="44"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="wps-g3-YTy" secondAttribute="height" multiplier="35:32" id="fNB-Yj-OYW"/>
+                                            <constraint firstAttribute="width" secondItem="wps-g3-YTy" secondAttribute="height" multiplier="35:32" constant="-4.125" id="fNB-Yj-OYW"/>
                                         </constraints>
                                         <state key="normal" image="plus.square" catalog="system">
                                             <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25" scale="large" weight="medium"/>
@@ -228,7 +228,7 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="SOD-dU-xXT"/>
-                                    <constraint firstItem="wps-g3-YTy" firstAttribute="centerX" secondItem="J4V-ma-LvH" secondAttribute="centerX" id="XI2-mZ-32e"/>
+                                    <constraint firstItem="wps-g3-YTy" firstAttribute="centerX" secondItem="J4V-ma-LvH" secondAttribute="centerX" constant="-2" id="XI2-mZ-32e"/>
                                     <constraint firstItem="wps-g3-YTy" firstAttribute="top" secondItem="J4V-ma-LvH" secondAttribute="top" constant="8" id="dDM-Wa-uIc"/>
                                     <constraint firstItem="wps-g3-YTy" firstAttribute="centerY" secondItem="J4V-ma-LvH" secondAttribute="centerY" id="kL5-s3-MWq"/>
                                     <constraint firstAttribute="bottom" secondItem="wps-g3-YTy" secondAttribute="bottom" constant="8" id="zkO-Xa-uGZ"/>
@@ -304,28 +304,64 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UTY-bd-Zkq" userLabel="Bottom bar">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UTY-bd-Zkq" userLabel="Bottom bar container">
                                 <rect key="frame" x="0.0" y="607" width="375" height="60"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New item" textAlignment="natural" minimumFontSize="14" id="LO1-X7-elS" userLabel="New Item Name Text Field">
-                                        <rect key="frame" x="36" y="13" width="302" height="34"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" id="q63-Cz-u6h">
-                                        <rect key="frame" x="342" y="18" width="25" height="24"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <action selector="DetailsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="lCq-ff-POg"/>
-                                        </connections>
-                                    </button>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oBF-5R-UZZ" userLabel="New item container">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" id="q63-Cz-u6h">
+                                                <rect key="frame" x="335" y="18" width="25" height="24"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <connections>
+                                                    <action selector="DetailsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="lCq-ff-POg"/>
+                                                </connections>
+                                            </button>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New item" textAlignment="natural" minimumFontSize="14" id="LO1-X7-elS" userLabel="New Item Name Text Field">
+                                                <rect key="frame" x="8" y="13" width="302" height="34"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rtq-iu-cVg" userLabel="Bottom menu container">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tHv-fb-Pus">
+                                                <rect key="frame" x="165.5" y="8" width="44" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="tHv-fb-Pus" secondAttribute="height" multiplier="1:1" id="y1Q-tg-IJ3"/>
+                                                </constraints>
+                                                <state key="normal" image="plus.square" catalog="system">
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25" scale="large" weight="medium"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="AddItemButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="MOV-jH-ziE"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="tHv-fb-Pus" firstAttribute="top" secondItem="rtq-iu-cVg" secondAttribute="top" constant="8" id="8i8-CE-dlN"/>
+                                            <constraint firstAttribute="bottom" secondItem="tHv-fb-Pus" secondAttribute="bottom" constant="8" id="TqC-zs-Zax"/>
+                                            <constraint firstItem="tHv-fb-Pus" firstAttribute="centerX" secondItem="rtq-iu-cVg" secondAttribute="centerX" id="aNe-33-oQI"/>
+                                            <constraint firstItem="tHv-fb-Pus" firstAttribute="centerY" secondItem="rtq-iu-cVg" secondAttribute="centerY" id="qmH-7N-fxh"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
+                                    <constraint firstItem="rtq-iu-cVg" firstAttribute="leading" secondItem="UTY-bd-Zkq" secondAttribute="leading" id="1fo-ZI-Q9w"/>
+                                    <constraint firstAttribute="trailing" secondItem="rtq-iu-cVg" secondAttribute="trailing" id="C46-EX-JtS"/>
                                     <constraint firstAttribute="height" constant="60" id="DnP-SX-2WB"/>
+                                    <constraint firstAttribute="trailing" secondItem="oBF-5R-UZZ" secondAttribute="trailing" id="FRg-X3-g9N"/>
+                                    <constraint firstAttribute="bottom" secondItem="rtq-iu-cVg" secondAttribute="bottom" id="Gol-Uz-KeL"/>
+                                    <constraint firstItem="rtq-iu-cVg" firstAttribute="top" secondItem="UTY-bd-Zkq" secondAttribute="top" id="eHl-Ze-yBn"/>
+                                    <constraint firstItem="oBF-5R-UZZ" firstAttribute="leading" secondItem="UTY-bd-Zkq" secondAttribute="leading" id="hbF-B8-CTe"/>
+                                    <constraint firstItem="oBF-5R-UZZ" firstAttribute="top" secondItem="UTY-bd-Zkq" secondAttribute="top" id="iaX-BI-Liy"/>
                                     <constraint firstAttribute="width" constant="375" id="q6W-nv-8pE"/>
+                                    <constraint firstAttribute="bottom" secondItem="oBF-5R-UZZ" secondAttribute="bottom" id="qv1-BM-fdt"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -348,8 +384,11 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="bottomBarView" destination="UTY-bd-Zkq" id="QKM-LF-3Pe"/>
+                        <outlet property="addItemButton" destination="tHv-fb-Pus" id="7EU-gP-Yn7"/>
+                        <outlet property="bottomBarContainer" destination="UTY-bd-Zkq" id="0Ow-qz-GTj"/>
+                        <outlet property="bottomMenuContainer" destination="rtq-iu-cVg" id="bxb-XV-1zK"/>
                         <outlet property="detailButton" destination="q63-Cz-u6h" id="vlw-Ry-Ce5"/>
+                        <outlet property="newItemInputContainer" destination="oBF-5R-UZZ" id="FAT-5w-dd0"/>
                         <outlet property="newItemNameTextField" destination="LO1-X7-elS" id="fxF-X1-Xtv"/>
                         <outlet property="tableView" destination="nbD-BP-Qez" id="Zbq-uP-k4X"/>
                     </connections>
