@@ -162,6 +162,8 @@ class SingleListViewController: UIViewController {
     }
 }
 
+//*********************************************************************
+// MARK: - Single List Manager Delegate extension
 extension SingleListViewController : SingleListManagerDelegate
 {
     func AllItemsLoaded()
@@ -212,6 +214,8 @@ extension SingleListViewController : SingleListManagerDelegate
     }
 }
 
+//*********************************************************************
+// MARK: - Table View Delegats extension
 extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -325,6 +329,8 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
     }
 }
 
+//*********************************************************************
+// MARK: - Text field delegate extension
 extension SingleListViewController : UITextFieldDelegate
 {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
@@ -351,6 +357,8 @@ extension SingleListViewController : UITextFieldDelegate
     }
 }
 
+//*********************************************************************
+// MARK: - UIRecognizer gesture Delegate extension
 extension SingleListViewController : UIGestureRecognizerDelegate
 {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool
