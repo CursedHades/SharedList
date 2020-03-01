@@ -310,13 +310,6 @@
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oBF-5R-UZZ" userLabel="New item container">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" id="q63-Cz-u6h">
-                                                <rect key="frame" x="335" y="18" width="25" height="24"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <connections>
-                                                    <action selector="DetailsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="lCq-ff-POg"/>
-                                                </connections>
-                                            </button>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New item" textAlignment="natural" minimumFontSize="14" id="LO1-X7-elS" userLabel="New Item Name Text Field">
                                                 <rect key="frame" x="8" y="13" width="302" height="34"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -341,12 +334,44 @@
                                                     <action selector="AddItemButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="MOV-jH-ziE"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a9U-pv-NqC" userLabel="Edit Items Button">
+                                                <rect key="frame" x="259.5" y="8" width="44" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="a9U-pv-NqC" secondAttribute="height" multiplier="1:1" id="mgK-hh-3OZ"/>
+                                                </constraints>
+                                                <state key="normal" image="questionmark.square" catalog="system">
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25" scale="large" weight="medium"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="DetailItemsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="9wk-uS-WL7"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hfm-bo-ohm" userLabel="Remove Items Button">
+                                                <rect key="frame" x="72" y="8" width="44" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="hfm-bo-ohm" secondAttribute="height" multiplier="1:1" id="w61-re-wMw"/>
+                                                </constraints>
+                                                <state key="normal" image="minus.square" catalog="system">
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25" scale="large" weight="medium"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="RemoveItemsButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="Yi2-1E-7mX"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <constraints>
                                             <constraint firstItem="tHv-fb-Pus" firstAttribute="top" secondItem="rtq-iu-cVg" secondAttribute="top" constant="8" id="8i8-CE-dlN"/>
+                                            <constraint firstAttribute="bottom" secondItem="hfm-bo-ohm" secondAttribute="bottom" constant="8" id="AuN-Py-PW0"/>
+                                            <constraint firstItem="a9U-pv-NqC" firstAttribute="centerX" secondItem="rtq-iu-cVg" secondAttribute="centerX" multiplier="1.5" id="HDq-DC-ild"/>
                                             <constraint firstAttribute="bottom" secondItem="tHv-fb-Pus" secondAttribute="bottom" constant="8" id="TqC-zs-Zax"/>
                                             <constraint firstItem="tHv-fb-Pus" firstAttribute="centerX" secondItem="rtq-iu-cVg" secondAttribute="centerX" id="aNe-33-oQI"/>
+                                            <constraint firstItem="a9U-pv-NqC" firstAttribute="centerY" secondItem="rtq-iu-cVg" secondAttribute="centerY" id="bRK-zH-x51"/>
+                                            <constraint firstAttribute="bottom" secondItem="a9U-pv-NqC" secondAttribute="bottom" constant="8" id="dQT-Y3-CyZ"/>
+                                            <constraint firstItem="a9U-pv-NqC" firstAttribute="top" secondItem="rtq-iu-cVg" secondAttribute="top" constant="8" id="gCF-iT-spT"/>
+                                            <constraint firstItem="hfm-bo-ohm" firstAttribute="centerX" secondItem="rtq-iu-cVg" secondAttribute="centerX" multiplier="0.5" id="nTe-5O-nKq"/>
+                                            <constraint firstItem="hfm-bo-ohm" firstAttribute="top" secondItem="rtq-iu-cVg" secondAttribute="top" constant="8" id="oqa-IT-TuP"/>
                                             <constraint firstItem="tHv-fb-Pus" firstAttribute="centerY" secondItem="rtq-iu-cVg" secondAttribute="centerY" id="qmH-7N-fxh"/>
+                                            <constraint firstItem="hfm-bo-ohm" firstAttribute="centerY" secondItem="rtq-iu-cVg" secondAttribute="centerY" id="wUl-YN-YfI"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -387,9 +412,10 @@
                         <outlet property="addItemButton" destination="tHv-fb-Pus" id="7EU-gP-Yn7"/>
                         <outlet property="bottomBarContainer" destination="UTY-bd-Zkq" id="0Ow-qz-GTj"/>
                         <outlet property="bottomMenuContainer" destination="rtq-iu-cVg" id="bxb-XV-1zK"/>
-                        <outlet property="detailButton" destination="q63-Cz-u6h" id="vlw-Ry-Ce5"/>
+                        <outlet property="detailItemsButton" destination="a9U-pv-NqC" id="GdA-r1-Ziw"/>
                         <outlet property="newItemInputContainer" destination="oBF-5R-UZZ" id="FAT-5w-dd0"/>
                         <outlet property="newItemNameTextField" destination="LO1-X7-elS" id="fxF-X1-Xtv"/>
+                        <outlet property="removeItemsButton" destination="hfm-bo-ohm" id="VTe-wL-SvL"/>
                         <outlet property="tableView" destination="nbD-BP-Qez" id="Zbq-uP-k4X"/>
                     </connections>
                 </viewController>
@@ -480,7 +506,9 @@
     </scenes>
     <resources>
         <image name="list_light" width="225" height="225"/>
+        <image name="minus.square" catalog="system" width="64" height="56"/>
         <image name="plus.square" catalog="system" width="64" height="56"/>
+        <image name="questionmark.square" catalog="system" width="64" height="56"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="5hz-mS-hGt"/>

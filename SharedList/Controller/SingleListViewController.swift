@@ -13,14 +13,16 @@ import SVProgressHUD
 class SingleListViewController: UIViewController {
     
     @IBOutlet var tableView: UITableView!
+    
     @IBOutlet var newItemNameTextField: UITextField!
-    @IBOutlet var detailButton: UIButton!
     
     @IBOutlet var bottomBarContainer: UIView!
     @IBOutlet var newItemInputContainer: UIView!
     @IBOutlet var bottomMenuContainer: UIView!
     
     @IBOutlet var addItemButton: UIButton!
+    @IBOutlet var detailItemsButton: UIButton!
+    @IBOutlet var removeItemsButton: UIButton!
     
     fileprivate var bottomMenuVisible: Bool = true
     
@@ -33,7 +35,8 @@ class SingleListViewController: UIViewController {
     }
     
     fileprivate var dataLoading : Bool = false
-    fileprivate var dispalDetails : Bool = false
+    fileprivate var displayDetails : Bool = false
+    fileprivate var displayEdit : Bool = false
     
     fileprivate var awaitenNotifations : Int = 0
     
@@ -82,18 +85,26 @@ class SingleListViewController: UIViewController {
     {
         bottomBarContainer.backgroundColor = colour_utils.GetBottomBarColour()
         colour_utils.SetSfSymbolButton(addItemButton, self.traitCollection)
+        colour_utils.SetSfSymbolButton(detailItemsButton, self.traitCollection)
+        colour_utils.SetSfSymbolButton(removeItemsButton, self.traitCollection)
         
         if (enable)
         {
-            newItemNameTextField.isEnabled = true
             tableView.allowsSelection = true
+            
+            newItemNameTextField.isEnabled = true
             addItemButton.isEnabled = true
+            detailItemsButton.isEnabled = true
+            removeItemsButton.isEnabled = true
         }
         else
         {
-            newItemNameTextField.isEnabled = false
             tableView.allowsSelection = false
+            
+            newItemNameTextField.isEnabled = false
             addItemButton.isEnabled = false
+            detailItemsButton.isEnabled = false
+            removeItemsButton.isEnabled = false
         }
     }
     
@@ -120,11 +131,18 @@ class SingleListViewController: UIViewController {
         }
     }
     
-    @IBAction func DetailsButtonPressed(_ sender: Any)
+    @IBAction func DetailItemsButtonPressed(_ sender: Any)
     {
-        self.dispalDetails = !self.dispalDetails
+        self.displayDetails = !self.displayDetails
         
-        tableView.setEditing(self.dispalDetails, animated: true)
+        tableView.reloadData()
+    }
+    
+    @IBAction func RemoveItemsButtonPressed(_ sender: Any)
+    {
+        self.displayEdit = !self.displayEdit
+        
+        tableView.setEditing(self.displayEdit, animated: true)
         tableView.reloadData()
     }
     
@@ -264,7 +282,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
 
     fileprivate func PrepareDetailedText(item: Item) -> String
     {
-        if (dispalDetails == false)
+        if (displayDetails == false)
         {
             return ""
         }
@@ -309,16 +327,6 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
 
 extension SingleListViewController : UITextFieldDelegate
 {
-    func textFieldDidBeginEditing(_ textField: UITextField)
-    {
-        self.detailButton.isHidden = true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField)
-    {
-        self.detailButton.isHidden = false
-    }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         if let newItem = CorrectInput(textField.text)
