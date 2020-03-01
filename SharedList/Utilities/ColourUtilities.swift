@@ -61,15 +61,18 @@ class colour_utils {
         }
     }
     
-    static func GetAddListImage(_ traitCollection: UITraitCollection) -> UIImage?
+    static func SetSfSymbolButton(_ button:UIButton, _ traitCollection: UITraitCollection)
     {
-        if (traitCollection.userInterfaceStyle == .dark)
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: UIFont.systemFontSize * 2, weight: .medium, scale: .large)
+        button.imageView?.preferredSymbolConfiguration = symbolConfig
+
+        if traitCollection.userInterfaceStyle == .light
         {
-            return UIImage(named: "add_dark.png")
+            button.imageView?.tintColor = .black
         }
         else
         {
-            return UIImage(named: "add_light.png")
+            button.imageView?.tintColor = .white
         }
     }
     
