@@ -310,14 +310,18 @@
                                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oBF-5R-UZZ" userLabel="New item container">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
                                         <subviews>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New item" textAlignment="natural" minimumFontSize="14" id="LO1-X7-elS" userLabel="New Item Name Text Field">
-                                                <rect key="frame" x="8" y="13" width="302" height="34"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="78Z-fN-hes">
+                                                <rect key="frame" x="16" y="8" width="343" height="44"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstItem="78Z-fN-hes" firstAttribute="leading" secondItem="oBF-5R-UZZ" secondAttribute="leading" constant="16" id="AxF-PK-hXk"/>
+                                            <constraint firstAttribute="bottom" secondItem="78Z-fN-hes" secondAttribute="bottom" constant="8" id="JAA-Vi-KuI"/>
+                                            <constraint firstItem="78Z-fN-hes" firstAttribute="top" secondItem="oBF-5R-UZZ" secondAttribute="top" constant="8" id="fTD-FW-sNA"/>
+                                            <constraint firstAttribute="trailing" secondItem="78Z-fN-hes" secondAttribute="trailing" constant="16" id="fca-ei-PfQ"/>
+                                        </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rtq-iu-cVg" userLabel="Bottom menu container">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
@@ -375,7 +379,6 @@
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstItem="rtq-iu-cVg" firstAttribute="leading" secondItem="UTY-bd-Zkq" secondAttribute="leading" id="1fo-ZI-Q9w"/>
                                     <constraint firstAttribute="trailing" secondItem="rtq-iu-cVg" secondAttribute="trailing" id="C46-EX-JtS"/>
@@ -414,7 +417,7 @@
                         <outlet property="bottomMenuContainer" destination="rtq-iu-cVg" id="bxb-XV-1zK"/>
                         <outlet property="detailItemsButton" destination="a9U-pv-NqC" id="GdA-r1-Ziw"/>
                         <outlet property="newItemInputContainer" destination="oBF-5R-UZZ" id="FAT-5w-dd0"/>
-                        <outlet property="newItemNameTextField" destination="LO1-X7-elS" id="fxF-X1-Xtv"/>
+                        <outlet property="newItemNameTextField" destination="78Z-fN-hes" id="QKg-3A-wPT"/>
                         <outlet property="removeItemsButton" destination="hfm-bo-ohm" id="VTe-wL-SvL"/>
                         <outlet property="tableView" destination="nbD-BP-Qez" id="Zbq-uP-k4X"/>
                     </connections>

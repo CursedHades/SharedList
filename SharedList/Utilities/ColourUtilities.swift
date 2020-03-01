@@ -15,7 +15,7 @@ class colour_utils {
     static func GetBottomBarColour() ->UIColor
     {
         if #available(iOS 13.0, *) {
-            return UIColor.systemGray5
+            return UIColor.systemGray6
         } else {
             return UIColor.systemGray
         }
