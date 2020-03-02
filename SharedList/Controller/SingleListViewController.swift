@@ -259,9 +259,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         
         if let item = listManager?.GetItem(indexPath.row)
         {
-            cell?.textLabel?.text = item.title
-            cell?.detailTextLabel?.text = PrepareDetailedText(item: item)
-            UpdateCellFontColor(cell: cell!, checked: item.checked)
+            PrepareCell(cell: cell!, item: item)
         }
         else
         {
@@ -322,18 +320,29 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         return text
     }
     
-    fileprivate func UpdateCellFontColor(cell: UITableViewCell, checked: Bool)
+    fileprivate func PrepareCell(cell: UITableViewCell, item: Item)
     {
-        if (checked == true)
+        let detailedText = PrepareDetailedText(item: item)
+        
+        if (item.checked)
         {
             cell.accessoryType = .checkmark
+            cell.tintColor = UIColor.systemGray2
+            
+            let attributedText : NSMutableAttributedString = NSMutableAttributedString(string: item.title)
+            attributedText.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSMakeRange(0, attributedText.length))
+            cell.textLabel?.attributedText = attributedText
             cell.textLabel?.textColor = ui_utils.GetCheckedFontColour()
+            
+            cell.detailTextLabel?.text = detailedText
             cell.detailTextLabel?.textColor = ui_utils.GetCheckedFontColour()
         }
         else
         {
             cell.accessoryType = .none
+            cell.textLabel?.text = item.title
             cell.textLabel?.textColor = ui_utils.GetBasicFontColour(self.traitCollection)
+            cell.detailTextLabel?.text = detailedText
             cell.detailTextLabel?.textColor = ui_utils.GetBasicFontColour(self.traitCollection)
         }
     }

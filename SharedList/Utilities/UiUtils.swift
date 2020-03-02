@@ -31,7 +31,7 @@ class ui_utils {
     static func GetCheckedFontColour() -> UIColor
     {
         if #available(iOS 13.0, *) {
-            return UIColor.systemGray4
+            return UIColor.systemGray3
         } else {
             return UIColor.systemGray
         }
