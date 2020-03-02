@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B209C80823FF3A8E00312AC0 /* ColourUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B209C80723FF3A8E00312AC0 /* ColourUtilities.swift */; };
+		B209C80823FF3A8E00312AC0 /* UiUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B209C80723FF3A8E00312AC0 /* UiUtils.swift */; };
 		B21419F122A1A08300EFC13F /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */; };
 		B21C3D46225A5EE400723702 /* ObserversHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21C3D45225A5EE400723702 /* ObserversHandler.swift */; };
 		B220207122C91FFD00721A1C /* InvitationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B220207022C91FFD00721A1C /* InvitationManager.swift */; };
@@ -47,7 +47,7 @@
 /* Begin PBXFileReference section */
 		01555E8B0F1869532C63765B /* Pods-SharedList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.debug.xcconfig"; sourceTree = "<group>"; };
 		056A402CC157056C2FD6A153 /* Pods-SharedList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedList.release.xcconfig"; path = "Pods/Target Support Files/Pods-SharedList/Pods-SharedList.release.xcconfig"; sourceTree = "<group>"; };
-		B209C80723FF3A8E00312AC0 /* ColourUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColourUtilities.swift; sourceTree = "<group>"; };
+		B209C80723FF3A8E00312AC0 /* UiUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiUtils.swift; sourceTree = "<group>"; };
 		B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
 		B21C3D45225A5EE400723702 /* ObserversHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObserversHandler.swift; path = ../Managers/ObserversHandler.swift; sourceTree = "<group>"; };
 		B220207022C91FFD00721A1C /* InvitationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationManager.swift; sourceTree = "<group>"; };
@@ -157,7 +157,7 @@
 				B21419F022A1A08300EFC13F /* KeyboardLayoutConstraint.swift */,
 				B2C06E822249459B0074C43E /* TimeoutGuard.swift */,
 				B2C7161D22972C770047E2A2 /* FrbChangedObserver.swift */,
-				B209C80723FF3A8E00312AC0 /* ColourUtilities.swift */,
+				B209C80723FF3A8E00312AC0 /* UiUtils.swift */,
 				B2A60393240310340044DA0D /* PopupUtilities.swift */,
 			);
 			path = Utilities;
@@ -344,7 +344,7 @@
 				B2A29AF9222491F800698D05 /* ViewController.swift in Sources */,
 				B2ADCA1822B7FBB6004F7576 /* ListEditViewController.swift in Sources */,
 				B26A275922511D0C00091C43 /* AuthManager.swift in Sources */,
-				B209C80823FF3A8E00312AC0 /* ColourUtilities.swift in Sources */,
+				B209C80823FF3A8E00312AC0 /* UiUtils.swift in Sources */,
 				B2B35E22222EEF5A000EC2B2 /* FirebaseManager.swift in Sources */,
 				B2C7161C2295DE3D0047E2A2 /* SingleListManager.swift in Sources */,
 				B2A29AF7222491F800698D05 /* AppDelegate.swift in Sources */,

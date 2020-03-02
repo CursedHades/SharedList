@@ -20,7 +20,7 @@ class AddListViewController: UIViewController {
     {
         super.viewDidLoad()
         
-        listImageView.image = colour_utils.GetListImage(self.traitCollection)
+        listImageView.image = ui_utils.GetListImage(self.traitCollection)
         
         listTitleTextField.delegate = self
         listTitleTextField.keyboardType = .default

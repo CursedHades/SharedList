@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import PopupDialog
 
-class colour_utils {
+class ui_utils {
     
     static func GetBottomBarColour() ->UIColor
     {

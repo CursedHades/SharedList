@@ -103,9 +103,9 @@ class ListsViewController: UIViewController {
     // MARK: - UI management
     fileprivate func UpdateUI() {
         
-        colour_utils.SetSfSymbolButton(addListButton, self.traitCollection)
+        ui_utils.SetSfSymbolButton(addListButton, self.traitCollection)
         
-        bottomBarVIew.backgroundColor = colour_utils.GetBottomBarColour()
+        bottomBarVIew.backgroundColor = ui_utils.GetBottomBarColour()
         
         if loadingInProgress {
             DisableUI()
@@ -189,7 +189,7 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
             cell.textLabel?.text = "Add new list"
         }
         
-        cell.imageView?.image = colour_utils.GetListImage(self.traitCollection)
+        cell.imageView?.image = ui_utils.GetListImage(self.traitCollection)
         
         return cell
     }

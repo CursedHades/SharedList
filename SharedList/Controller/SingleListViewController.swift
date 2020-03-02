@@ -83,10 +83,10 @@ class SingleListViewController: UIViewController {
     
     fileprivate func UpdateUI(enable: Bool)
     {
-        bottomBarContainer.backgroundColor = colour_utils.GetBottomBarColour()
-        colour_utils.SetSfSymbolButton(addItemButton, self.traitCollection)
-        colour_utils.SetSfSymbolButton(detailItemsButton, self.traitCollection)
-        colour_utils.SetSfSymbolButton(removeItemsButton, self.traitCollection)
+        bottomBarContainer.backgroundColor = ui_utils.GetBottomBarColour()
+        ui_utils.SetSfSymbolButton(addItemButton, self.traitCollection)
+        ui_utils.SetSfSymbolButton(detailItemsButton, self.traitCollection)
+        ui_utils.SetSfSymbolButton(removeItemsButton, self.traitCollection)
         
         if (enable)
         {
@@ -304,14 +304,14 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         if (checked == true)
         {
             cell.accessoryType = .checkmark
-            cell.textLabel?.textColor = colour_utils.GetCheckedFontColour()
-            cell.detailTextLabel?.textColor = colour_utils.GetCheckedFontColour()
+            cell.textLabel?.textColor = ui_utils.GetCheckedFontColour()
+            cell.detailTextLabel?.textColor = ui_utils.GetCheckedFontColour()
         }
         else
         {
             cell.accessoryType = .none
-            cell.textLabel?.textColor = colour_utils.GetBasicFontColour(self.traitCollection)
-            cell.detailTextLabel?.textColor = colour_utils.GetBasicFontColour(self.traitCollection)
+            cell.textLabel?.textColor = ui_utils.GetBasicFontColour(self.traitCollection)
+            cell.detailTextLabel?.textColor = ui_utils.GetBasicFontColour(self.traitCollection)
         }
     }
     

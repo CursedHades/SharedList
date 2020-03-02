@@ -14,7 +14,7 @@ class popup_utils {
     static func GetDefaultButton(traitCollection: UITraitCollection, title: String, callback: @escaping () -> Void) -> DefaultButton
     {
         let button = DefaultButton(title: title, action: callback)
-        colour_utils.SetDefaultButtonAppearance(button, traitCollection)
+        ui_utils.SetDefaultButtonAppearance(button, traitCollection)
         
         return button
     }
@@ -22,7 +22,7 @@ class popup_utils {
     static func GetCancelButton(traitCollection: UITraitCollection, title: String, callback: @escaping () -> Void) -> CancelButton
     {
         let button = CancelButton(title: title, action: callback)
-        colour_utils.SetCancelButtonAppearance(button, traitCollection)
+        ui_utils.SetCancelButtonAppearance(button, traitCollection)
         
         return button
     }
