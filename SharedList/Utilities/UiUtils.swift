@@ -12,6 +12,13 @@ import PopupDialog
 
 class ui_utils {
     
+    enum BottomBarIcons : String
+    {
+        case Add = "plus.square"
+        case Remove = "minus.square"
+        case Details = "questionmark.square"
+    }
+    
     static func GetBottomBarColour() ->UIColor
     {
         if #available(iOS 13.0, *) {
@@ -61,8 +68,15 @@ class ui_utils {
         }
     }
     
-    static func SetSfSymbolButton(_ button:UIButton, _ traitCollection: UITraitCollection)
+    static func SetSfSymbolButton(button: UIButton,
+                                  icon: BottomBarIcons,
+                                  selected : Bool,
+                                  traitCollection: UITraitCollection)
     {
+        let symbolName = icon.rawValue + (selected ? ".fill" : "")
+        let image = UIImage(systemName: symbolName)
+        button.setImage(image, for: .normal)
+        
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: UIFont.systemFontSize * 2, weight: .medium, scale: .large)
         button.imageView?.preferredSymbolConfiguration = symbolConfig
 

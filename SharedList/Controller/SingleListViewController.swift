@@ -81,12 +81,31 @@ class SingleListViewController: UIViewController {
         SwitchBottomContainer(duration: 0.1)
     }
     
+    fileprivate func UpdateBottomBar()
+    {
+        ui_utils.SetSfSymbolButton(button: addItemButton,
+                                   icon: .Add,
+                                   selected: false,
+                                   traitCollection: self.traitCollection)
+        
+        ui_utils.SetSfSymbolButton(button: detailItemsButton,
+                                   icon: .Details,
+                                   selected: displayDetails,
+                                   traitCollection: self.traitCollection)
+        
+        ui_utils.SetSfSymbolButton(button: removeItemsButton,
+                                   icon: .Remove,
+                                   selected: displayEdit,
+                                   traitCollection: self.traitCollection)
+        
+    }
+    
     fileprivate func UpdateUI(enable: Bool)
     {
+        
         bottomBarContainer.backgroundColor = ui_utils.GetBottomBarColour()
-        ui_utils.SetSfSymbolButton(addItemButton, self.traitCollection)
-        ui_utils.SetSfSymbolButton(detailItemsButton, self.traitCollection)
-        ui_utils.SetSfSymbolButton(removeItemsButton, self.traitCollection)
+        
+        UpdateBottomBar()
         
         if (enable)
         {
@@ -135,12 +154,16 @@ class SingleListViewController: UIViewController {
     {
         self.displayDetails = !self.displayDetails
         
+        UpdateBottomBar()
+        
         tableView.reloadData()
     }
     
     @IBAction func RemoveItemsButtonPressed(_ sender: Any)
     {
         self.displayEdit = !self.displayEdit
+        
+        UpdateBottomBar()
         
         tableView.setEditing(self.displayEdit, animated: true)
         tableView.reloadData()

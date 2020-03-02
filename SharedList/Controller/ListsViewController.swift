@@ -103,7 +103,10 @@ class ListsViewController: UIViewController {
     // MARK: - UI management
     fileprivate func UpdateUI() {
         
-        ui_utils.SetSfSymbolButton(addListButton, self.traitCollection)
+        ui_utils.SetSfSymbolButton(button: addListButton,
+                                   icon: .Add,
+                                   selected: false,
+                                   traitCollection: self.traitCollection)
         
         bottomBarVIew.backgroundColor = ui_utils.GetBottomBarColour()
         
