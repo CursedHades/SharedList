@@ -340,6 +340,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         else
         {
             cell.accessoryType = .none
+            cell.textLabel?.attributedText = nil
             cell.textLabel?.text = item.title
             cell.textLabel?.textColor = ui_utils.GetBasicFontColour(self.traitCollection)
             cell.detailTextLabel?.text = detailedText
