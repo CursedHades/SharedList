@@ -49,16 +49,16 @@ class AddListViewController: UIViewController {
         let vc = AddListViewController()
         vc.willDismissCallback = WillDismissCallback
         let popup = PopupDialog(viewController: vc)
-        let sendButton = popup_utils.GetDefaultButton(traitCollection: traitCollection, title: "Add")
+        let sendButton = DefaultButton(title: "Add")
         {
             vc.DismissWithCallback(email: vc.listTitleTextField.text)
         }
-        let cancelButton = popup_utils.GetCancelButton(traitCollection: traitCollection, title: "Cancel")
+        let cancelButton = CancelButton(title: "Cancel")
         {
         }
         
         popup.addButtons([sendButton, cancelButton])
-        
+        popup.keyboardShiftsView = true
         return popup
     }
 }

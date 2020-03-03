@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -28,7 +27,7 @@
                             <constraints>
                                 <constraint firstAttribute="height" constant="34" id="Jcf-hx-HLY"/>
                             </constraints>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
                             <textInputTraits key="textInputTraits"/>
                         </textField>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="list_dark" translatesAutoresizingMaskIntoConstraints="NO" id="m3M-0g-7ok" userLabel="list image">
@@ -38,7 +37,8 @@
                             </constraints>
                         </imageView>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.23999999999999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="300" id="6SQ-82-dj1"/>
                         <constraint firstAttribute="trailing" secondItem="Lmc-M9-2su" secondAttribute="trailing" constant="8" id="8aX-oz-wQb"/>
@@ -51,7 +51,7 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="dNB-Oh-MJX" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="3aq-R0-9Is"/>
                 <constraint firstItem="dNB-Oh-MJX" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="Rsg-WG-Buw"/>

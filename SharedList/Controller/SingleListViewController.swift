@@ -183,6 +183,25 @@ class SingleListViewController: UIViewController {
             editVC.listManager = listManager
         }
     }
+    
+    fileprivate func ShowEditPopup()
+    {
+        let title = "Remove all crossed items?"
+        let popup = PopupDialog(title: title, message: nil, buttonAlignment: .horizontal)
+        
+        let buttonYes = DestructiveButton(title: "Yes")
+        {
+            
+        }
+        let buttonCancel = CancelButton(title: "No")
+        {
+            
+        }
+    
+        popup.addButtons([buttonCancel, buttonYes])
+        
+        self.present(popup, animated: true, completion: nil)
+    }
 }
 
 //*********************************************************************

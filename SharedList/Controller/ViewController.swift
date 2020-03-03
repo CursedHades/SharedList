@@ -21,6 +21,8 @@ class ViewController: UIViewController {
         
         DisableUI()
         
+        popup_utils.SetupPopupAppearance(traitCollection: self.traitCollection)
+        
         frbManager?.authManager.delegates.addDelegate(self)
         frbManager?.authManager.TryAutoLogIn()
     }
