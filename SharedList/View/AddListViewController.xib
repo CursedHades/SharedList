@@ -37,8 +37,6 @@
                             </constraints>
                         </imageView>
                     </subviews>
-                    <color key="backgroundColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.23999999999999999" alpha="1" colorSpace="calibratedRGB"/>
-                    <color key="tintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="300" id="6SQ-82-dj1"/>
                         <constraint firstAttribute="trailing" secondItem="Lmc-M9-2su" secondAttribute="trailing" constant="8" id="8aX-oz-wQb"/>
@@ -51,7 +49,6 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="dNB-Oh-MJX" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="3aq-R0-9Is"/>
                 <constraint firstItem="dNB-Oh-MJX" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="Rsg-WG-Buw"/>
