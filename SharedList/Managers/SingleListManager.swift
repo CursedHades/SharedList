@@ -169,6 +169,22 @@ class SingleListManager {
         }
     }
     
+    fileprivate func RemoveItem(_ item: Item)
+    {
+        let dbRef = frb_utils.ItemDbRef(item.itemsId, item.id)
+        
+        dbRef.removeValue()
+        { (error, ref) in
+
+            if (error != nil)
+            {
+                print("Item removal failed with error: \(error!)")
+            }
+            
+            print("item: '\(item.title)' removed!")
+        }
+    }
+    
     fileprivate func ActivateObservers()
     {
         if (observerActive == false)

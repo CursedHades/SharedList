@@ -161,12 +161,14 @@ class SingleListViewController: UIViewController {
     
     @IBAction func RemoveItemsButtonPressed(_ sender: Any)
     {
-        self.displayEdit = !self.displayEdit
-        
-        UpdateBottomBar()
-        
-        tableView.setEditing(self.displayEdit, animated: true)
-        tableView.reloadData()
+        if (self.displayEdit)
+        {
+            SetDisplayEdit(false)
+        }
+        else
+        {
+            ShowEditPopup()
+        }
     }
     
     @IBAction func AddItemButtonPressed(_ sender: Any)
@@ -187,20 +189,34 @@ class SingleListViewController: UIViewController {
     fileprivate func ShowEditPopup()
     {
         let title = "Remove all crossed items?"
-        let popup = PopupDialog(title: title, message: nil, buttonAlignment: .horizontal)
+        let popup = PopupDialog(title: title, message: nil, buttonAlignment: .vertical)
         
-        let buttonYes = DestructiveButton(title: "Yes")
+        let buttonAll = DestructiveButton(title: "All")
         {
-            
+            self.listManager?.RemoveChecked()
         }
-        let buttonCancel = CancelButton(title: "No")
+        let buttonSelect = DefaultButton(title: "Select")
+        {
+            self.SetDisplayEdit(true)
+        }
+        let buttonCancel = CancelButton(title: "Cancel")
         {
             
         }
     
-        popup.addButtons([buttonCancel, buttonYes])
+        popup.addButtons([buttonAll, buttonSelect, buttonCancel])
         
         self.present(popup, animated: true, completion: nil)
+    }
+    
+    fileprivate func SetDisplayEdit(_ value: Bool)
+    {
+        self.displayEdit = value
+
+        self.UpdateBottomBar()
+
+        self.tableView.setEditing(value, animated: true)
+        self.tableView.reloadData()
     }
 }
 
@@ -295,7 +311,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         {
             if item.checked == true
             {
-                // TODO: show popup if you really wanna change done property
+                // TODO: move this to dedicated function or remove
                 let title = item.title
                 let message = "Do you want to ucheck it?"
                 let popup = PopupDialog(title: title, message: message, buttonAlignment: .horizontal)
