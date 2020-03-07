@@ -133,20 +133,21 @@ class SingleListManager {
         }
     }
     
+    func RemoveChecked()
+    {
+        for item in data
+        {
+            if item.item.checked
+            {
+                RemoveItem(item.item)
+            }
+        }
+    }
+    
     func RemoveItem(index: Int)
     {
         let item = data[index].item
-        let dbRef = frb_utils.ItemDbRef(item.itemsId, item.id)
-        
-        dbRef.removeValue()
-        { (error, ref) in
-
-            if (error != nil)
-            {
-                print("Item removal failed with error: \(error!)")
-            }
-        }
-        
+        RemoveItem(item)
     }
     
     func ReverseChecked(index : Int)
