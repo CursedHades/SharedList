@@ -39,6 +39,7 @@ class SingleListViewController: UIViewController {
     fileprivate var displayEdit : Bool = false
     
     fileprivate var awaitenNotifations : Int = 0
+    fileprivate var itemsToRemove : Int = 0
     
     override func viewDidLoad()
     {
@@ -193,7 +194,11 @@ class SingleListViewController: UIViewController {
         
         let buttonAll = DestructiveButton(title: "All")
         {
-            self.listManager?.RemoveChecked()
+            if let manager = self.listManager
+            {
+                self.itemsToRemove = manager.RemoveChecked()
+                SVProgressHUD.show(withStatus: "removing...")
+            }
         }
         let buttonSelect = DefaultButton(title: "Select")
         {
@@ -244,7 +249,7 @@ extension SingleListViewController : SingleListManagerDelegate
         tableView.reloadData()
         if (awaitenNotifations > 0)
         {
-            awaitenNotifations = awaitenNotifations - 1
+            self.awaitenNotifations = self.awaitenNotifations - 1
             self.ShowPopupItemSucessfullyAdded()
             self.ScrollToBottom()
         }
@@ -260,14 +265,35 @@ extension SingleListViewController : SingleListManagerDelegate
         tableView.reloadData()
     }
     
-    func ItemRemoved()
+    func ItemRemoved(index: Int)
     {
-        tableView.reloadData()
+        if let itemsCount = self.listManager?.itemsCount
+        {
+            if itemsCount != 0
+            {
+                let indexPath = IndexPath(row: index, section: 0)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+            }
+            else
+            {
+                self.tableView.reloadData()
+            }
+        }
+        
+        if (self.itemsToRemove > 0)
+        {
+            self.itemsToRemove = self.itemsToRemove - 1
+            if (self.itemsToRemove == 0)
+            {
+                SVProgressHUD.showSuccess(withStatus: "Removed.")
+                SVProgressHUD.dismiss(withDelay: 0.6)
+            }
+        }
     }
     
     fileprivate func ShowPopupItemSucessfullyAdded()
     {
-        SVProgressHUD.showSuccess(withStatus: "New item added.")
+        SVProgressHUD.showSuccess(withStatus: "Added.")
         SVProgressHUD.dismiss(withDelay: 0.6)
     }
 }
@@ -278,6 +304,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
+        
         if let itemsCount = listManager?.itemsCount
         {
             if (itemsCount > 0)
@@ -294,12 +321,19 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         
         if let item = listManager?.GetItem(indexPath.row)
         {
-            PrepareCell(cell: cell!, item: item)
+            let detailedText = PrepareDetailedText(item: item)
+            
+            SetCellStyle(cell: cell!,
+                         title: item.title,
+                         detailed: detailedText,
+                         checked: item.checked)
         }
         else
         {
-            cell?.textLabel?.text = "Add items"
-            cell?.detailTextLabel?.text = ""
+            SetCellStyle(cell: cell!,
+                         title: "Add items!",
+                         detailed: "",
+                         checked: false)
         }
 
         return cell!
@@ -339,7 +373,33 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
     {
         return 50
     }
-
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle
+    {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool
+    {
+        if self.listManager?.itemsCount != 0
+        {
+            return true
+        }
+        
+        return false
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
+    {
+        if editingStyle == .delete
+        {
+            if let manager = self.listManager
+            {
+                manager.RemoveItem(index: indexPath.row)
+            }
+        }
+    }
+    
     fileprivate func PrepareDetailedText(item: Item) -> String
     {
         if (displayDetails == false)
@@ -355,33 +415,32 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
         return text
     }
     
-    fileprivate func PrepareCell(cell: UITableViewCell, item: Item)
+    fileprivate func SetCellStyle(cell: UITableViewCell, title: String, detailed: String, checked: Bool)
     {
-        let detailedText = PrepareDetailedText(item: item)
-        
-        if (item.checked)
+        if (checked)
         {
             cell.accessoryType = .checkmark
             cell.tintColor = UIColor.systemGray2
             
-            let attributedText : NSMutableAttributedString = NSMutableAttributedString(string: item.title)
+            let attributedText : NSMutableAttributedString = NSMutableAttributedString(string: title)
             attributedText.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSMakeRange(0, attributedText.length))
             cell.textLabel?.attributedText = attributedText
             cell.textLabel?.textColor = ui_utils.GetCheckedFontColour()
             
-            cell.detailTextLabel?.text = detailedText
+            cell.detailTextLabel?.text = detailed
             cell.detailTextLabel?.textColor = ui_utils.GetCheckedFontColour()
         }
         else
         {
             cell.accessoryType = .none
             cell.textLabel?.attributedText = nil
-            cell.textLabel?.text = item.title
+            cell.textLabel?.text = title
             cell.textLabel?.textColor = ui_utils.GetBasicFontColour(self.traitCollection)
-            cell.detailTextLabel?.text = detailedText
+            cell.detailTextLabel?.text = detailed
             cell.detailTextLabel?.textColor = ui_utils.GetBasicFontColour(self.traitCollection)
         }
     }
+    
     
     fileprivate func ScrollToBottom()
     {

@@ -47,7 +47,7 @@ protocol SingleListManagerDelegate : class {
     func ItemLoaded()
     func AllItemsLoaded()
     func ItemChanged()
-    func ItemRemoved()
+    func ItemRemoved(index: Int)
 }
 
 
@@ -133,8 +133,12 @@ class SingleListManager {
         }
     }
     
-    func RemoveChecked()
+    func RemoveChecked() -> Int
     {
+        let checkedCount = data.filter { (item) -> Bool in
+            item.item.checked
+        }.count
+        
         for item in data
         {
             if item.item.checked
@@ -142,6 +146,8 @@ class SingleListManager {
                 RemoveItem(item.item)
             }
         }
+        
+        return checkedCount
     }
     
     func RemoveItem(index: Int)
@@ -292,7 +298,7 @@ class SingleListManager {
             data.remove(at: itemIndex)
             if let del = delegate
             {
-                del.ItemRemoved()
+                del.ItemRemoved(index: itemIndex)
             }
         }
     }
