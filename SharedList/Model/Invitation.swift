@@ -15,28 +15,33 @@ class Invitation {
         case list_id = "list_id"
         case dest_user_id = "dest_user_id"
         case sender_user_id = "sender_user_id"
+        case message = "message"
     }
     
     let id : String
     let list_id : String
     let sender_user_id : String
+    let message : String
     
     var list : List? = nil
     
     init(id: String,
          listId: String,
-         senderUserId: String)
+         senderUserId: String,
+         message: String)
     {
         self.id = id
         self.list_id = listId
         self.sender_user_id = senderUserId
+        self.message = message
     }
     
     static func Deserialize(id: String, data: [String : Any]) -> Invitation
     {
         return Invitation(id: id,
                           listId: data[Keys.list_id.rawValue] as! String,
-                          senderUserId: data[Keys.sender_user_id.rawValue] as! String)
+                          senderUserId: data[Keys.sender_user_id.rawValue] as! String,
+                          message: data[Keys.message.rawValue] as! String)
     }
     
     static func Path(_ prefix: String, _ key: Keys) -> String
@@ -47,7 +52,8 @@ class Invitation {
     static func Serialize(id: String,
                           listId: String,
                           destUserId: String,
-                          senderUserId: String) -> [String : Any]
+                          senderUserId: String,
+                          message: String) -> [String : Any]
     {
         let prefix = frb_utils.InvitationPath(id)
         
@@ -56,6 +62,7 @@ class Invitation {
         dict[Path(prefix, Keys.list_id)] = listId
         dict[Path(prefix, Keys.dest_user_id)] = destUserId
         dict[Path(prefix, Keys.sender_user_id)] = senderUserId
+        dict[Path(prefix, Keys.message)] = message
         
         return dict
     }

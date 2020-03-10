@@ -37,7 +37,8 @@ class ShareListManager {
             var updateData = Invitation.Serialize(id:newInvitationKey,
                                                   listId: listId,
                                                   destUserId: destUserId,
-                                                  senderUserId: currentUserId)
+                                                  senderUserId: currentUserId,
+                                                  message: message)
             
             updateData[frb_utils.InvitationInUserPath(newInvitationKey, destUserId)] = true
             
