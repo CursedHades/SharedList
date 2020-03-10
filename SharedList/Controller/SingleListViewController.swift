@@ -428,7 +428,7 @@ extension SingleListViewController : UITableViewDelegate, UITableViewDataSource
             cell.textLabel?.textColor = ui_utils.GetCheckedFontColour()
             
             cell.detailTextLabel?.text = detailed
-            cell.detailTextLabel?.textColor = ui_utils.GetCheckedFontColour()
+            cell.detailTextLabel?.textColor = ui_utils.GetBasicFontColour(self.traitCollection)
         }
         else
         {
