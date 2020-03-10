@@ -12,7 +12,8 @@ import PopupDialog
 class ShareListViewController: UIViewController
 {
     @IBOutlet var emailTextField: UITextField!
-    var willDismissCallback : ((String?) -> Void)?
+    var willDismissCallback : ((String?, String?) -> Void)?
+    @IBOutlet var messageTextView: UITextView!
     
     override func viewDidLoad()
     {
@@ -20,9 +21,16 @@ class ShareListViewController: UIViewController
         
         emailTextField.delegate = self
         emailTextField.keyboardType = .emailAddress
-        emailTextField.returnKeyType = .send
+        emailTextField.returnKeyType = .done
+        
+        messageTextView.delegate = self
+        messageTextView.keyboardType = .default
+        messageTextView.returnKeyType = .done
         
         emailTextField.becomeFirstResponder()
+        
+        messageTextView.clipsToBounds = true
+        messageTextView.layer.cornerRadius = 5.0
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -31,25 +39,26 @@ class ShareListViewController: UIViewController
         
     }
     
-    fileprivate func DismissWithCallback(email: String?)
+    fileprivate func DismissWithCallback(email: String?, message: String?)
     {
         self.view.endEditing(true)
         self.dismiss(animated: true, completion: nil)
         
         if let callback = willDismissCallback
         {
-            callback(email)
+            callback(email, message)
         }
     }
     
-    static func PreparePopup(WillDismissCallback: @escaping (String?) -> Void) -> PopupDialog
+    static func PreparePopup(WillDismissCallback: @escaping (String?, String?) -> Void) -> PopupDialog
     {
         let vc = ShareListViewController()
         vc.willDismissCallback = WillDismissCallback
         let popup = PopupDialog(viewController: vc)
         let sendButton = DefaultButton(title: "Send invitation")
         {
-            vc.DismissWithCallback(email: vc.emailTextField.text)
+            vc.DismissWithCallback(email: vc.emailTextField.text,
+                                   message: vc.messageTextView.text)
         }
         let cancelButton = CancelButton(title: "Cancel")
         {
@@ -61,11 +70,31 @@ class ShareListViewController: UIViewController
     }
 }
 
+//*********************************************************************
+// MARK: extension UITextFieldDelegate
 extension ShareListViewController : UITextFieldDelegate
 {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
-        DismissWithCallback(email: textField.text)
+//        DismissWithCallback(email: textField.text)
+        self.messageTextView.becomeFirstResponder()
+        return true
+    }
+}
+
+//*********************************************************************
+// MARK: - extension UITextViewDelegate
+extension ShareListViewController : UITextViewDelegate
+{
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool
+    {
+        if text == "\n"
+        {
+            self.messageTextView.resignFirstResponder()
+            return false
+        }
+        
         return true
     }
 }

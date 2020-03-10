@@ -16,6 +16,7 @@ class ui_utils {
         case Add = "plus.square"
         case Remove = "minus.square"
         case Details = "questionmark.square"
+        case Share = "square.and.arrow.up"
     }
     
     static func GetBottomBarColour() ->UIColor

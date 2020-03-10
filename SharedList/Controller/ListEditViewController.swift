@@ -12,6 +12,7 @@ import PopupDialog
 class ListEditViewController: UIViewController {
     
     @IBOutlet var shareButton: UIButton!
+    @IBOutlet var bottomBarContainer: UIView!
     
     var listManager : SingleListManager?
     let shareManager = ShareListManager()
@@ -23,17 +24,23 @@ class ListEditViewController: UIViewController {
         shareManager.delegate = self
         
         title = listManager?.list.title
+        
+        bottomBarContainer.backgroundColor = ui_utils.GetBottomBarColour()
+        ui_utils.SetSfSymbolButton(button: shareButton,
+                                   icon: .Share,
+                                   selected: false,
+                                   traitCollection: self.traitCollection)
     }
     
     @IBAction func ShareButtonPressed(_ sender: Any)
     {
-        let popup = ShareListViewController.PreparePopup { (email) in
-            self.TryToSend(email: email)
+        let popup = ShareListViewController.PreparePopup { (email, message) in
+            self.TryToSend(email: email, message: message)
         }
         self.present(popup, animated: true)
     }
     
-    fileprivate func TryToSend(email: String?)
+    fileprivate func TryToSend(email: String?, message: String?)
     {
         if (email == nil || email! == "")
         {
@@ -41,7 +48,9 @@ class ListEditViewController: UIViewController {
             return
         }
         
-        shareManager.Share(destUserEmail: email!, listId: listManager!.list.id)
+        shareManager.Share(destUserEmail: email!,
+                           message: message!,
+                           listId: listManager!.list.id)
     }
     
     fileprivate func ShowPopupWithMessage(_ message: String, cancelButton: String)

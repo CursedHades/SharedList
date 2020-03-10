@@ -434,20 +434,43 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BlW-6o-eg3">
-                                <rect key="frame" x="16" y="318" width="343" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Share"/>
-                                <connections>
-                                    <action selector="ShareButtonPressed:" destination="Cxo-v5-Z6y" eventType="touchUpInside" id="7vC-Q8-adh"/>
-                                </connections>
-                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Nt-6p-VRC" userLabel="Bottom bar container">
+                                <rect key="frame" x="0.0" y="607" width="375" height="60"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="huP-R9-YMg" userLabel="Share button">
+                                        <rect key="frame" x="165.5" y="8" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="huP-R9-YMg" secondAttribute="height" multiplier="1:1" id="9ca-Do-2E1"/>
+                                        </constraints>
+                                        <state key="normal" image="square.and.arrow.up" catalog="system">
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25" scale="large" weight="medium"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="AddItemButtonPressed:" destination="3uV-RH-cye" eventType="touchUpInside" id="xsi-xP-ZHp"/>
+                                            <action selector="ShareButtonPressed:" destination="Cxo-v5-Z6y" eventType="touchUpInside" id="6aR-qO-KHQ"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="375" id="4vj-wV-ldd"/>
+                                    <constraint firstItem="huP-R9-YMg" firstAttribute="top" secondItem="3Nt-6p-VRC" secondAttribute="top" constant="8" id="C3y-X5-I4V"/>
+                                    <constraint firstAttribute="height" constant="60" id="GhH-h4-inr"/>
+                                    <constraint firstItem="huP-R9-YMg" firstAttribute="centerX" secondItem="3Nt-6p-VRC" secondAttribute="centerX" id="azZ-X9-kdL"/>
+                                    <constraint firstAttribute="bottom" secondItem="huP-R9-YMg" secondAttribute="bottom" constant="8" id="jkw-3y-eZL"/>
+                                </constraints>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="3Nt-6p-VRC" firstAttribute="leading" secondItem="c8b-fm-GF1" secondAttribute="leading" id="cKy-Xb-feO"/>
+                            <constraint firstItem="3Nt-6p-VRC" firstAttribute="bottom" secondItem="c8b-fm-GF1" secondAttribute="bottom" id="kVJ-Hh-382"/>
+                            <constraint firstItem="3Nt-6p-VRC" firstAttribute="trailing" secondItem="c8b-fm-GF1" secondAttribute="trailing" id="pQT-jJ-ZSn"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="c8b-fm-GF1"/>
                     </view>
                     <connections>
-                        <outlet property="shareButton" destination="BlW-6o-eg3" id="NnC-qr-2Mh"/>
+                        <outlet property="bottomBarContainer" destination="3Nt-6p-VRC" id="154-sD-b9I"/>
+                        <outlet property="shareButton" destination="huP-R9-YMg" id="2eb-0E-KW8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wJv-FY-KNb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -512,6 +535,7 @@
         <image name="minus.square" catalog="system" width="64" height="56"/>
         <image name="plus.square" catalog="system" width="64" height="56"/>
         <image name="questionmark.square" catalog="system" width="64" height="56"/>
+        <image name="square.and.arrow.up" catalog="system" width="56" height="64"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="5hz-mS-hGt"/>

@@ -17,7 +17,7 @@ class ShareListManager {
     
     weak var delegate : ShareListManagerDelegate?
     
-    func Share(destUserEmail: String, listId: String)
+    func Share(destUserEmail: String, message: String, listId: String)
     {
         let query = frb_utils.UsersTableDbRef().queryOrdered(byChild: User.Keys.email.rawValue).queryEqual(toValue: destUserEmail)
         
