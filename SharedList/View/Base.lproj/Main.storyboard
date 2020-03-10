@@ -517,7 +517,6 @@
                                 </prototypes>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="cw3-Y6-pXK"/>
                     </view>
                     <navigationItem key="navigationItem" title="Invitations" id="jiX-Y4-6il"/>

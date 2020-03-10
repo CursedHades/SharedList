@@ -15,6 +15,8 @@
 		B2227B4422B8241B0001BED5 /* ShareListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2227B4222B8241B0001BED5 /* ShareListViewController.xib */; };
 		B26A275722511C9E00091C43 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275622511C9E00091C43 /* User.swift */; };
 		B26A275922511D0C00091C43 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26A275822511D0C00091C43 /* AuthManager.swift */; };
+		B26D69BB24184873004B9CBC /* InvitationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26D69B924184873004B9CBC /* InvitationViewController.swift */; };
+		B26D69BC24184873004B9CBC /* InvitationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B26D69BA24184873004B9CBC /* InvitationViewController.xib */; };
 		B288A06223FDD0C600DEAB3C /* AddListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B288A06023FDD0C600DEAB3C /* AddListViewController.swift */; };
 		B288A06323FDD0C600DEAB3C /* AddListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B288A06123FDD0C600DEAB3C /* AddListViewController.xib */; };
 		B28AA0E022DFA362006C3237 /* ViewControllersCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */; };
@@ -55,6 +57,8 @@
 		B2227B4222B8241B0001BED5 /* ShareListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ShareListViewController.xib; path = ../Controller/ShareListViewController.xib; sourceTree = "<group>"; };
 		B26A275622511C9E00091C43 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B26A275822511D0C00091C43 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		B26D69B924184873004B9CBC /* InvitationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationViewController.swift; sourceTree = "<group>"; };
+		B26D69BA24184873004B9CBC /* InvitationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InvitationViewController.xib; sourceTree = "<group>"; };
 		B288A06023FDD0C600DEAB3C /* AddListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListViewController.swift; sourceTree = "<group>"; };
 		B288A06123FDD0C600DEAB3C /* AddListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddListViewController.xib; sourceTree = "<group>"; };
 		B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllersCommon.swift; sourceTree = "<group>"; };
@@ -176,6 +180,7 @@
 				B2227B4122B8241B0001BED5 /* ShareListViewController.swift */,
 				B28AA0DF22DFA362006C3237 /* ViewControllersCommon.swift */,
 				B288A06023FDD0C600DEAB3C /* AddListViewController.swift */,
+				B26D69B924184873004B9CBC /* InvitationViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -183,6 +188,7 @@
 		B2C3D60C222BD327005321BB /* View */ = {
 			isa = PBXGroup;
 			children = (
+				B26D69BA24184873004B9CBC /* InvitationViewController.xib */,
 				B288A06123FDD0C600DEAB3C /* AddListViewController.xib */,
 				B2227B4222B8241B0001BED5 /* ShareListViewController.xib */,
 				B2A29AFA222491F800698D05 /* Main.storyboard */,
@@ -278,6 +284,7 @@
 				B2A29B01222491FA00698D05 /* LaunchScreen.storyboard in Resources */,
 				B2C3D614222BD59E005321BB /* GoogleService-Info.plist in Resources */,
 				B288A06323FDD0C600DEAB3C /* AddListViewController.xib in Resources */,
+				B26D69BC24184873004B9CBC /* InvitationViewController.xib in Resources */,
 				B2227B4422B8241B0001BED5 /* ShareListViewController.xib in Resources */,
 				B2A29AFE222491FA00698D05 /* Assets.xcassets in Resources */,
 				B2A29AFC222491F800698D05 /* Main.storyboard in Resources */,
@@ -341,6 +348,7 @@
 				B26A275722511C9E00091C43 /* User.swift in Sources */,
 				B21C3D46225A5EE400723702 /* ObserversHandler.swift in Sources */,
 				B2D9A6692247D91400576591 /* Invitation.swift in Sources */,
+				B26D69BB24184873004B9CBC /* InvitationViewController.swift in Sources */,
 				B2A29AF9222491F800698D05 /* ViewController.swift in Sources */,
 				B2ADCA1822B7FBB6004F7576 /* ListEditViewController.swift in Sources */,
 				B26A275922511D0C00091C43 /* AuthManager.swift in Sources */,
