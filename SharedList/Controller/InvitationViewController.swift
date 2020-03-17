@@ -11,6 +11,11 @@ import PopupDialog
 
 class InvitationViewController: UIViewController {
     
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var subtitleLabel: UILabel!
+    @IBOutlet var messageTextView: UITextView!
+    @IBOutlet var listImageView: UIImageView!
+    
     enum Response {
         case Accepted
         case Posponed
@@ -28,11 +33,24 @@ class InvitationViewController: UIViewController {
                              WillDismissCallback: @escaping (Response) -> Void) -> PopupDialog
     {
         let vc = InvitationViewController()
-//        vc.willDismissCallback = WillDismissCallback
         let popup = PopupDialog(viewController: vc)
         
-        let title = invitation.list?.title
-        let message = invitation.list?.users?[invitation.sender_user_id]
+        let listTitle = invitation.list?.title
+        let sender = invitation.list?.users?[invitation.sender_user_id]
+        let message = invitation.message
+        
+        let title = "\(sender!) invited you!"
+        
+        let boldFont = UIFont(name: "HelveticaNeue-Bold", size: 17.0)!
+        
+        let attributedText : NSMutableAttributedString = NSMutableAttributedString(string: title)
+        attributedText.addAttribute(NSAttributedString.Key.font, value: boldFont, range: NSMakeRange(0, sender!.count))
+        
+        vc.messageTextView.text = message
+        vc.titleLabel.attributedText = attributedText
+        vc.subtitleLabel.text = listTitle
+        
+        vc.listImageView.image = ui_utils.GetListImage(vc.traitCollection)
         
         let acceptButton = DefaultButton(title: "Accept")
         {

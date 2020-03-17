@@ -59,26 +59,19 @@ extension InvitationsViewController : UITableViewDelegate, UITableViewDataSource
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "InvitationCell")
         cell?.textLabel?.text = "loading..."
-        cell?.detailTextLabel?.text = "loading..."
         
         invManager?.GetListForInvitation(index: indexPath.row)
         { (invitedList) in
             if let list = invitedList
             {
-                cell?.textLabel?.text = "List: \(list.title)"
                 if let userName = list.users?[invitation.sender_user_id]
                 {
-                    cell?.detailTextLabel?.text = "\(userName) invited you."
-                }
-                else
-                {
-                    cell?.detailTextLabel?.text = ""
+                    cell?.textLabel?.text = "Invitation from: \(userName)"
                 }
             }
             else
             {
                 cell?.textLabel?.text = "List no longer exist."
-                cell?.detailTextLabel?.text = "Removing invitation..."
             }
         }
         

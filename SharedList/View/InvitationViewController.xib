@@ -9,6 +9,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="InvitationViewController" customModule="SharedList" customModuleProvider="target">
             <connections>
+                <outlet property="listImageView" destination="EVw-gC-YUP" id="Dts-hW-VRq"/>
+                <outlet property="messageTextView" destination="jfW-Ki-poS" id="sIC-1O-EIy"/>
+                <outlet property="subtitleLabel" destination="3BU-i7-U9n" id="3oN-jT-VSR"/>
+                <outlet property="titleLabel" destination="SDR-8F-OAq" id="adh-Yk-LHL"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -19,9 +23,49 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1lN-Qg-xKJ">
                     <rect key="frame" x="0.0" y="0.0" width="300" height="150"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SDR-8F-OAq">
+                            <rect key="frame" x="8" y="8" width="284" height="20"/>
+                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="list_dark" translatesAutoresizingMaskIntoConstraints="NO" id="EVw-gC-YUP">
+                            <rect key="frame" x="8" y="35.5" width="30" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="3tC-Kf-jTr"/>
+                                <constraint firstAttribute="width" constant="30" id="y4F-Kg-fcy"/>
+                            </constraints>
+                        </imageView>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="jfW-Ki-poS">
+                            <rect key="frame" x="8" y="67.5" width="284" height="74.5"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3BU-i7-U9n">
+                            <rect key="frame" x="46" y="41.5" width="246" height="18"/>
+                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
                     <constraints>
+                        <constraint firstItem="EVw-gC-YUP" firstAttribute="leading" secondItem="1lN-Qg-xKJ" secondAttribute="leading" constant="8" id="A8G-sa-UMj"/>
+                        <constraint firstItem="SDR-8F-OAq" firstAttribute="leading" secondItem="1lN-Qg-xKJ" secondAttribute="leading" constant="8" id="AhB-gK-aIu"/>
+                        <constraint firstItem="3BU-i7-U9n" firstAttribute="centerY" secondItem="EVw-gC-YUP" secondAttribute="centerY" id="Deb-on-ZAL"/>
+                        <constraint firstAttribute="trailing" secondItem="jfW-Ki-poS" secondAttribute="trailing" constant="8" id="NHl-dd-PbX"/>
+                        <constraint firstItem="SDR-8F-OAq" firstAttribute="top" secondItem="1lN-Qg-xKJ" secondAttribute="top" constant="8" id="NyY-Ev-LLG"/>
+                        <constraint firstItem="3BU-i7-U9n" firstAttribute="top" secondItem="SDR-8F-OAq" secondAttribute="bottom" constant="13.5" id="Q7O-eS-S7w"/>
+                        <constraint firstAttribute="trailing" secondItem="3BU-i7-U9n" secondAttribute="trailing" constant="8" id="VgL-LJ-4QF"/>
                         <constraint firstAttribute="width" constant="300" id="YJ2-vP-rvc"/>
+                        <constraint firstAttribute="trailing" secondItem="SDR-8F-OAq" secondAttribute="trailing" constant="8" id="cRb-1Z-Ie0"/>
+                        <constraint firstItem="jfW-Ki-poS" firstAttribute="leading" secondItem="1lN-Qg-xKJ" secondAttribute="leading" constant="8" id="kgC-sX-EHm"/>
                         <constraint firstAttribute="height" constant="150" id="mkd-Zp-OOI"/>
+                        <constraint firstItem="jfW-Ki-poS" firstAttribute="top" secondItem="3BU-i7-U9n" secondAttribute="bottom" constant="8" id="rTN-Qi-eiP"/>
+                        <constraint firstItem="3BU-i7-U9n" firstAttribute="leading" secondItem="EVw-gC-YUP" secondAttribute="trailing" constant="8" id="wTW-OU-6tr"/>
+                        <constraint firstAttribute="bottom" secondItem="jfW-Ki-poS" secondAttribute="bottom" constant="8" id="y7A-5L-e0k"/>
                     </constraints>
                 </view>
             </subviews>
@@ -33,7 +77,10 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <point key="canvasLocation" x="131.8840579710145" y="145.98214285714286"/>
+            <point key="canvasLocation" x="-5.7971014492753632" y="82.366071428571431"/>
         </view>
     </objects>
+    <resources>
+        <image name="list_dark" width="225" height="225"/>
+    </resources>
 </document>
