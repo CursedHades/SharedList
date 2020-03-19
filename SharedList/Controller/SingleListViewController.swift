@@ -261,17 +261,14 @@ extension SingleListViewController : SingleListManagerDelegate
             self.awaitenNotifations = self.awaitenNotifations - 1
             self.ShowPopupItemSucessfullyAdded()
             self.ScrollToBottom()
+            
+            self.UpdateUI(enable: true)
         }
     }
     
     func ItemChanged()
     {
        tableView.reloadData()
-    }
-    
-    func NewItemAdded()
-    {
-        tableView.reloadData()
     }
     
     func ItemRemoved(index: Int)
@@ -285,6 +282,11 @@ extension SingleListViewController : SingleListManagerDelegate
             }
             else
             {
+                // No more items left
+                self.displayDetails = false
+                self.SetDisplayEdit(false)
+                self.UpdateUI(enable: true)
+                
                 self.tableView.reloadData()
             }
         }
