@@ -114,8 +114,14 @@ class SingleListViewController: UIViewController {
             
             newItemNameTextField.isEnabled = true
             addItemButton.isEnabled = true
-            detailItemsButton.isEnabled = true
-            removeItemsButton.isEnabled = true
+            if let manager = self.listManager
+            {
+                let hasItems = manager.itemsCount != 0
+                
+                detailItemsButton.isEnabled = hasItems
+                removeItemsButton.isEnabled = hasItems
+            }
+            
         }
         else
         {
@@ -197,7 +203,10 @@ class SingleListViewController: UIViewController {
             if let manager = self.listManager
             {
                 self.itemsToRemove = manager.RemoveChecked()
-                SVProgressHUD.show(withStatus: "removing...")
+                if self.itemsToRemove != 0
+                {
+                    SVProgressHUD.show(withStatus: "removing...")
+                }
             }
         }
         let buttonSelect = DefaultButton(title: "Select")
