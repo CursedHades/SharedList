@@ -133,6 +133,16 @@ class SingleListManager {
         }
     }
     
+    func RemoveAll() -> Int
+    {
+        for item in data
+        {
+            RemoveItem(item.item)
+        }
+        
+        return itemsCount
+    }
+    
     func RemoveChecked() -> Int
     {
         let checkedCount = data.filter { (item) -> Bool in
