@@ -1,4 +1,4 @@
-framework module Pods_SharedList {
+module Pods_SharedList {
   umbrella header "Pods-SharedList-umbrella.h"
 
   export *
