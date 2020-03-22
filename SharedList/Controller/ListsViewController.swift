@@ -183,6 +183,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
         
+        cell.backgroundColor = .systemGray6
+        
         if let list = listsManager?.GetList(indexPath.row)
         {
             cell.textLabel?.text = list.title
@@ -204,6 +206,10 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
         
         selectedListIndex = indexPath.row
         performSegue(withIdentifier: "goToSingleList", sender: self)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 66
     }
 }
 
