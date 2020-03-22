@@ -138,7 +138,13 @@ class ListsManager
         
         let userId = Auth.auth().currentUser!.uid
         
-        var serializedList = List.Serialize(title: title, owner_id: userId, items_id: newItemsKey)
+        let creationDate = Date().timeIntervalSince1970
+        
+        var serializedList = List.Serialize(title: title,
+                                            owner_id: userId,
+                                            items_id: newItemsKey,
+                                            creationDate: creationDate)
+        
         serializedList["users"] = ["\(userId)" : authManager.currentUser?.name]
         
         let updateData = ["users/\(userId)/lists/\(newListKey)" : true,
@@ -205,6 +211,11 @@ class ListsManager
         { (error, dbRef) in
             completion()
         }
+    }
+    
+    func SortListsByCreationDate()
+    {
+        data = data.sorted(by: {$0.list.creation_date < $1.list.creation_date })
     }
     
     fileprivate func ActivateObservers()

@@ -237,6 +237,11 @@ extension ListsViewController : ListsManagerDelegate {
     
     func DataLoaded() {
         
+        if let manager = listsManager
+        {
+            manager.SortListsByCreationDate()
+        }
+        
         tableView.reloadData()
         
         loadingGuard.Deactivate()
