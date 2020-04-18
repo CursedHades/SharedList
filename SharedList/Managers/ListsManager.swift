@@ -97,17 +97,19 @@ class ListsManager
                 return
             }
             
-            let listsIds = (listsSnapshot.value! as! [String : Any]).keys
-            var listsCounter = listsIds.count
+            let lists = (listsSnapshot.value! as! [String : Int])
+            var listsCounter = lists.keys.count
 
-            for (listId) in listsIds
+            for (listId, listPosition) in lists
             {
                 let listDbRef = frb_utils.ListDbRef(listId)
                 listDbRef.observeSingleEvent(of: .value)
                 { (listSnapshot) in
                     
                     let listData = listSnapshot.value! as! [String : Any]
-                    _ = self.AddListWithObserver(id: listId, data: listData)
+                    _ = self.AddListWithObserver(id: listId,
+                                                 position: listPosition,
+                                                 data: listData)
                     
                     listsCounter = listsCounter - 1
                     
@@ -140,6 +142,8 @@ class ListsManager
         
         let creationDate = Date().timeIntervalSince1970
         
+        let counter = data.count
+        
         var serializedList = List.Serialize(title: title,
                                             owner_id: userId,
                                             items_id: newItemsKey,
@@ -147,7 +151,7 @@ class ListsManager
         
         serializedList["users"] = ["\(userId)" : authManager.currentUser?.name]
         
-        let updateData = ["users/\(userId)/lists/\(newListKey)" : true,
+        let updateData = ["users/\(userId)/lists/\(newListKey)" : counter,
                           "lists/\(newListKey)" : serializedList,
                           "items/\(newItemsKey)/list_id" : newListKey] as [String : Any]
         
@@ -158,6 +162,27 @@ class ListsManager
                 print("New list add failed with error: \(error!)")
             }
         }
+    }
+    
+    func ChangePosition(from: Int, to: Int)
+    {
+        if (from < 0 || from > data.count - 1 || to < 0 || to > data.count - 1)
+        {
+            print("Position out of range. From:\(from), To:\(to)")
+            return;
+        }
+        
+        let movingList = data.remove(at: from)
+        data.insert(movingList, at: to)
+        
+        var updateData = Dictionary<String, Int>()
+        for (pos, list) in data.enumerated()
+        {
+            list.list.position = pos
+            updateData[list.list.id] = pos
+        }
+        
+        frb_utils.UserListsDbRef().updateChildValues(updateData)
     }
     
     func RemoveList(index: Int)
@@ -192,7 +217,9 @@ class ListsManager
             
             if let listData = listSnapshot.value as? [String : Any]
             {
-                let list = List.Deserialize(id: id, data: listData)
+                let list = List.Deserialize(id: id,
+                                            position: -1,
+                                            data: listData)
                 completionHandler(list)
             }
             else {
@@ -203,9 +230,11 @@ class ListsManager
     
     func AddCurrentUserToList(list: List, completion: @escaping() -> Void)
     {
+        let counter = data.count
+        
         let userId = authManager.currentUser!.id
         let updateData = [frb_utils.UserInListPath(listId: list.id, userId: userId) : authManager.currentUser!.name,
-                          frb_utils.ListInUserListsPath(userId: userId, listId: list.id) : true] as [String : Any]
+                          frb_utils.ListInUserListsPath(userId: userId, listId: list.id) : counter] as [String : Any]
         
         frb_utils.DbRef().updateChildValues(updateData)
         { (error, dbRef) in
@@ -213,9 +242,9 @@ class ListsManager
         }
     }
     
-    func SortListsByCreationDate()
+    func SortListByPosition()
     {
-        data = data.sorted(by: {$0.list.creation_date < $1.list.creation_date })
+        data = data.sorted(by: {$0.list.position < $1.list.position})
     }
     
     fileprivate func ActivateObservers()
@@ -234,6 +263,7 @@ class ListsManager
     fileprivate func ListsKeysChildAdded(_ listKeySnapshot: DataSnapshot)
     {
         let listId = listKeySnapshot.key
+        let listPosition = listKeySnapshot.value as! Int
         if (FindListIndex(listId) != nil)
         {
             return
@@ -244,7 +274,9 @@ class ListsManager
         { (listSnapshot) in
          
             let listData = listSnapshot.value as! [String : Any]
-            _ = self.AddListWithObserver(id: listId, data: listData)
+            _ = self.AddListWithObserver(id: listId,
+                                         position: listPosition,
+                                         data: listData)
             
             if let del = self.delegate
             {
@@ -266,9 +298,10 @@ class ListsManager
         }
     }
     
-    fileprivate func AddListWithObserver(id: String, data: [String : Any]) -> ListWithObserver
+    fileprivate func AddListWithObserver(id: String, position: Int, data: [String : Any]) -> ListWithObserver
     {
         let newList = List.Deserialize(id: id,
+                                       position: position,
                                        data: data)
         
         let observer = ListWithObserver(list: newList,

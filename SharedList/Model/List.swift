@@ -20,14 +20,16 @@ class List {
     let owner_id : String
     let items_id : String
     let creation_date : Double
+    var position : Int
     var users : [String : String]?
     
-    fileprivate init(id: String, title: String, ownerId: String, itemsId: String, creationDate: Double) {
+    fileprivate init(id: String, title: String, ownerId: String, itemsId: String, creationDate: Double, position: Int) {
         self.id = id
         self.title = title
         self.owner_id = ownerId
         self.items_id = itemsId
         self.creation_date = creationDate
+        self.position = position
     }
     
     func Update(data : [String : Any?]) {
@@ -61,13 +63,14 @@ class List {
         return dict
     }
     
-    static func Deserialize(id: String, data: [String : Any]) -> List {
+    static func Deserialize(id: String, position: Int, data: [String : Any]) -> List {
         
         let newList = List(id: id,
                            title: data[Keys.title.rawValue] as! String,
                            ownerId: data[Keys.owner_id.rawValue] as! String,
                            itemsId: data[Keys.items_id.rawValue] as! String,
-                           creationDate: data[Keys.creation_date.rawValue] as! Double)
+                           creationDate: data[Keys.creation_date.rawValue] as! Double,
+                           position: position)
         
         newList.users = data["users"] as? [String : String]
         

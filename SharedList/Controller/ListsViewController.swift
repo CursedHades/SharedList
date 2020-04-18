@@ -17,6 +17,7 @@ class ListsViewController: UIViewController {
     
     @IBOutlet var addListButton: UIButton!
     @IBOutlet var invitationsButton: UIButton!
+    @IBOutlet var editOrderButton: UIButton!
     
     var selectedListIndex : Int?
     
@@ -66,6 +67,10 @@ class ListsViewController: UIViewController {
         frbManager?.authManager.LogOut()
     
         self.navigationController?.popToRootViewController(animated: true)
+    }
+    
+    @IBAction func EditOrderPressed(_ sender: Any) {
+        self.tableView.isEditing = !self.tableView.isEditing
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -140,12 +145,14 @@ class ListsViewController: UIViewController {
         tableView.isScrollEnabled = false
         addListButton.isEnabled = false
         invitationsButton.isEnabled = false
+        editOrderButton.isEnabled = false
     }
     
     fileprivate func EnableUI() {
         tableView.allowsSelection = true
         tableView.isScrollEnabled = true
         addListButton.isEnabled = true
+        editOrderButton.isEnabled = true
         UpdateInvitationEnable()
     }
     
@@ -211,6 +218,23 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 66
     }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        if let manager = listsManager
+        {
+            let from = sourceIndexPath.row
+            let to = destinationIndexPath.row
+            manager.ChangePosition(from: from, to: to)
+        }
+    }
 }
 
 //*********************************************************************
@@ -239,7 +263,7 @@ extension ListsViewController : ListsManagerDelegate {
         
         if let manager = listsManager
         {
-            manager.SortListsByCreationDate()
+            manager.SortListByPosition()
         }
         
         tableView.reloadData()
