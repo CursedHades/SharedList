@@ -228,12 +228,17 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        if let manager = listsManager
+        let from = sourceIndexPath.row
+        let to = destinationIndexPath.row
+        if from != to
         {
-            let from = sourceIndexPath.row
-            let to = destinationIndexPath.row
-            manager.ChangePosition(from: from, to: to)
+            if let manager = listsManager
+            {
+                manager.ChangePosition(from: from, to: to)
+            }
         }
+        
+        self.tableView.isEditing = false
     }
 }
 
