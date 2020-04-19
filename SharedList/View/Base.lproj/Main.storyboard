@@ -224,6 +224,14 @@
                                             <action selector="AddListPressed:" destination="2o2-vd-tY5" eventType="touchUpInside" id="Uyc-de-g9B"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EC-Wf-RE6">
+                                        <rect key="frame" x="31" y="13" width="67" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="edit order"/>
+                                        <connections>
+                                            <action selector="EditOrderPressed:" destination="2o2-vd-tY5" eventType="touchUpInside" id="asS-wd-fNf"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
@@ -256,6 +264,7 @@
                     <connections>
                         <outlet property="addListButton" destination="wps-g3-YTy" id="xFp-fE-bJZ"/>
                         <outlet property="bottomBarVIew" destination="J4V-ma-LvH" id="t8u-mR-4cJ"/>
+                        <outlet property="editOrderButton" destination="5EC-Wf-RE6" id="cam-oC-fQR"/>
                         <outlet property="invitationsButton" destination="bOt-Eg-s2n" id="enl-op-tLq"/>
                         <outlet property="tableView" destination="cxu-IS-5xN" id="LsN-Nv-b1h"/>
                         <segue destination="3uV-RH-cye" kind="show" identifier="goToSingleList" id="iyg-Zo-S5w"/>

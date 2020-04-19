@@ -195,10 +195,10 @@ class SingleListViewController: UIViewController {
     
     fileprivate func ShowEditPopup()
     {
-        let title = "Remove all crossed items?"
+        let title = "Remove?"
         let popup = PopupDialog(title: title, message: nil, buttonAlignment: .vertical)
         
-        let buttonAll = DestructiveButton(title: "All")
+        let buttonCrossed = DestructiveButton(title: "Crossed")
         {
             if let manager = self.listManager
             {
@@ -209,20 +209,23 @@ class SingleListViewController: UIViewController {
                 }
             }
         }
+        
         let buttonSelect = DefaultButton(title: "Select")
         {
             self.SetDisplayEdit(true)
         }
+        
         let buttonCancel = CancelButton(title: "Cancel")
         {
             
         }
     
-        popup.addButtons([buttonAll, buttonSelect, buttonCancel])
+        popup.addButtons([buttonCrossed, buttonSelect, buttonCancel])
         
         self.present(popup, animated: true, completion: nil)
     }
     
+    // TODO: rename this shit
     fileprivate func SetDisplayEdit(_ value: Bool)
     {
         self.displayEdit = value
