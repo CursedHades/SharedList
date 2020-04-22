@@ -213,6 +213,8 @@ extension ListsViewController : UITableViewDelegate, UITableViewDataSource
         
         selectedListIndex = indexPath.row
         performSegue(withIdentifier: "goToSingleList", sender: self)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
